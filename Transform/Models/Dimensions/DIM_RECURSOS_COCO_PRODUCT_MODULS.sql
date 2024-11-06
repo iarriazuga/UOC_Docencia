@@ -3,19 +3,7 @@
 -- -- RECURSOS_APRENDIZATJE
 -- -- #################################################################################################
 -- -- #################################################################################################
-
-
--- /**
--- ####################################################################################################
--- TABLE
--- ####################################################################################################
--- **/
-
--- ####################################################################################################
--- productos_aux         
--- CREATE TABLE RECURSOS_COCO_MODULS
--- ####################################################################################################
--- CREATE TABLE DB_UOC_PROD.DDP_DADESRA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS -- no privileges DDP_DOCENCIA
+ 
 CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
 With productos_aux as ( 
         select                              -- agafa els mateixos camps per conservar la estructura però dades de COCO (taules Autors)
@@ -99,6 +87,7 @@ select
     AUTORS_MODUL.ID as codi_recurs,                     -- Id del Mòdulo (Camp ja definit)
     AUTORS_MODUL.DESCRIPCIO as titol_recurs,            -- (Camp ja definit) (Corresponde al campo Título en la tabla Producte)  --> PROBLEMA EN MODULOS, COMO LO SACO / RELACIONO
     'PROPI' as origen_recurs,                           -- Tipus de recurs  (Camp ja definit)
+    coalesce(AUTORS_MODUL.source, autors_producte.source) as source_recurs,           -- url_idioma_recurs* : NO VALID (Campo a recuperar de PRODUCTO)                                                   --> SOLO EN PROD, NO EN MODULOS
     autors_producte.url as url_idioma_recurs,           -- url_idioma_recurs* : NO VALID (Campo a recuperar de PRODUCTO)                                                   --> SOLO EN PROD, NO EN MODULOS
     autors_producte.descripcio as descripcio_tramesa_recurs,  --(Campo a recuperar de PRODUCTO)
     autors_producte.descripcio as descripcio_suport_recurs,                 -- (Campo a recuperar de PRODUCTO)
@@ -120,10 +109,5 @@ inner join modulos_aux AUTORS_MODUL  on autors_producte.codi_recurs = AUTORS_MOD
 
 
 ;
-
-
-
-
-
 
 -- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS;
