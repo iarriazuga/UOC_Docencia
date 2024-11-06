@@ -1,4 +1,4 @@
-/*  DB_UOC_PROD.DD_OD
+/*  DB_UOC_PROD.DD_OD TEST ACORAN
 
 Generació del fitxer 29 aux_tables 
 
