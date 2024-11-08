@@ -5,12 +5,12 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
--- CREATE TABLE RECURSOS_COCO_PRODUCTES
+--  DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALOG
 CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALOG AS -- DDP_DOCENCIA  vs  DDP_DADESRA 
 With dim_coco_productes_moduls as ( 
     
     select
-        source_recurs|| '-' || CODI_RECURS AS ID_CODI_RECURS          
+        'COCO'|| '-' || CODI_RECURS AS ID_CODI_RECURS  -- no podemos poner source_recurs pq elementos NIU no distinge entre COCO_PROD y COCO_MOD        
         , CODI_RECURS
         , TITOL_RECURS
         , ORIGEN_RECURS
@@ -25,9 +25,11 @@ With dim_coco_productes_moduls as (
 
 
         , BAIXA AS WAIT_RECURS -- comentar con xabi 
+        
+        -- id_comentario: 6 v_recurs.Idioma_Recurs de dimax i autors_suport_idioma_i18n de COCO en Idioma_Recurs y por lo tanto desparece el suport_idioma de coco
+        , descripcio_idioma_recurs AS IDIOMA_RECURS -- Options dimax: en / es / ca
 
-        , '' AS IDIOMA_RECURS -- Options dimax: en / es / ca
-        , '' AS FORMAT_RECURS -- Options dimax: ZIP / PDF / HTML / WORD
+        , DESCRIPCIO_SUPORT_RECURS as FORMAT_RECURS  -- added: comentario francesc id_comentario: 5
 
         -- not filled in DIMAX 
         , null AS DATA_INICI_RECURS
@@ -47,22 +49,21 @@ With dim_coco_productes_moduls as (
         , '' AS URL_CAT_RECURS
         , '' AS URL_CAS_RECURS
         , '' AS URL_ANG_RECURS
-        , '' AS TIPUS_GESTIO_RECURS
+        , 'ND' AS TIPUS_GESTIO_RECURS
 
         , '' AS DESPESA_VARIABLE_RECURS
-        , null AS CREATION_DATE
         , null AS UPDATE_DATE
+        , DATA_TANCAMENT_REAL as CREATION_DATE -- id_comentario: 8 v_recurs.data_creacio de dimax i data_tancament_real de COCO en creation_date y por lo tanto desparece el data_tancament_real de coco
+        , PRODUCTE_CREACIO_ID
 
         -- not exist in DIMAX
-        , DESCRIPCIO_TRAMESA_RECURS
-        , DESCRIPCIO_SUPORT_RECURS
+        , DESCRIPCIO_TRAMESA_RECURS --- error: CLASIFIED AS A TIMESTAMP 
         , DESCRIPCIO_IDIOMA_RECURS
-        , PRODUCTE_CREACIO_ID
+
 
 
 
         , NUM_CONTRACTE
-        , DATA_TANCAMENT_REAL
         , OBSERVACIONS
         , MODUL_ORIGEN_ID
         , VERSIO_CREACIO_ID
@@ -70,7 +71,7 @@ With dim_coco_productes_moduls as (
         , CODI_MIGRACIO
         , URL_IDIOMA_RECURS
 
-
+ 
     from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
                    
 ), 
@@ -114,28 +115,41 @@ dimax as (
         , URL_CAT_RECURS
         , URL_CAS_RECURS
         , URL_ANG_RECURS
-        , TIPUS_GESTIO_RECURS
+
+        // added; comentarios francesc 
+        , iff(
+            LLICENCIA_lpc = 'S','DRETS'
+            ,iff( 
+                LLICENCIA_lgc = 'S','DRETS'
+                ,iff(
+                    LLICENCIA_altres = 'S'
+                    ,'DRETS'
+                    ,iff(LLICENCIA_biblioteca = 'S','SUBS', '')
+                    )
+                )
+        ) as TIPUS_GESTIO_RECURS
         
         , DESPESA_VARIABLE_RECURS
-        , CREATION_DATE
+        , CREATION_DATE  
         , UPDATE_DATE
+        , NULL AS PRODUCTE_CREACIO_ID
 
         -- fields of coco : publicat al aula 
-        , '' AS DESCRIPCIO_TRAMESA_RECURS
-        , '' AS DESCRIPCIO_SUPORT_RECURS
-        , '' AS DESCRIPCIO_IDIOMA_RECURS
-        , 0 AS PRODUCTE_CREACIO_ID
+        , NULL AS DESCRIPCIO_TRAMESA_RECURS -- CHANGES: 
+        , NULL AS DESCRIPCIO_IDIOMA_RECURS
+
+
         , '' AS NUM_CONTRACTE
-        , null AS DATA_TANCAMENT_REAL
         , '' AS OBSERVACIONS
         , '' AS MODUL_ORIGEN_ID
         , 0 AS VERSIO_CREACIO_ID
+
         , '' AS OBRA_ID
         , '' AS CODI_MIGRACIO
         , '' AS URL_IDIOMA_RECURS
+ 
 
-
-    from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax
+    from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax  
  
 ) 
 
@@ -147,5 +161,15 @@ union all
  
 select  * from dimax;
 
- 
- 
+
+---######################################################################################################################################################################## 
+/*** 
+CONCAT: 213,157
+DIMAX: 100,821 
+COCO: 112,336
+
+
+id_comentario: 5 LLICENCIA_format de dimax i autors_suport_producte_i18n de COCO en Format_Recurs y por lo tanto desparece el suport_producte de coco
+id_comentario: 6 v_recurs.Idioma_Recurs de dimax i autors_suport_idioma_i18n de COCO en Idioma_Recurs y por lo tanto desparece el suport_idioma de coco
+id_comentario: 8 v_recurs.data_creacio de dimax i data_tancament_real de COCO en creation_date y por lo tanto desparece el data_tancament_real de coco
+***/ 

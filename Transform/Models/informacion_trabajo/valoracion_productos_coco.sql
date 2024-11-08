@@ -265,26 +265,27 @@ on autors_producte.fk_suport_producte_suport_id = autors_suport_producte_i18n.fk
             
 group by 1  having count(*) > 1
 
-
-/*** RECURSOS ***/
+---########################################################################################################################################################################
+/*** RECURSOS ***/ -- Count diferent values in inner joins: 55k > 51k > 35k > 35k
+---########################################################################################################################################################################
 select  *
-from db_uoc_prod.stg_dadesra.autors_producte
+from db_uoc_prod.stg_dadesra.autors_producte -- 55,610 
 
 inner join db_uoc_prod.stg_dadesra.autors_suport_producte_i18n 
 on autors_producte.fk_suport_producte_suport_id = autors_suport_producte_i18n.fk_suport_producte_suport_id -- vs 197397 tipo de productos  
             and autors_suport_producte_i18n.idioma = 'CAT'  -- 51568 
 
-        
-        inner join db_uoc_prod.stg_dadesra.autors_tipus_tramesa_i18n
+        -- valores no informados: Francesc confirma valores antiguos que pueden no estar informados base de datos 
+        left join db_uoc_prod.stg_dadesra.autors_tipus_tramesa_i18n
             on autors_producte.fk_tipus_tramesa_tipus_tra__id = autors_tipus_tramesa_i18n.fk_tipus_tramesa_tipus_tra__id
-            and autors_tipus_tramesa_i18n.idioma = 'CAT' -- no duplicates  35,257
+            and autors_tipus_tramesa_i18n.idioma = 'CAT' -- no duplicates  35,257 --> convertir a left 
             
-        inner join db_uoc_prod.stg_dadesra.autors_idioma_producte_i18n
+        left join db_uoc_prod.stg_dadesra.autors_idioma_producte_i18n
             on autors_producte.fk_idioma_producte_idioma_id = autors_idioma_producte_i18n.fk_idioma_producte_idioma___id
-            and autors_idioma_producte_i18n.idioma = 'CAT'  -- 35,238 
+            and autors_idioma_producte_i18n.idioma = 'CAT'  -- 35,238 --> convertir a left : 51,568 vs 51,546
 
 
-
+---########################################################################################################################################################################
 
 select * from  db_uoc_prod.stg_dadesra.autors_suport_producte_i18n 
 
@@ -314,7 +315,6 @@ Tramesa postal
 
 select * from db_uoc_prod.stg_dadesra.autors_idioma_producte_i18n
 /*
-
 alemán
 alemany
 chino
