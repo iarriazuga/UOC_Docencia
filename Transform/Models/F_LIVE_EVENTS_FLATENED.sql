@@ -1,4 +1,17 @@
-CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED AS
+
+-- -- #################################################################################################
+-- -- #################################################################################################
+-- -- FACT_DOCENCIA?
+-- -- #################################################################################################
+-- -- #################################################################################################
+/***
+Reutilizar tables de docencia
+- fact docencia : semestre + asignatura + estudiante ( posible aula )
+- nivel asignatura / docencia / semestre --> nivel estudiante 
+6M historica
+
+*/
+CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED AS 
 with aux as (
 select 
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".subjectCode')::string   || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   as ID_ASIGNATURA_RECURS,  -- material id
@@ -48,7 +61,55 @@ and ID_ASIGNATURA_RECURS is not null
 and ID_CODI_RECURS is not null  
 ;
 
--- select * from  DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED;
+
+-- live events:  
+-- 
+
+-- select * from  DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED;  -- 8,741,384
 -- drop table DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED
 
 
+ /**
+ 
+elink : ver todos los clicks de todos los canales noticias 
+campus virtual : ( nivel dia --> convertir semestre )  
+- grupos debate 
+- groups recursos 
+
+    - elink: consultar como traer para eventos 
+
+
+*/
+
+
+
+/***
+
+-- 
+FACTS 
+* Uso
+* que hay en cada semestre 
+
+DIMENSIONES
+- Catalogo 
+- Asignatura
+- Semestre --> calendario 
+
+FRANCESC 2 
+ver si los alumnos acceden a los recursos  --> 1 ( cumple con la events)
+
+ver recursos se asignan semestralmente a las asignaturas  -->  ( dim / )  -->  DADES_ACADEMICAS -->  ( aplanada )
+
+
+
+semestre 24: 
+dim catalog : --> todos los recursos , --> te faltaria semestre para la asignatura
+dades_academiques: asignaturas , alumno ,semestre , recurso 
+
+recursos que tienes -->  matematicas ( )
+
+    GET_PATH(JSON, 'data[0]:object.type')::string as object_type,
+    string as material_id,
+
+
+*/

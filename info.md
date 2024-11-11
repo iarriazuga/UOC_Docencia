@@ -1,7 +1,7 @@
 /*
 Escribe un correo de forma profesional y humilde contando lo siguientes puntos: 
 
-1 ) has completado una version inicial de la tabla   dim_recursos_aprenentatge  = dim_catalog
+1 ) has completado una version inicial de la tabla   dim_recursos_aprenentatge  = dim_cataleg
 2 ) has completado una version inicial de la tabla F_LIVE_EVENTS_FLATENED 
 3) No puedes crear ningun elemento con los permisos de Roles disponibles:
     R_MOD_PROD_STG_DADESRA  

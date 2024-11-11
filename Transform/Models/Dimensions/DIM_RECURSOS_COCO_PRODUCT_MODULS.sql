@@ -3,6 +3,7 @@
 -- -- RECURSOS_APRENDIZATJE
 -- -- #################################################################################################
 -- -- #################################################################################################
+-- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
 CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
 With productos_aux as ( 
         select                               
@@ -37,7 +38,7 @@ With productos_aux as (
             'NA' AS MODUL_ORIGEN_ID,                                -- Id del mòdul que original (Campo específico de módulo)
             'NA' AS OBRA_ID,                                        -- Id de la obra (Campo específico de módulo)
  
- 
+ select * 
         from db_uoc_prod.stg_dadesra.autors_producte
             
         inner join db_uoc_prod.stg_dadesra.autors_suport_producte_i18n
@@ -69,7 +70,7 @@ With productos_aux as (
         coalesce(autors_modul.versio_creacio_id, autors_producte.versio_creacio_id) as versio_creacio_id,                       -- COCO: Id del pla de publicació en que es va crear
 
         -- revisar 
-        coalesce(autors_modul.PRODUCTE_CREACIO_ID, autors_producte.PRODUCTE_CREACIO_ID)  as PRODUCTE_CREACIO_ID,                --  (Campo a recuperar de PRODUCTO) Producto padre - fk de producte
+        autors_modul.PRODUCTE_CREACIO_ID  as PRODUCTE_CREACIO_ID,                                                               --  (Campo a recuperar de PRODUCTO) Producto padre - fk de producte
         autors_producte.producte_origen_id,                                                                                     -- COCO: Id del producte origen
         autors_producte.url as url_idioma_recurs,                                                                               -- url_idioma_recurs* : NO VALID (Campo a recuperar de PRODUCTO)                                                  
         autors_producte.url as url,                                                                                             -- COCO: Url del Producte
@@ -96,11 +97,13 @@ With productos_aux as (
 
 )
 
+
+
 select * from modulos_aux -- 51,568 
 union all
 select * from productos_aux --60,775
  
-
+;
 
 /*
 --#################################################################################################
@@ -147,11 +150,3 @@ WHERE (codi_recurs, source_recurs) IN (
 
 -- Step 3: Drop the temporary table after use
 DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP;
-
-
-
--- select * from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where codi_recurs = '145195' -- idioma  catalan , recurso = web 
--- select * from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where codi_recurs = '145193' 
-
--- modulo : 145195 
--- producto 145193 

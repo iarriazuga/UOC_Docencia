@@ -33,6 +33,8 @@ select
     -- SUBSTRING(db_uoc_prod.stg_dadesra.dimax_item_dimax.titol, CHARINDEX(':PV', db_uoc_prod.stg_dadesra.dimax_item_dimax.titol)  + 3) AS semester,
 
  
+
+
     'DIMAX' AS font 
  
 from db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400

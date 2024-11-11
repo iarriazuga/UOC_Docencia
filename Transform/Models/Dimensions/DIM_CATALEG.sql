@@ -5,8 +5,9 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
---  DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALOG
-CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALOG AS -- DDP_DOCENCIA  vs  DDP_DADESRA 
+--  DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG
+
+CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG AS -- DDP_DOCENCIA  vs  DDP_DADESRA 
 With dim_coco_productes_moduls as ( 
     
     select
@@ -24,7 +25,7 @@ With dim_coco_productes_moduls as (
         , '' AS LLICENCIA_BIBLIOTECA
 
 
-        , BAIXA AS WAIT_RECURS -- comentar con xabi 
+        , BAIXA AS WAIT_RECURS -- comentar con xabi : no se visualiza ( similar a ocultar) para no romper integridad no se muestra en--> establecer el nombre que Francesc nos pase 
         
         -- id_comentario: 6 v_recurs.Idioma_Recurs de dimax i autors_suport_idioma_i18n de COCO en Idioma_Recurs y por lo tanto desparece el suport_idioma de coco
         , descripcio_idioma_recurs AS IDIOMA_RECURS -- Options dimax: en / es / ca
@@ -127,7 +128,7 @@ dimax as (
                     ,iff(LLICENCIA_biblioteca = 'S','SUBS', '')
                     )
                 )
-        ) as TIPUS_GESTIO_RECURS
+        ) as TIPUS_GESTIO_RECURS --ND 
         
         , DESPESA_VARIABLE_RECURS
         , CREATION_DATE  
@@ -149,11 +150,41 @@ dimax as (
         , '' AS URL_IDIOMA_RECURS
  
 
-    from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax  
+    from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax   
+    -- dimax_v_recurs  -- original que viene de la aplicacion 
+    -- select * from db_uoc_prod.stg_dadesra.dimax_v_recurs
+
+    /*
+    
+    He visto hay casos que no hay ningún tipo de licencia y necessitaria que el campo tipus_gesió_recurs tenga un ND si no hay datos. Pongo el sql relacionado
+iff(dimax_v_recurs.lpc = 'S','DRETS',
+    iff(dimax_v_recurs.lgc = 'S','DRETS',
+        iff(dimax_v_recurs.altres = 'S','DRETS',
+            iff(dimax_v_recurs.biblioteca = 'S','SUBS', '')))) as tipus_gestio_recurs 
+
+
+from db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400
+    
+    left join db_uoc_prod.stg_dadesra.dimax_item_dimax on db_uoc_prod.stg_dadesra.dimax_resofite_path.node_recurs = db_uoc_prod.stg_dadesra.dimax_item_dimax.id -- 17303400
+    left join db_uoc_prod.stg_dadesra.dimax_v_recurs on db_uoc_prod.stg_dadesra.dimax_resofite_path.node_cami = db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs -- 17303400 
+    left join db_uoc_prod.stg_dadesra.dimax_recurs_info_extra on db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs = db_uoc_prod.stg_dadesra.dimax_recurs_info_extra.id_recurs -- 17303400
+
+SELECT 
+    COLUMN_NAME
+FROM 
+    <NOMBRE_BASE_DATOS>.INFORMATION_SCHEMA.COLUMNS
+WHERE 
+    TABLE_NAME = '<NOMBRE_TABLA>'
+    AND TABLE_SCHEMA = '<NOMBRE_ESQUEMA>'
+ORDER BY 
+    COLUMN_NAME ASC;
+
+
+    */
  
 ) 
 
- 
+
  
 select * from dim_coco_productes_moduls
 
@@ -173,3 +204,24 @@ id_comentario: 5 LLICENCIA_format de dimax i autors_suport_producte_i18n de COCO
 id_comentario: 6 v_recurs.Idioma_Recurs de dimax i autors_suport_idioma_i18n de COCO en Idioma_Recurs y por lo tanto desparece el suport_idioma de coco
 id_comentario: 8 v_recurs.data_creacio de dimax i data_tancament_real de COCO en creation_date y por lo tanto desparece el data_tancament_real de coco
 ***/ 
+
+
+
+
+
+
+
+/***
+
+Ver si en docencia han completado los datos: 
+
+DADES_ACADEMIQUES	Necesito el estudio	Necesito saber de quien depende la asignatura en el semestre correspondiente. Estudios és "Economia i Empresa", "Dret i Ciències Polítiques"
+DADES_ACADEMIQUES	Necesito el porfesor responsable (PRA)	Necesesito saber el professor responsable de la asignatura
+DADES_ACADEMIQUES	Necesito el número de martículados en la asignatura/semestre	Necesito el número de matriculados para poder tener el % de uso
+
+
+profesores pueden cambiar
+modelo de datos? 
+
+
+ */
