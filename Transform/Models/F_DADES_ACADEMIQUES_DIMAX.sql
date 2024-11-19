@@ -14,18 +14,18 @@ Relacionar tablas:
 */
 
 
--- CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_DIMAX_DADES_ACADEMIQUES AS  -- DDP_DOCENCIA
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX AS  -- DDP_DOCENCIA
 
-with aux as ( 
-select 
+with aux AS ( 
+SELECT 
     db_uoc_prod.stg_dadesra.dimax_item_dimax.cami_node,
     db_uoc_prod.stg_dadesra.dimax_resofite_path.id_resource,
     db_uoc_prod.stg_dadesra.dimax_resofite_path.node_cami,
     db_uoc_prod.stg_dadesra.dimax_resofite_path.node_recurs,
     -- db_uoc_prod.stg_dadesra.dimax_resofite_path.ordre,
     db_uoc_prod.stg_dadesra.dimax_item_dimax.titol,
-    db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs as id_recurs2,
-    db_uoc_prod.stg_dadesra.dimax_v_recurs.titol as titol_resource,
+    db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs AS id_recurs2,
+    db_uoc_prod.stg_dadesra.dimax_v_recurs.titol AS titol_resource,
     SUBSTR(db_uoc_prod.stg_dadesra.dimax_item_dimax.titol, 0, 6) AS assigntura_codi,
 
     CAST(YEAR(db_uoc_prod.stg_dadesra.dimax_item_dimax.data) AS VARCHAR(4)) ||  CASE WHEN MONTH(db_uoc_prod.stg_dadesra.dimax_item_dimax.data) <= 6 THEN '1' ELSE '2' END AS SEMESTRE, --- revisar 
@@ -37,7 +37,7 @@ select
 
     'DIMAX' AS font 
  
-from db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400
+FROM db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400
     
     left join db_uoc_prod.stg_dadesra.dimax_item_dimax on db_uoc_prod.stg_dadesra.dimax_resofite_path.node_recurs = db_uoc_prod.stg_dadesra.dimax_item_dimax.id -- 17303400
     left join db_uoc_prod.stg_dadesra.dimax_v_recurs on db_uoc_prod.stg_dadesra.dimax_resofite_path.node_cami = db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs -- 17303400 
@@ -49,8 +49,8 @@ and length( cami_node ) >=  25
 
 ) , 
 
-asignaturas as ( 
-    select distinct  
+asignaturas AS ( 
+    SELECT distinct  
         CAMI_NODE,
         -- ID_RESOURCE, 
         -- NODE_CAMI, 
@@ -58,43 +58,59 @@ asignaturas as (
         ASSIGNTURA_CODI, 
         SEMESTRE, 
         FONT  
-    from aux a1 -- 3M
+    FROM aux a1 -- 3M
     where 1=1
     and length( cami_node ) =  25
-) , 
+) 
 
-resources  as ( 
-    select distinct  
+,  resources  AS ( 
+    SELECT distinct  
         CAMI_NODE,
         ID_RESOURCE, 
         NODE_CAMI, 
         NODE_RECURS,
-        ASSIGNTURA_CODI as nombre_resource,   
+        ASSIGNTURA_CODI AS nombre_resource,   
         SEMESTRE, 
         FONT, 
         titol_resource, 
         id_recurs2 -- mucho renombre en el titulo de las asignaturas  3.3M  vs 
        
-    from aux a1  
+    FROM aux a1  
     where 1=1
     and length( cami_node )>  25
 )   
 
 
--- select * from asignaturas -- 265.9K vs ID_RESOURCE: 617.3K vs NODE_CAMI & NODE_RECURS : 3.3M  vs NODE_CAMI: trae muchos duplicados 
--- select distinct right(resources.cami_node, 25) from  resources  -- 308.8K asignaturas vs  265.9K in asignatura 
+-- SELECT * FROM asignaturas -- 265.9K vs ID_RESOURCE: 617.3K vs NODE_CAMI & NODE_RECURS : 3.3M  vs NODE_CAMI: trae muchos duplicados 
+-- SELECT distinct right(resources.cami_node, 25) FROM  resources  -- 308.8K asignaturas vs  265.9K in asignatura 
 
  
-select distinct 
-    ASSIGNTURA_CODI
-    , asignaturas.semestre
+SELECT distinct 
+    resources.semestre
+    , resources.ID_RESOURCE
+    , resources.titol_resource   
+    , ASSIGNTURA_CODI
+    , asignaturas.semestre AS semestre_asignatura
 
-from resources --  6,277,408 vs  6,277,242
+FROM resources --  6,277,408 vs  6,277,242
 
-inner join asignaturas on 1=1 
-    and right(resources.cami_node, 25) = asignaturas.cami_node --217.6M --> created with 3.3M  vs  265.9K = 5,7M --> asignaturas mantenemos 
-    -- and asignaturas.semestre = resources.semestre
+inner join asignaturas 
+    on 1=1 
+        and right(resources.cami_node, 25) = asignaturas.cami_node 
+        --217.6M --> created with 3.3M  vs  265.9K = 5,7M --> asignaturas mantenemos 
+        -- and asignaturas.semestre = resources.semestre
 
-where   id_recurs2 is not null 
+where  id_recurs2 is not null 
 -- and resources.SEMESTRE >= 20221
  
+-- SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX  --- 
+
+/*
+
+    asignatura
+    , semestre_id
+    , codi_producto_coco
+    , titulo_prod_coco
+    , plan_estudios_base
+
+*/

@@ -32,19 +32,19 @@
 
 
 
-    from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax   
+    FROM db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax   
     -- dimax_v_recurs  -- original que viene de la aplicacion 
-    -- select * from db_uoc_prod.stg_dadesra.dimax_v_recurs
+    -- SELECT * FROM db_uoc_prod.stg_dadesra.dimax_v_recurs
  
     
     He visto hay casos que no hay ningún tipo de licencia y necessitaria que el campo tipus_gesió_recurs tenga un ND si no hay datos. Pongo el sql relacionado
 iff(dimax_v_recurs.lpc = 'S','DRETS',
     iff(dimax_v_recurs.lgc = 'S','DRETS',
         iff(dimax_v_recurs.altres = 'S','DRETS',
-            iff(dimax_v_recurs.biblioteca = 'S','SUBS', '')))) as tipus_gestio_recurs 
+            iff(dimax_v_recurs.biblioteca = 'S','SUBS', '')))) AS tipus_gestio_recurs 
 
 
-from db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400
+FROM db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400
     
     left join db_uoc_prod.stg_dadesra.dimax_item_dimax on db_uoc_prod.stg_dadesra.dimax_resofite_path.node_recurs = db_uoc_prod.stg_dadesra.dimax_item_dimax.id -- 17303400
     left join db_uoc_prod.stg_dadesra.dimax_v_recurs on db_uoc_prod.stg_dadesra.dimax_resofite_path.node_cami = db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs -- 17303400 

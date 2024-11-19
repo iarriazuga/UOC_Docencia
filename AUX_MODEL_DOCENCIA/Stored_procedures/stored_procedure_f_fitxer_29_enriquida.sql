@@ -1,14 +1,14 @@
 -- Creacio de la sequencia que donara peu a identificador unic de la taula.
--- describe table DB_UOC_PROD.DDP_UNEIX.fitxer29_final_final
+-- describe table DB_UOC_PROD.DDP_UNEIX.fitxer29_enriquida_ENRIQUIDA
 
--- select * from DB_UOC_PROD.DDP_UNEIX.fitxer29_final
+-- SELECT * FROM DB_UOC_PROD.DDP_UNEIX.fitxer29_enriquida_ENRIQUIDA
 
--- create or replace sequence DB_UOC_PROD.DDP_UNEIX.fitxer29_final_ID_TEST start 1 increment 1;  -- not in a view 
+-- create or replace sequence DB_UOC_PROD.DDP_UNEIX.fitxer29_enriquida_ID_TEST start 1 increment 1;  -- not in a view 
 
 -- Creacio de la taula fitxer29 amb les descripcions en els idiomes que es disponibilitzan i els atributs particulars.
 -- Pendent de identificar nous requeriments a incloure a la dimensio.
 
-create or replace table db_uoc_prod.ddp_uneix.fitxer29_final(
+create or replace table db_uoc_prod.ddp_uneix.fitxer29_enriquida(
         IDP NUMBER(38,0), 
         CODIUNIVERSITAT VARCHAR(10),
         CURSACADEMIC VARCHAR(10),
@@ -35,11 +35,11 @@ create or replace table db_uoc_prod.ddp_uneix.fitxer29_final(
  
 
 -- Creacio del procediment de carrega i/o actualització de dades programable
-create or replace procedure DB_UOC_PROD.DDP_UNEIX.fitxer29_final_LOADS()  --("ANY_ACADEMIC" VARCHAR(16777216)) 
+create or replace procedure DB_UOC_PROD.DDP_UNEIX.fitxer29_ENRIQUIDA_LOADS()  --("ANY_ACADEMIC" VARCHAR(16777216)) 
     returns varchar(16777216)
     language SQL
-    execute as caller
-    as 
+    execute AS caller
+    AS 
 begin
     
     let start_time timestamp_ntz:= convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz);
@@ -51,9 +51,9 @@ begin
         */
         
         
-        merge into db_uoc_prod.ddp_uneix.fitxer29_final
+        merge into db_uoc_prod.ddp_uneix.fitxer29_enriquida
         using (
-            select      
+            SELECT      
                 '0' AS IDP,
                 '0' AS CODIUNIVERSITAT,
                 '0' AS CURSACADEMIC,
@@ -77,8 +77,8 @@ begin
         
         
                     
-        ) as fitxer29_final_aux
-        on db_uoc_prod.ddp_uneix.fitxer29_final.IDP = fitxer29_final_aux.IDP
+        ) AS fitxer29_enriquida_aux
+        on db_uoc_prod.ddp_uneix.fitxer29_enriquida.IDP = fitxer29_enriquida_aux.IDP
         
          
         when matched
@@ -132,82 +132,63 @@ begin
                     )
         
 ;
+-- /*
+-- -- Realización del merge desde la tabla origen STG y posterior PIVOT a la tabla de dim_pregunta
+--*/
 
-/*
--- -- Realización del merge desde la tabla origen fitxer_29 de dim_persona : 
--- transient :  normal pero solo un dia backup y no , fuera de timetravel --> 7 dias para recuperar anteriores como transient
--- crear temporary --> drop despues al cerrar sesion 
-buscar procedimientos 
-no hace falta merge + truncado e insert as select + revisar procesos 
-
-
-
-*/
-merge into ddp_uneix.fitxer29_final ---trunca
+merge into ddp_uneix.fitxer29_enriquida
         using (
-            SELECT 
+            SELECT  
                 vf29p.IDP AS IDP,
                 '054' AS CODIUNIVERSITAT,
                 '22-23' AS CURSACADEMIC,
-                vf29p.CODICURSCATALA AS CODICURSCATALA,  
-                COALESCE(vf29p.CODINIVELLCATALA, 'ZZ') AS CODINIVELLCATALA, 
-                
-                -- duda si dim_persona: Existe end dim_persona y fitxer29 ---> cambiar a dim_persona: hibai e inigo 29_10_2024
-                RPAD(vf29p.NIF, 10, '') AS NIF, -- cambio 
-                vf29p.APTECURS AS APTECURS,
-                RPAD(vf29p.NIFAMPLIAT, 20, '') AS NIFAMPLIAT,
-                
-                LPAD(TO_VARCHAR(vf29p.CODISEQUENCIADOR), 2, '0') AS CODISEQUENCIADOR,
-
-                -- Elements dim persona
+                vf29p.nivell AS CODICURSCATALA,  
+                COALESCE(lk_nivell_cat.COD_NIVELL_CAT, 'ZZ') AS CODINIVELLCATALA,
+                RPAD(vf29p.dni, 10, '') AS NIF,
+                vf29p.ind_supera AS APTECURS,
+                RPAD(vf29p.dni, 20, '') AS NIFAMPLIAT,
+                LPAD(TO_VARCHAR(vf29p.n), 2, '0') AS CODISEQUENCIADOR,
                 '1' AS TIPUSALUMNE,
                 '' AS ALUMNEMOBILITAT, 
-                RPAD(TO_VARCHAR(vf29p.IDENTIFICADORALUMNE), 30, '') AS IDENTIFICADORALUMNE,
-                
-                dim_pers.NOMBRE_UNEIX_20 AS NOMESTUDIANT,
-                dim_pers.APELLIDO1_UNEIX_20 AS PRIMERCOGNOM,
-                dim_pers.APELLIDO2_UNEIX_20 AS SEGONCOGNOM,
-                
-                LPAD(vf29p.CODIGRUP, 10, '') AS CODIGRUP,
-                
+                RPAD(TO_VARCHAR(vf29p.idp), 30, '') AS IDENTIFICADORALUMNE,
+                RPAD('', 15, '') AS NOMESTUDIANT,
+                RPAD('', 20, '') AS PRIMERCOGNOM,
+                RPAD('', 20, '') AS SEGONCOGNOM,
+                LPAD(vf29p.codigrup, 10, '') AS CODIGRUP,
                 '4' AS MODALITATCURS,
                 '' AS APTEEXAMEN,  
                 '' AS ACREDITACIO,
-                -- DIM_PERSONA.NIF_UNEIX_LONG10
-                FECHA_CARREGA AS FECHA_CARREGA -- current_timestamp() for timestamp if needed
- 
+                NULL AS FECHA_CARREGA -- current_timestamp() for timestamp if needed
+                
             FROM
-                db_uoc_prod.ddp_uneix.fitxer29_enriquida vf29p
- 
- -- select * from DB_UOC_PROD.DD_OD.DIM_PERSONA
+                DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE vf29p
+            LEFT JOIN DDP_UNEIX.LK_NIVELL_CATALA lk_nivell_cat 
+                ON lk_nivell_cat.COD_NIVELL = vf29p.nivell
                 
-            LEFT JOIN DB_UOC_PROD.DD_OD.DIM_PERSONA dim_pers -- ADD: DB_UOC_PROD.DD_OD.DIM_PERSONA
-                ON dim_pers.IDP = vf29p.IDP
-                
-    )  as fitxer29_final_aux
-    on db_uoc_prod.ddp_uneix.fitxer29_final.IDP = fitxer29_final_aux.IDP  --- corrected here
+    )  AS fitxer29_enriquida_aux
+    on db_uoc_prod.ddp_uneix.fitxer29_enriquida.IDP = fitxer29_enriquida_aux.IDP  --- corrected here
  
     when matched then 
         update set 
-            IDP = fitxer29_final_aux.IDP,
-            CODIUNIVERSITAT = fitxer29_final_aux.CODIUNIVERSITAT,
-            CURSACADEMIC = fitxer29_final_aux.CURSACADEMIC,
-            CODICURSCATALA = fitxer29_final_aux.CODICURSCATALA,
-            CODINIVELLCATALA = fitxer29_final_aux.CODINIVELLCATALA,
-            NIF = fitxer29_final_aux.NIF,
-            APTECURS = fitxer29_final_aux.APTECURS,
-            NIFAMPLIAT = fitxer29_final_aux.NIFAMPLIAT,
-            CODISEQUENCIADOR = fitxer29_final_aux.CODISEQUENCIADOR,
-            TIPUSALUMNE = fitxer29_final_aux.TIPUSALUMNE,
-            ALUMNEMOBILITAT = fitxer29_final_aux.ALUMNEMOBILITAT,
-            IDENTIFICADORALUMNE = fitxer29_final_aux.IDENTIFICADORALUMNE,
-            NOMESTUDIANT = fitxer29_final_aux.NOMESTUDIANT,
-            PRIMERCOGNOM = fitxer29_final_aux.PRIMERCOGNOM,
-            SEGONCOGNOM = fitxer29_final_aux.SEGONCOGNOM,
-            CODIGRUP = fitxer29_final_aux.CODIGRUP,
-            MODALITATCURS = fitxer29_final_aux.MODALITATCURS,
-            APTEEXAMEN = fitxer29_final_aux.APTEEXAMEN,
-            ACREDITACIO = fitxer29_final_aux.ACREDITACIO,
+            IDP = fitxer29_enriquida_aux.IDP,
+            CODIUNIVERSITAT = fitxer29_enriquida_aux.CODIUNIVERSITAT,
+            CURSACADEMIC = fitxer29_enriquida_aux.CURSACADEMIC,
+            CODICURSCATALA = fitxer29_enriquida_aux.CODICURSCATALA,
+            CODINIVELLCATALA = fitxer29_enriquida_aux.CODINIVELLCATALA,
+            NIF = fitxer29_enriquida_aux.NIF,
+            APTECURS = fitxer29_enriquida_aux.APTECURS,
+            NIFAMPLIAT = fitxer29_enriquida_aux.NIFAMPLIAT,
+            CODISEQUENCIADOR = fitxer29_enriquida_aux.CODISEQUENCIADOR,
+            TIPUSALUMNE = fitxer29_enriquida_aux.TIPUSALUMNE,
+            ALUMNEMOBILITAT = fitxer29_enriquida_aux.ALUMNEMOBILITAT,
+            IDENTIFICADORALUMNE = fitxer29_enriquida_aux.IDENTIFICADORALUMNE,
+            NOMESTUDIANT = fitxer29_enriquida_aux.NOMESTUDIANT,
+            PRIMERCOGNOM = fitxer29_enriquida_aux.PRIMERCOGNOM,
+            SEGONCOGNOM = fitxer29_enriquida_aux.SEGONCOGNOM,
+            CODIGRUP = fitxer29_enriquida_aux.CODIGRUP,
+            MODALITATCURS = fitxer29_enriquida_aux.MODALITATCURS,
+            APTEEXAMEN = fitxer29_enriquida_aux.APTEEXAMEN,
+            ACREDITACIO = fitxer29_enriquida_aux.ACREDITACIO,
             FECHA_CARREGA = null --  convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz)
 
     when not matched
@@ -234,25 +215,25 @@ merge into ddp_uneix.fitxer29_final ---trunca
                     FECHA_CARREGA
                 )
         values (
-                fitxer29_final_aux.IDP,
-                fitxer29_final_aux.CODIUNIVERSITAT,
-                fitxer29_final_aux.CURSACADEMIC,
-                fitxer29_final_aux.CODICURSCATALA,
-                fitxer29_final_aux.CODINIVELLCATALA,
-                fitxer29_final_aux.NIF,
-                fitxer29_final_aux.APTECURS,
-                fitxer29_final_aux.NIFAMPLIAT,
-                fitxer29_final_aux.CODISEQUENCIADOR,
-                fitxer29_final_aux.TIPUSALUMNE,
-                fitxer29_final_aux.ALUMNEMOBILITAT,
-                fitxer29_final_aux.IDENTIFICADORALUMNE,
-                fitxer29_final_aux.NOMESTUDIANT,
-                fitxer29_final_aux.PRIMERCOGNOM,
-                fitxer29_final_aux.SEGONCOGNOM,
-                fitxer29_final_aux.CODIGRUP,
-                fitxer29_final_aux.MODALITATCURS,
-                fitxer29_final_aux.APTEEXAMEN,
-                fitxer29_final_aux.ACREDITACIO,
+                fitxer29_enriquida_aux.IDP,
+                fitxer29_enriquida_aux.CODIUNIVERSITAT,
+                fitxer29_enriquida_aux.CURSACADEMIC,
+                fitxer29_enriquida_aux.CODICURSCATALA,
+                fitxer29_enriquida_aux.CODINIVELLCATALA,
+                fitxer29_enriquida_aux.NIF,
+                fitxer29_enriquida_aux.APTECURS,
+                fitxer29_enriquida_aux.NIFAMPLIAT,
+                fitxer29_enriquida_aux.CODISEQUENCIADOR,
+                fitxer29_enriquida_aux.TIPUSALUMNE,
+                fitxer29_enriquida_aux.ALUMNEMOBILITAT,
+                fitxer29_enriquida_aux.IDENTIFICADORALUMNE,
+                fitxer29_enriquida_aux.NOMESTUDIANT,
+                fitxer29_enriquida_aux.PRIMERCOGNOM,
+                fitxer29_enriquida_aux.SEGONCOGNOM,
+                fitxer29_enriquida_aux.CODIGRUP,
+                fitxer29_enriquida_aux.MODALITATCURS,
+                fitxer29_enriquida_aux.APTEEXAMEN,
+                fitxer29_enriquida_aux.ACREDITACIO,
                 null -- convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz)
 
             )
@@ -270,12 +251,12 @@ end
 
 
 -- Comanda per executar el procediment enmagatzemat al entorn.
-call DB_UOC_PROD.DDP_UNEIX.FITXER29_final_LOADS();
+call DB_UOC_PROD.DDP_UNEIX.FITXER29_ENRIQUIDA_LOADS();
 
-select 'Worksheet de Snowflake almacenado.';
+SELECT 'Worksheet de Snowflake almacenado.';
 
 
-select * from db_uoc_prod.ddp_uneix.fitxer29_final;
+SELECT * FROM db_uoc_prod.ddp_uneix.fitxer29_enriquida;
 
 
  

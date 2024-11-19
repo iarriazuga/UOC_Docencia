@@ -19,8 +19,8 @@ create or replace TABLE db_uoc_prod.dd_od.dim_aula (
 create or replace procedure db_uoc_prod.dd_od.dim_aula_loads()
     returns varchar(16777216)
     language SQL
-    execute as caller
-    as 
+    execute AS caller
+    AS 
     begin
     
     let start_time timestamp_ntz := convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz);
@@ -33,14 +33,14 @@ create or replace procedure db_uoc_prod.dd_od.dim_aula_loads()
 
 -- merge into db_uoc_prod.dd_od.dim_aula --inser registro 0
 -- using (
---         select 
---             '0' as ID_AULA_KEY, -- convert innto 
---             '0' as COD_ASIGNATURA,
---             0 as COD_AULA,
+--         SELECT 
+--             '0' AS ID_AULA_KEY, -- convert innto 
+--             '0' AS COD_ASIGNATURA,
+--             0 AS COD_AULA,
  
---             convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz) as CREATION_DATE,
---             convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz) as UPDATE_DATE
---     ) as dim_aula_rep 
+--             convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz) AS CREATION_DATE,
+--             convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz) AS UPDATE_DATE
+--     ) AS dim_aula_rep 
 --         on db_uoc_prod.dd_od.dim_aula.ID_AULA_KEY = dim_aula.ID_AULA_KEY
     
 --     when matched
@@ -68,14 +68,14 @@ create or replace procedure db_uoc_prod.dd_od.dim_aula_loads()
 
 merge into db_uoc_prod.dd_od.dim_aula
 using (
-        select
-            dim_aula_orig.COD_AULA || dim_aula_orig.COD_ASIGNATURA as ID_AULA_KEY, 
+        SELECT
+            dim_aula_orig.COD_AULA || dim_aula_orig.COD_ASIGNATURA AS ID_AULA_KEY, 
             dim_aula_orig.COD_ASIGNATURA,
             dim_aula_orig.COD_AULA,
-            dim_aula_orig.FECHA_CREACION as CREATION_DATE,
-            dim_aula_orig.TS_CARGA as UPDATE_DATE
-        from DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG dim_aula_orig
-    ) as dim_aula_orig
+            dim_aula_orig.FECHA_CREACION AS CREATION_DATE,
+            dim_aula_orig.TS_CARGA AS UPDATE_DATE
+        FROM DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG dim_aula_orig
+    ) AS dim_aula_orig
     on db_uoc_prod.dd_od.dim_aula.ID_AULA_KEY = dim_aula_orig.ID_AULA_KEY  --- corrected here
 when matched then 
     update set 
@@ -115,34 +115,34 @@ end
 -- Comanda per executar el procediment enmagatzemat al entorn.
 call db_uoc_prod.dd_od.dim_aula_loads();
 
-select 'Worksheet de Snowflake almacenado.';
+SELECT 'Worksheet de Snowflake almacenado.';
 
-select * from db_uoc_prod.dd_od.dim_aula;
+SELECT * FROM db_uoc_prod.dd_od.dim_aula;
 
 --############################################################################################################################################
 /**AUX_VALIDATION_CODE**/ 
 --############################################################################################################################################
 
--- with aux_aula as ( 
--- select  
+-- with aux_aula AS ( 
+-- SELECT  
 --     COD_AULA, 
 --     cod_asignatura, 
---     COD_AULA || cod_asignatura as ID_AULA_KEY, 
+--     COD_AULA || cod_asignatura AS ID_AULA_KEY, 
 --     count(*)
     
--- from DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG
+-- FROM DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG
 -- group by 1,2,3
 
 -- ) 
--- select count(*) from aux_aula;   --- 30179 
+-- SELECT count(*) FROM aux_aula;   --- 30179 
 
 /** related tables **/ 
--- select * from DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG
+-- SELECT * FROM DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG
 -- DB_UOC_PROD.STG_DOCENCIA.GAT_PLAN_ASIGNATURAS
 -- DB_UOC_PROD.STG_DOCENCIA.GAT_EXP_AULAS_ASIG_ESTUDIANTES
 
 
--- select * from DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG
+-- SELECT * FROM DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG
 
 -- create or replace TRANSIENT TABLE DB_UOC_PROD.STG_DOCENCIA.aux_aula (
 
@@ -151,6 +151,6 @@ select * from db_uoc_prod.dd_od.dim_aula;
 -- 	ID_AULA_KEY  VARCHAR(18),
 -- );
 
--- select * from STG_ENQUESTES.ENQUESTES2_UFI_ITERATIVA_INSTIT_ASIGN LIMIT 100;
+-- SELECT * FROM STG_ENQUESTES.ENQUESTES2_UFI_ITERATIVA_INSTIT_ASIGN LIMIT 100;
 
  

@@ -8,9 +8,9 @@
 --  DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG
 
 CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG AS -- DDP_DOCENCIA  vs  DDP_DADESRA 
-With dim_coco_productes_moduls as ( 
+With dim_coco_productes_moduls AS ( 
     
-    select
+    SELECT
         'COCO'|| '-' || CODI_RECURS AS ID_CODI_RECURS  -- no podemos poner source_recurs pq elementos NIU no distinge entre COCO_PROD y COCO_MOD        
         , CODI_RECURS
         , TITOL_RECURS
@@ -18,7 +18,7 @@ With dim_coco_productes_moduls as (
         , '' AS TIPUS_RECURS -- added: TFG, Exams, Articles (100+ elements)
         , source_recurs
 
-        -- Added: empty in fields from DIMAX
+        -- Added: empty in fields FROM DIMAX
         , '' AS LLICENCIA_LPC
         , '' AS LLICENCIA_LGC
         , '' AS LLICENCIA_ALTRES
@@ -30,7 +30,7 @@ With dim_coco_productes_moduls as (
         -- id_comentario: 6 v_recurs.Idioma_Recurs de dimax i autors_suport_idioma_i18n de COCO en Idioma_Recurs y por lo tanto desparece el suport_idioma de coco
         , descripcio_idioma_recurs AS IDIOMA_RECURS -- Options dimax: en / es / ca
 
-        , DESCRIPCIO_SUPORT_RECURS as FORMAT_RECURS  -- added: comentario francesc id_comentario: 5
+        , DESCRIPCIO_SUPORT_RECURS AS FORMAT_RECURS  -- added: comentario francesc id_comentario: 5
 
         -- not filled in DIMAX 
         , null AS DATA_INICI_RECURS
@@ -41,7 +41,7 @@ With dim_coco_productes_moduls as (
         , '' AS INDICADOR_PUBLIC_RECURS -- Options dimax: S / N
         , '' AS PUBLICAT_A_RECURS -- Options dimax: option of magazine of publication
         
-        -- dades from publication: magazine, journal, newspaper, etc
+        -- dades FROM publication: magazine, journal, newspaper, etc
         , '' AS ISBN_ISSN_RECURS
         , 0  AS PAGINA_INICI_RECURS
         , 0  AS PAGINA_FINAL_RECURS
@@ -54,7 +54,7 @@ With dim_coco_productes_moduls as (
 
         , '' AS DESPESA_VARIABLE_RECURS
         , null AS UPDATE_DATE
-        , DATA_TANCAMENT_REAL as CREATION_DATE -- id_comentario: 8 v_recurs.data_creacio de dimax i data_tancament_real de COCO en creation_date y por lo tanto desparece el data_tancament_real de coco
+        , DATA_TANCAMENT_REAL AS CREATION_DATE -- id_comentario: 8 v_recurs.data_creacio de dimax i data_tancament_real de COCO en creation_date y por lo tanto desparece el data_tancament_real de coco
         , PRODUCTE_CREACIO_ID
 
         -- not exist in DIMAX
@@ -73,14 +73,14 @@ With dim_coco_productes_moduls as (
         , URL_IDIOMA_RECURS
 
  
-    from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
+    FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
                    
 ), 
 
 -- CREATE TABLE DIMAX
-dimax as (
+dimax AS (
 
-    select
+    SELECT
     
         'DIMAX'|| '-'|| CODI_RECURS AS ID_CODI_RECURS
         , CODI_RECURS
@@ -128,7 +128,7 @@ dimax as (
                     ,iff(LLICENCIA_biblioteca = 'S','SUBS', '')
                     )
                 )
-        ) as TIPUS_GESTIO_RECURS --ND 
+        ) AS TIPUS_GESTIO_RECURS --ND 
         
         , DESPESA_VARIABLE_RECURS
         , CREATION_DATE  
@@ -150,9 +150,9 @@ dimax as (
         , '' AS URL_IDIOMA_RECURS
  
 
-    from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax   
+    FROM db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax   
     -- dimax_v_recurs  -- original que viene de la aplicacion 
-    -- select * from db_uoc_prod.stg_dadesra.dimax_v_recurs
+    -- SELECT * FROM db_uoc_prod.stg_dadesra.dimax_v_recurs
 
     /*
     
@@ -160,10 +160,10 @@ dimax as (
 iff(dimax_v_recurs.lpc = 'S','DRETS',
     iff(dimax_v_recurs.lgc = 'S','DRETS',
         iff(dimax_v_recurs.altres = 'S','DRETS',
-            iff(dimax_v_recurs.biblioteca = 'S','SUBS', '')))) as tipus_gestio_recurs 
+            iff(dimax_v_recurs.biblioteca = 'S','SUBS', '')))) AS tipus_gestio_recurs 
 
 
-from db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400
+FROM db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400
     
     left join db_uoc_prod.stg_dadesra.dimax_item_dimax on db_uoc_prod.stg_dadesra.dimax_resofite_path.node_recurs = db_uoc_prod.stg_dadesra.dimax_item_dimax.id -- 17303400
     left join db_uoc_prod.stg_dadesra.dimax_v_recurs on db_uoc_prod.stg_dadesra.dimax_resofite_path.node_cami = db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs -- 17303400 
@@ -186,11 +186,11 @@ ORDER BY
 
 
  
-select * from dim_coco_productes_moduls
+SELECT * FROM dim_coco_productes_moduls
 
 union all 
  
-select  * from dimax;
+SELECT  * FROM dimax;
 
 
 ---######################################################################################################################################################################## 

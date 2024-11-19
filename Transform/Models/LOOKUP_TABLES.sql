@@ -4,7 +4,7 @@ Generació del fitxer 29 aux_tables
 
 # PAS 1
 Creation and Insertion into DDP_UNEIX.LK_NIVELL_CATALA:
-    This table stores the classification of academic levels in the Catalan language, including fields such as the level code (COD_NIVELL), description (DS_NIVELL), and associated level category (COD_NIVELL_CAT).
+    This table stores the classification of academic levels in the Catalan language, including fields such AS the level code (COD_NIVELL), description (DS_NIVELL), and associated level category (COD_NIVELL_CAT).
     The insertion populates the table with predefined level values, mapping different academic stages to their corresponding codes and descriptions.
 
 # PAS 2
@@ -38,7 +38,7 @@ VALUES
     (  9, 'CE', 'Cursos especialitzats',     '00');
 
 
-select * from  DDP_UNEIX.LK_NIVELL_CATALA;
+SELECT * FROM  DDP_UNEIX.LK_NIVELL_CATALA;
 
 
 
@@ -69,7 +69,7 @@ VALUES
     (  9, 'B1', '00.183');
 
 
-select * from   DDP_UNEIX.LK_NIVELL_CATALA_ASSIGNATURA;
+SELECT * FROM   DDP_UNEIX.LK_NIVELL_CATALA_ASSIGNATURA;
 
 
 /***

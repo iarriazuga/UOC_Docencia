@@ -3,14 +3,14 @@
 ---########################################################################################################################################################################
 
 /***
--- select * from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where codi_recurs = '145195' -- idioma  catalan , recurso = web 
--- select * from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where codi_recurs = '145193' 
+-- SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where codi_recurs = '145195' -- idioma  catalan , recurso = web 
+-- SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where codi_recurs = '145193' 
 
 -- modulo : 145195 
 -- producto 145193 
 
-select source_recurs, count(*) 
-from DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG
+SELECT source_recurs, count(*) 
+FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG
 group by 1
 
 SOURCE_RECURS	COUNT(*)
@@ -21,8 +21,8 @@ COCO_PROD	        51561
 
 */
 
-select  source_recurs, FORMAT_RECURS,  count(*)  -- 4068: valores no null 
-from DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG
+SELECT  source_recurs, FORMAT_RECURS,  count(*)  -- 4068: valores no null 
+FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG
 
 where format_recurs is null     
 
@@ -30,28 +30,28 @@ group by 1,2
 
 
 // *** 
-select autors_modul.* 
-from db_uoc_prod.stg_dadesra.autors_modul autors_modul   --- 3,984 --no tienen padre 
+SELECT autors_modul.* 
+FROM db_uoc_prod.stg_dadesra.autors_modul autors_modul   --- 3,984 --no tienen padre 
 where producte_creacio_id is null  
 
 
 
 
 //*** CODIGOS QUE NO TIENEN PADRE  */
-with aux as ( 
+with aux AS ( 
 
-        select id as codi_recurs
-        from db_uoc_prod.stg_dadesra.autors_modul autors_modul  
+        SELECT id AS codi_recurs
+        FROM db_uoc_prod.stg_dadesra.autors_modul autors_modul  
         where producte_creacio_id is null  
 
 )
 
-select PRODUCTE_CREACIO_ID as padre, * -- source_recurs, FORMAT_RECURS,  count(*)  -- 4068: valores no null 
-from DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG  -- 84 
+SELECT PRODUCTE_CREACIO_ID AS padre, * -- source_recurs, FORMAT_RECURS,  count(*)  -- 4068: valores no null 
+FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG  -- 84 
 
 where 1=1 
     AND format_recurs is null  
-    and  codi_recurs not in ( select codi_recurs from aux )
+    and  codi_recurs not in ( SELECT codi_recurs FROM aux )
     AND ORIGEN_RECURS = 'PROPI'
 
 
@@ -67,8 +67,8 @@ PADRE	ID_CODI_RECURS	CODI_RECURS	TITOL_RECURS	ORIGEN_RECURS	TIPUS_RECURS	SOURCE_
 -- modulos con padres que no existen en productos
 -- modulos que no tienen asigando un padre 
 
-select * 
-from DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG 
+SELECT * 
+FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG 
 where  codi_recurs in (
 '243713',
 '243713',
@@ -78,7 +78,7 @@ where  codi_recurs in (
 
 )
 
-select *  
-from db_uoc_prod.stg_dadesra.autors_modul autors_modul  
+SELECT *  
+FROM db_uoc_prod.stg_dadesra.autors_modul autors_modul  
     left join productos_aux autors_producte on autors_producte.codi_recurs = autors_modul.PRODUCTE_CREACIO_ID 
 

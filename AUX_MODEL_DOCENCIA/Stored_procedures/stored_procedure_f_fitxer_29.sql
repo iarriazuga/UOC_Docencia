@@ -1,7 +1,7 @@
 -- Creacio de la sequencia que donara peu a identificador unic de la taula.
 -- describe table DB_UOC_PROD.DDP_UNEIX.fitxer29_valors_base
 
--- select * from DB_UOC_PROD.DDP_UNEIX.fitxer29_valors_base
+-- SELECT * FROM DB_UOC_PROD.DDP_UNEIX.fitxer29_valors_base
 
 create or replace sequence DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_ID_TEST start 1 increment 1;  -- not in a view 
 
@@ -28,14 +28,14 @@ create or replace TEMPORARY table DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE(
 
 
 
-select * from DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE;
+SELECT * FROM DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE;
 
 -- Creacio del procediment de carrega i/o actualització de dades programable
 create or replace procedure DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_LOADS()  --("ANY_ACADEMIC" VARCHAR(16777216)) 
     returns varchar(16777216)
     language SQL
-    execute as caller
-    as 
+    execute AS caller
+    AS 
     begin
     
     let start_time timestamp_ntz:= convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz);
@@ -48,7 +48,7 @@ create or replace procedure DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_LOADS()  
         
         merge into db_uoc_prod.DDP_UNEIX.FITXER29_VALORS_BASE
         using (
-            select      
+            SELECT      
             
                         0 AS IDP,
                         '0' AS ANY_ACADEMICO,
@@ -68,7 +68,7 @@ create or replace procedure DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_LOADS()  
         
         
                     
-        ) as fitxer29_base
+        ) AS fitxer29_base
         on db_uoc_prod.DDP_UNEIX.FITXER29_VALORS_BASE.IDP = fitxer29_base.IDP
         
          
@@ -115,8 +115,8 @@ create or replace procedure DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_LOADS()  
 */
 merge into db_uoc_prod.DDP_UNEIX.FITXER29_VALORS_BASE --inser registro 0
 using (
-        select 
-                e.idp as IDP,
+        SELECT 
+                e.idp AS IDP,
                 em.ANY_ACADEMICO,
                 d_sem.CURS_ACADEMIC,
                 dp.DNI, -- Revisar por tipo documento
@@ -134,8 +134,8 @@ using (
                 c.ind_supera,
                 '2' AS n,
                 eam.COD_AULA,
-                'null' as CodiGrup,
-                convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz)  as FECHA_CARREGA
+                'null' AS CodiGrup,
+                convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz)  AS FECHA_CARREGA
                 
             FROM  stg_mat.gat_expedientes e
                 JOIN STG_MAT.GAT_EXP_MATRICULAS em ON e.num_expediente = em.num_expediente
@@ -152,7 +152,7 @@ using (
                 AND eam.any_academico IN ('20221', '20222')
                 AND a.cod_asignatura IN ('00.132', '00.183', '00.028', '00.062', '00.065', '00.029', '00.098', '00.064', '00.202') --- change in the future  table 
                 
-    )  as fitxer29_base
+    )  AS fitxer29_base
     on db_uoc_prod.DDP_UNEIX.FITXER29_VALORS_BASE.IDP = fitxer29_base.IDP  --- corrected here
  
     when matched then 
@@ -223,10 +223,10 @@ end
 -- Comanda per executar el procediment enmagatzemat al entorn.
 call DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_LOADS();
 
-select 'Worksheet de Snowflake almacenado.';
+SELECT 'Worksheet de Snowflake almacenado.';
 
 
-select * from DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE;
+SELECT * FROM DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE;
 
 
  
