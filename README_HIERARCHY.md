@@ -1,15 +1,6 @@
-# UOC Docencia
+# Estructura del Proyecto
 
-Files used to transform the data insisde snwoflake 
-
- DB_UOC_PROD.DDP_DOCENCIA.DIM_RESPOSTA
-
-
-
-
-```plaintext
-
-    UOC_Docencia
+└── UOC_Docencia
     ├── .gitignore
     ├── AUX_MODEL_DOCENCIA
     │   ├── LOOKUP_TABLES.sql
@@ -66,6 +57,3 @@ Files used to transform the data insisde snwoflake
         ├── get_procedures_and_link.sql
         ├── get_tables_and_link.sql
         └── python_conector.py
-
-
-```

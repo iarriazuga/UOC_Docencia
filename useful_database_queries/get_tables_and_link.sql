@@ -1,21 +1,4 @@
-SELECT 
-
-    PROCEDURE_CATALOG || '.'||  PROCEDURE_SCHEMA || '.' ||  PROCEDURE_NAME AS PROCEDURE_FULL_PATH
-    , 'https://app.snowflake.com/walwzwz/uocbi/#/data/databases/' ||  PROCEDURE_CATALOG ||  '/schemas/' ||  PROCEDURE_SCHEMA ||  '/procedure/' ||  PROCEDURE_NAME || '()'  AS PROCEDURE_LINK
-    , PROCEDURE_SCHEMA
-    , PROCEDURE_NAME
-    , ARGUMENT_SIGNATURE
-    , PROCEDURE_DEFINITION
-
-FROM INFORMATION_SCHEMA.tables
-WHERE 1=1 
--- AND PROCEDURE_TYPE = 'PROCEDURE'
--- AND procedure_name like '%FACT_ENQUESTA_LOADS%'
-
-ORDER BY PROCEDURE_SCHEMA, PROCEDURE_NAME;
-
-
-
+-- EXTRACT VALUES FROM TABLE: 
 SELECT     
 
     table_catalog || '.'||  table_schema || '.' ||  table_name AS TABLE_FULL_PATH
@@ -27,30 +10,16 @@ WHERE 1=1
 ORDER BY table_catalog, table_schema, table_name;
 
 
-
-SELECT *
-FROM 
-    INFORMATION_SCHEMA.COLUMNS
-
-
-
-SELECT GET_DDL('TABLE', TABLE_CATALOG || '.' || TABLE_SCHEMA || '.' || TABLE_NAME) AS create_table_ddl
-FROM DB_UOC_PROD.INFORMATION_SCHEMA.TABLES
-WHERE TABLE_SCHEMA = 'DD_OD';
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----######################################## CREATE TABLE #########################################################
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SELECT GET_DDL('TABLE', 'DB_UOC_PROD.DD_OD.DIM_PERSONA') AS ceation  union all
+SELECT GET_DDL('TABLE', 'DB_UOC_PROD.DD_OD.DIM_PERSONA') AS ceation  
 
 
+/*
 
-WITH table_list AS (
-    SELECT TABLE_NAME
-    FROM DB_UOC_PROD.INFORMATION_SCHEMA.TABLES
-    WHERE TABLE_SCHEMA = 'DD_OD'
-)
-SELECT GET_DDL('TABLE', 'DB_UOC_PROD.DD_OD.' || TABLE_NAME) AS create_table_ddl
-FROM table_list;
-
-
-SELECT GET_DDL('TABLE', 'DB_UOC_PROD.DD_OD.DIM_PERSONA');
-
+NOT WORKING: 
 WITH table_list AS (
     SELECT 
     'DB_UOC_PROD.DD_OD.DIM_PERSONA' AS TABLE_NAME
@@ -60,26 +29,17 @@ WITH table_list AS (
 SELECT GET_DDL('TABLE', TABLE_NAME) AS create_table_ddl
 FROM table_list;
 
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+SELECT *
+FROM 
+    INFORMATION_SCHEMA.COLUMNS
 
+SELECT GET_DDL('TABLE', TABLE_CATALOG || '.' || TABLE_SCHEMA || '.' || TABLE_NAME) AS create_table_ddl
+FROM DB_UOC_PROD.INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'DD_OD';
 
-
-DECLARE v_table_name STRING;
-
-BEGIN
-    FOR v_table_name IN
-        (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'DD_OD')
-    DO
-        -- Example: Print the table name (or execute other logic)
-        LET ddl = GET_DDL('TABLE', 'DB_UOC_PROD.DD_OD.' || v_table_name)
-        RETURN ddl
-    END FOR
-END;
-
-
-SELECT GET_DDL('TABLE', 'DB_UOC_PROD.DD_OD.DIM_PERSONA') AS ceation  union all
-SELECT GET_DDL('TABLE', 'DB_UOC_PROD.DD_OD.DIM_PERSONA') AS ceation  
-
+*/
 
 
 -----#################################################################################################
