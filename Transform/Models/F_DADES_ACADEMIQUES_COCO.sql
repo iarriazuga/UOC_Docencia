@@ -1,29 +1,21 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- FACT_DOCENCIA?
+-- -- F_DADES_ACADEMIQUES_COCO
 -- -- #################################################################################################
 -- -- #################################################################################################
-/***
-Reutilizar tables de docencia
-- fact docencia : semestre + asignatura + estudiante ( posible aula )
-- nivel asignatura / docencia / semestre --> nivel estudiante 
-6M historica
-
-*/
-
  
 CREATE  OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO AS 
 with cross_semestre_asignatura AS (
     
     SELECT 
-        semestre.dim_semestre_key  AS semestre_id
-        , codi_final AS asignatura
+        semestre.DIM_SEMESTRE_KEY
+        , asignatura.codi_final AS DIM_ASSIGNATURA_KEY
      
     FROM DB_UOC_PROD.DD_OD.dim_semestre semestre
-    cross join   db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
+    cross join   db_uoc_prod.stg_dadesra.autors_element_formacio asignatura 
     
     where 1=1 
-        and semestre.dim_semestre_key is not null 
+        and semestre.DIM_SEMESTRE_KEY is not null 
         and asignatura.codi_final is not null
     
     order by 2,1
@@ -35,11 +27,10 @@ with cross_semestre_asignatura AS (
     SELECT 
     
         plan_publicacion.id || ' - ' || semestre.CODI_EXTERN AS plan_estudios_base
-        , asignatura.CODI_FINAL AS  titulo_asignatura
-        -- , productos_plan_publicacion.PRODUCTE_ID  AS codi_producto_coco
-        , coco_products.id  AS codi_producto_coco --- dimax 
-        , coco_products.TITOL AS titulo_prod_coco
-        ,  semestre.CODI_EXTERN AS semestre_extract
+        , asignatura.CODI_FINAL AS  DIM_ASSIGNATURA_KEY
+        , coco_products.id  AS ID_RESOURCE 
+        , coco_products.TITOL AS TITOL_RESOURCE
+        ,  semestre.CODI_EXTERN AS DIM_SEMESTRE_KEY
         , * 
      -- completar distinct de estas tablas --> SELECT * 
     FROM db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247,364 
@@ -63,19 +54,19 @@ with cross_semestre_asignatura AS (
 )
 ,  cross_semestres_informados AS ( 
         SELECT  
-            cross_semestre_asignatura.asignatura
-            , cross_semestre_asignatura.semestre_id
-            , semestres_informados.codi_producto_coco
-            , semestres_informados.titulo_prod_coco
+            cross_semestre_asignatura.DIM_ASSIGNATURA_KEY
+            , cross_semestre_asignatura.DIM_SEMESTRE_KEY
+            , semestres_informados.ID_RESOURCE
+            , semestres_informados.TITOL_RESOURCE
             , semestres_informados.plan_estudios_base
         
         FROM  cross_semestre_asignatura
         left join semestres_informados 
-            on cross_semestre_asignatura.asignatura = semestres_informados.titulo_asignatura
-                and cross_semestre_asignatura.semestre_id = semestres_informados.semestre_extract
+            on cross_semestre_asignatura.DIM_ASSIGNATURA_KEY = semestres_informados.DIM_ASSIGNATURA_KEY
+                and cross_semestre_asignatura.DIM_SEMESTRE_KEY = semestres_informados.DIM_SEMESTRE_KEY
         -- where  cross_semestre_asignatura.asignatura = 'B0.911'
         
-        order by  cross_semestre_asignatura.asignatura , cross_semestre_asignatura.semestre_id desc
+        order by  cross_semestre_asignatura.DIM_ASSIGNATURA_KEY , cross_semestre_asignatura.DIM_SEMESTRE_KEY desc
 
 ) 
  
@@ -83,119 +74,67 @@ with cross_semestre_asignatura AS (
 
 , informed_semesters AS (
     SELECT distinct --- 246,045
-        asignatura,
-        semestre_id AS informed_semestre_id,
-        codi_producto_coco,
-        titulo_prod_coco,
+        DIM_ASSIGNATURA_KEY,
+        DIM_SEMESTRE_KEY AS informed_DIM_SEMESTRE_KEY,
+        ID_RESOURCE,
+        TITOL_RESOURCE,
         plan_estudios_base
     FROM cross_semestres_informados
-    WHERE titulo_prod_coco IS NOT NULL
+    WHERE TITOL_RESOURCE IS NOT NULL
 )
 
 , ultimo_semestre_informado AS (
     SELECT
-        csi.asignatura,
-        csi.semestre_id,
+        csi.DIM_ASSIGNATURA_KEY,
+        csi.DIM_SEMESTRE_KEY,
         
         -- nulls created : no plan de estudios
-        csi.codi_producto_coco,
-        csi.titulo_prod_coco,
+        csi.ID_RESOURCE,
+        csi.TITOL_RESOURCE,
         
         csi.plan_estudios_base,
         CASE 
-            when csi.titulo_prod_coco is not null then NULL 
+            when csi.TITOL_RESOURCE is not null then NULL 
             else (
         
-                SELECT  max( is2.informed_semestre_id ) 
+                SELECT  max( is2.informed_DIM_SEMESTRE_KEY ) 
                 FROM informed_semesters is2
-                WHERE is2.asignatura = csi.asignatura AND is2.informed_semestre_id <= csi.semestre_id
+                WHERE is2.DIM_ASSIGNATURA_KEY = csi.DIM_ASSIGNATURA_KEY AND is2.informed_DIM_SEMESTRE_KEY <= csi.DIM_SEMESTRE_KEY
             )
         end AS last_informed_semestre
     FROM cross_semestres_informados csi
 )
 
-
-
-/*
-, ultimo_semestre_informado AS (
-    SELECT
-        csi.asignatura,
-        csi.semestre_id,
-        
-        -- nulls created 
-        max(coalesce( csi.codi_producto_coco, '-')) AS codi_producto_coco,
-        max(coalesce( csi.titulo_prod_coco, '-')) AS titulo_prod_coco,
-        max(coalesce( csi.plan_estudios_base, '-')) AS plan_estudios_base,
-        max( inf.informed_semestre_id ) AS last_informed_semestre
-        -- CASE 
-        --     when csi.titulo_prod_coco is not null then NULL 
-        --     else (
-        
-        --         SELECT  max( is2.informed_semestre_id ) 
-        --         FROM informed_semesters is2
-        --         WHERE is2.asignatura = csi.asignatura AND is2.informed_semestre_id <= csi.semestre_id
-        --     )
-        -- end AS last_informed_semestre
-
-    FROM cross_semestres_informados csi
-
-    left join informed_semesters inf 
-        on 1=1
-            and inf.asignatura = csi.asignatura 
-            and inf.informed_semestre_id <= csi.semestre_id -- 1,632,337 to  1,397,256
-
-    group by 1,2
- 
-
- */
 , propagacion_ultimo_semestre_informado AS (
     SELECT
-        swr.asignatura,
-        swr.semestre_id, -- fecha  : castear 
-        COALESCE(swr.codi_producto_coco, inf.codi_producto_coco) AS codi_producto_coco, -- recurso : dimax 
-        COALESCE(swr.titulo_prod_coco, inf.titulo_prod_coco) AS titulo_prod_coco,
+        swr.DIM_ASSIGNATURA_KEY,
+        swr.DIM_SEMESTRE_KEY, -- fecha  : castear 
+        COALESCE(swr.ID_RESOURCE, inf.ID_RESOURCE) AS ID_RESOURCE, -- recurso : dimax 
+        COALESCE(swr.TITOL_RESOURCE, inf.TITOL_RESOURCE) AS TITOL_RESOURCE,
         COALESCE(swr.plan_estudios_base, inf.plan_estudios_base) AS plan_estudios_base
         
     FROM ultimo_semestre_informado swr
     LEFT JOIN informed_semesters inf
-        ON swr.asignatura = inf.asignatura
-        AND swr.last_informed_semestre = inf.informed_semestre_id
+        ON swr.DIM_ASSIGNATURA_KEY = inf.DIM_ASSIGNATURA_KEY
+        AND swr.last_informed_semestre = inf.informed_DIM_SEMESTRE_KEY
 )
 
 SELECT 
-    
-    asignatura
-    , semestre_id
-    , codi_producto_coco
-    , titulo_prod_coco
-    , plan_estudios_base
+
+    propagacion_ultimo_semestre_informado.DIM_ASSIGNATURA_KEY
+    , propagacion_ultimo_semestre_informado.DIM_SEMESTRE_KEY
+    , 'COCO'|| '-'|| propagacion_ultimo_semestre_informado.ID_RESOURCE as DIM_RECURSOS_APRENENTATGE_KEY
+
+    , propagacion_ultimo_semestre_informado.ID_RESOURCE
+    , propagacion_ultimo_semestre_informado.TITOL_RESOURCE
+    , propagacion_ultimo_semestre_informado.plan_estudios_base
+ 
 FROM propagacion_ultimo_semestre_informado
 
-where 1=1 
-    -- and asignatura = 'B0.911' 
-    and codi_producto_coco is not null -- no tienen plan de estudios previo  --  2.9M vs  1.9M
+ -- no tienen plan de estudios asociado: crossjoin genera los campos inicio semestre, tomamos a partir del primer plan de estudios  
+where propagacion_ultimo_semestre_informado.ID_RESOURCE is not null --  2.9M vs  1.9M
+
+ORDER BY DIM_ASSIGNATURA_KEY, DIM_SEMESTRE_KEY;
 
 
-ORDER BY asignatura, semestre_id;
-
-
-
-/*
-
-dim_catalog --> todos los elementos de producto  --> no tiene asignatura 
-
-SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_CATALEG 
-
-
-SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO 
-
-SELECT 
-    asignatura
-    , semestre_id
-    , codi_producto_coco
-    , titulo_prod_coco
-    , plan_estudios_base
-FROM DB_UOC_PROD.DDP_DOCENCIA.DADES_ACADEMIQUES
-
-
-*/
+ 

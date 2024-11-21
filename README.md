@@ -47,9 +47,9 @@ Files used to transform the data insisde snwoflake
     ├── Transform
     │   ├── Models
     │   │   ├── Dimensions
-    │   │   │   ├── DIM_CATALEG.sql
+    │   │   │   ├── DIM_RECURSOS_APRENENTATGE.sql
     │   │   │   ├── DIM_RECURSOS_COCO_PRODUCT_MODULS.sql
-    │   │   │   ├── dim_cataleg_validaciones.sql
+    │   │   │   ├── DIM_RECURSOS_APRENENTATGE_validaciones.sql
     │   │   │   ├── francesc_base_dades_academitques_coco.sql
     │   │   │   └── validacion_11_11_2024.sql
     │   │   ├── F_DADES_ACADEMIQUES.sql

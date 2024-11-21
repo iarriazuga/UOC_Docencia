@@ -62,6 +62,17 @@ and ID_CODI_RECURS is not null
 ;
 
 
+
+/***
+ASignatura 
+tiene una fecha --> semestre 
+recurso  --> NIU  : NIU-123452 --> codigo solia ser de COCO --> esperar 
+
+
+alumno 
+
+
+ */
 -- live events:  
 -- 
 
@@ -111,5 +122,18 @@ recursos que tienes -->  matematicas ( )
     GET_PATH(JSON, 'data[0]:object.type')::string AS object_type,
     string AS material_id,
 
+
+
+
+
+
+
+
+
+
+FRANCESC :  NIU - > caliper 
+* herramienta que trata --> decir origen 
+* material_id / codi_id --> duplicados --> infromacion --> falso positivo
+* PBI: 
 
 */
