@@ -30,5 +30,14 @@ left join DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED_TRANSFORMED events   -
 ) 
 
 select * from auxiliar
-order by DIM_SEMESTRE_KEY desc 
+-- order by DIM_SEMESTRE_KEY desc 
+where  1=1
+-- and SOURCE is not null
+-- and DIM_ASSIGNATURA_KEY is not null  -- 35,313
+
+
+-- left join : 7,890,407
+-- inner join : 35,313 
+-- right join : 1,126,400
+-- left join  with not null :  35,313 
 

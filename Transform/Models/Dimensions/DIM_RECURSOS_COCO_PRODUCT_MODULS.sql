@@ -39,7 +39,7 @@ With productos_aux AS (
             'NA' AS OBRA_ID,                                        -- Id de la obra (Campo específico de módulo)
  
  SELECT * 
-        FROM db_uoc_prod.stg_dadesra.autors_producte
+        FROM db_uoc_prod.stg_dadesra.autors_producte 
             
         inner join db_uoc_prod.stg_dadesra.autors_suport_producte_i18n
             on autors_producte.fk_suport_producte_suport_id = autors_suport_producte_i18n.fk_suport_producte_suport_id

@@ -32,7 +32,7 @@ SELECT
         and ( 
             length( db_uoc_prod.stg_dadesra.dimax_item_dimax.cami_node ) >=  25
             or 
-            db_uoc_prod.stg_dadesra.dimax_item_dimax.titol like '%Root Node:PV%'
+            db_uoc_prod.stg_dadesra.dimax_item_dimax.titol like '%Root Node:PV%' --- eliminamos : Root Node:BIBLIO
         ) 
 
 ) , 
@@ -67,7 +67,7 @@ node_structure_asignaturas AS (
 )
 
 ,  node_structure_semestres  AS ( 
-    SELECT distinct  
+    SELECT distinct 
         CAMI_NODE
         , ID_RESOURCE  
         , NODE_CAMI  
@@ -77,7 +77,7 @@ node_structure_asignaturas AS (
         , REPLACE(titol, 'Root Node:PV', '') as DIM_SEMESTRE_KEY 
 
     FROM node_structure_aplanation   
-    where titol like '%Root Node:PV%'
+    where titol like '%Root Node:PV%' 
  
 )   
 
