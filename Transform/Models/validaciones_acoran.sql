@@ -13,7 +13,7 @@ where plan_estudios_base not in (
         ELSE plan_estudios_base
     END AS plan_estudios_base1
 
-    from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO 
+    from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO 
     WHERE plan_estudios_base IS NOT NULL AND plan_estudios_base <> ''
 
 )
@@ -394,7 +394,7 @@ where plan_estudios_base not in (
         ELSE plan_estudios_base
     END AS plan_estudios_base1
 
-    from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO 
+    from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO 
     WHERE plan_estudios_base IS NOT NULL AND plan_estudios_base <> ''
 
 )
@@ -421,7 +421,7 @@ where productos_plan_publicacion.versio_id not in (
         ELSE plan_estudios_base
     END AS plan_estudios_base1
 
-    from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO 
+    from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO 
     WHERE plan_estudios_base IS NOT NULL AND plan_estudios_base <> ''
 
 )
@@ -432,8 +432,8 @@ PLAN_ESTUDIOS_BASE
 
 --> cast as int ID_PRODUCTO
 */
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO --1,9
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX -- 3,5m
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO --1,9
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX -- 3,5m
 /*
 
 */
@@ -441,8 +441,8 @@ select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX -- 3,5m
 
 select recursos.id_asignatura, recursos.id_semestre, count(usos.*) 
 
-from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES recursos
-left join DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED usos 
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST recursos
+left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED usos 
     on usos.SUBJECTCODE  = recursos.id_asignatura
     and usos.semester = recursos.id_semestre
 
@@ -458,7 +458,7 @@ order by 3 asc
 
 select * 
 
-from DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED
 
 -- SEMESTRE PARA DIMAX
 
@@ -498,7 +498,7 @@ WHERE titol_test LIKE '%' || SEMESTRE || '%'; -- 3,272,054
 
 
  
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO --1,9
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO --1,9
 
 
 
@@ -506,26 +506,26 @@ select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO --1,9
 
 
 -- Counts de elementos
-select asignatura, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO group by 1  order by 2 desc -- 16.6K vs 13.0K  -- 3,600 asignaturas sin ningun recurso asignado 
+select asignatura, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1  order by 2 desc -- 16.6K vs 13.0K  -- 3,600 asignaturas sin ningun recurso asignado 
 
-select semestre_id, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO 
+select semestre_id, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO 
 where 
 group by 1  order by 1 desc -- 84
 
-select codi_producto_coco, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 53.5K  --> pocos
+select codi_producto_coco, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 53.5K  --> pocos
 
-select plan_estudios_base, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 42.0K vs 42.3K --> diferencia elementos --> 
+select plan_estudios_base, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 42.0K vs 42.3K --> diferencia elementos --> 
 
 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX_2 -- 5,975,410  vs 
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX_2 -- 5,975,410  vs 
 order by 2  desc
 
 where node_cami_recortado like '%3069598%'
 
 
 -- check values : 
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX_2 -- 5,975,410  vs 648,699 --> null values
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX_2 -- 5,975,410  vs 648,699 --> null values
 where semestre_nodos is null
 order by 2  desc
 
@@ -533,11 +533,11 @@ order by 2  desc
 
 -- check values : 
 select *  
-from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX_2 -- 5,975,410  vs 648,699 --> null values -->  41,111
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX_2 -- 5,975,410  vs 648,699 --> null values -->  41,111
 where semestre_nodos is null
 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX --5,975,410
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX --5,975,410
 where CAMI_NODE like '%;30043;'
 
 
@@ -585,18 +585,18 @@ where node_recurs = 30043
 
 
 --- #################################################
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX
 where cami_node like ';3079833;%'
 
 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX_2 where semestre is null 
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX_2 where semestre is null 
 
 
 select * from DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA
 limit 100 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO
 
 
 select * from DB_UOC_PROD.DD_OD.DIM_SEMESTRE
@@ -619,16 +619,16 @@ DB_UOC_PROD.stg_dadesra.autors_element_formacio asignatura
 
 -- tablas fact calculo: 
 select * --- DISTINCT OBJECT_ID
-FROM DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_EVENTS
+FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST_EVENTS
 
 
 -- tablas fact auxiliares: 
-DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX
-DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO
+DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX
+DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO
 
 
 
-select distinct id_resource from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_EVENTS
+select distinct id_resource from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST_EVENTS
 where  DIM_SEMESTRE_KEY = 20241
 and times_used = 0 -- 48,805
 -- and times_used <> 0 -- 8,934
@@ -636,7 +636,7 @@ and times_used = 0 -- 48,805
 
 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES -- 2,907,484
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST -- 2,907,484
 
 /* 
 
@@ -653,9 +653,9 @@ hasta que no tiene primer plan esta a null --> filtrar ?
 
 
 with as ( 
- F_DADES_ACADEMIQUES_COCO concat 
+ STAGE_DADES_ACADEMIQUES_COCO concat 
 
- F_DADES_ACADEMIQUES_DIMAX  (    
+ STAGE_DADES_ACADEMIQUES_DIMAX  (    
     asignatura
     , semestre_id
     , codi_producto_coco
@@ -665,7 +665,7 @@ with as (
     )
  ) 
 
- F_DADES_ACADEMIQUES 
+ STAGE_DADES_ACADEMIQUES_POST 
 
 
 select
@@ -675,7 +675,7 @@ select
     , titulo_prod_coco
     , plan_estudios_base
 
-from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES -- 2.9M
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST -- 2.9M
 where 1=1 
 -- and asignatura = 'B0.911' 
 and  codi_producto_coco = '201344' -- guia --> 
@@ -686,13 +686,13 @@ order by semestre_id desc
 
 
 -- Counts de elementos
-select asignatura, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO group by 1  order by 2 desc -- 16.6K vs 13.0K  -- 3,600 asignaturas sin ningun recurso asignado 
+select asignatura, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1  order by 2 desc -- 16.6K vs 13.0K  -- 3,600 asignaturas sin ningun recurso asignado 
 
-select semestre_id, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO group by 1  order by 1 desc -- 84
+select semestre_id, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1  order by 1 desc -- 84
 
-select codi_producto_coco, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 53.5K  --> pocos
+select codi_producto_coco, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 53.5K  --> pocos
 
-select plan_estudios_base, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 42.0K vs 42.3K --> diferencia elementos --> 
+select plan_estudios_base, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 42.0K vs 42.3K --> diferencia elementos --> 
 
  
 select distinct VERSIO_ID   from db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247.4K vs  42.3K
@@ -721,19 +721,19 @@ select distinct VERSIO_ID   from db_uoc_prod.stg_dadesra.autors_productes_versio
         and coco_products.TITOL   IS NOT NULL
 
 
-select asignatura, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES
+select asignatura, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST
 
 -- valoraciones: 
 select ID_asignatura,* 
 --- count(* ) 
-from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES 
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST 
 where codi_producto_coco is null 
 group by 1  -- 16.6K  --> todas tienen? 
 
 
 
 
-select asignatura as teest , * from DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES 
+select asignatura as teest , * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST 
 where codi_producto_coco is null  -- se generan por el crossjoin ?   -- previos a plan de estudios --> no recursos asociados 
 
 
@@ -782,9 +782,9 @@ SELECT
     , coalesce(events.TIMES_USED, 0) as TIMES_USED
     , events.SOURCE
 
-FROM  DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES dades_academiques -- 7,888,532
+FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST dades_academiques -- 7,888,532
 
-left join DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED_TRANSFORMED events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
+left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_TRANSFORMED events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
     on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
     and dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
     and dades_academiques.ID_RESOURCE = events.ID_RESOURCE -- 43k 
@@ -809,13 +809,13 @@ where  1=1
 -- events: 
 --#########################################################################################
 
--- SELECT * FROM  DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED;  -- 8,741,384
--- drop table DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED
+-- SELECT * FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED;  -- 8,741,384
+-- drop table DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED
 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED  -- 8,741,384 vs 123,019
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED  -- 8,741,384 vs 123,019
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED_TRANSFORMED  -- 123,019
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_TRANSFORMED  -- 123,019
 
 
 
@@ -826,7 +826,7 @@ select * from DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED_TRANSFORMED  -- 12
 select  distinct dim_assignatura_key
 
 -- ,  * 
-from DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED_TRANSFORMED   -- 22
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_TRANSFORMED   -- 22
 where dim_assignatura_key  not in (
 
 
@@ -844,7 +844,7 @@ KK.RRR
 */
 
 select  distinct dim_assignatura_key
-from DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED_TRANSFORMED   -- 22
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_TRANSFORMED   -- 22
 where dim_assignatura_key  not in (
 
 SELECT DISTINCT asignatura.codi_final FROM    db_uoc_prod.stg_dadesra.autors_element_formacio asignatura  -- USANDO TABLA BASE : NO PERDEMOS NINGUAN ASITGANTURA --> PROBLEMAS DIM_ASIGNATURA AL CREAR 
@@ -858,7 +858,7 @@ select  distinct ID_RESOURCE
 -- dim_assignatura_key
 
 -- ,  * 
-from DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED_TRANSFORMED   -- 22
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_TRANSFORMED   -- 22
 where ID_RESOURCE  not in (
 
 
@@ -884,7 +884,7 @@ ID_RESOURCE no encontradas en events_flattened_transformed:
 
 */
 SELECT * 
-from DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED_TRANSFORMED -- 20 PRODUCTOS NO APARECEN 
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_TRANSFORMED -- 20 PRODUCTOS NO APARECEN 
 where ID_RESOURCE  in (
     -- SON PRODUCTOS MUY NUEVOS 202401 / 2023
 '296708',
@@ -1061,3 +1061,26 @@ WHERE id_recurs  in (
 '291878',
 '291877'
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    select   
+        db_uoc_prod.stg_dadesra.dimax_resofite_path.node_recurs,  
+        db_uoc_prod.stg_dadesra.dimax_resofite_path.node_cami, 
+        count(*)
+        -- db_uoc_prod.stg_dadesra.dimax_resofite_path.id_resource,
+        -- db_uoc_prod.stg_dadesra.dimax_resofite_path.ordre,
+    from db_uoc_prod.stg_dadesra.dimax_resofite_path  -- 18,056,913 vs 12,349,852
+group by 1,2 
+order by 3  desc 

@@ -1,10 +1,10 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- F_DADES_ACADEMIQUES 
+-- -- STAGE_DADES_ACADEMIQUES_POST 
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST AS 
 
 SELECT 
 
@@ -16,7 +16,7 @@ SELECT
     , plan_estudios_base
     , 'COCO' AS SOURCE_DADES_ACADEMIQUES
 
-FROM  DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO  
+FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO  
 
 union all 
 
@@ -28,7 +28,7 @@ SELECT
     , TITOL_RESOURCE 
     , 'NA' AS plan_estudios_base
     , 'DIMAX' AS SOURCE_DADES_ACADEMIQUES 
-FROM  DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_DIMAX 
+FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX 
 
 
 

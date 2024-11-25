@@ -1,10 +1,10 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- F_DADES_ACADEMIQUES_COCO
+-- -- STAGE_DADES_ACADEMIQUES_COCO
 -- -- #################################################################################################
 -- -- #################################################################################################
  
-CREATE  OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.F_DADES_ACADEMIQUES_COCO AS 
+CREATE  OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO AS 
 with cross_semestre_asignatura AS (
     
     SELECT 

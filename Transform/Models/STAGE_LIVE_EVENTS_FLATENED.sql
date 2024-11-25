@@ -11,7 +11,7 @@ Reutilizar tables de docencia
 6M historica
 
 */
-CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.F_LIVE_EVENTS_FLATENED AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED AS 
 with aux AS (
 SELECT 
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".subjectCode')::string   || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS ID_ASIGNATURA_RECURS,  -- material id
@@ -60,6 +60,5 @@ where 1=1
 and ID_ASIGNATURA_RECURS is not null
 and ID_CODI_RECURS is not null  
 ;
-
-
+-- fact_docencia_recursos_aprenentatje : como final ( eventos + catalogo de producto )
  
