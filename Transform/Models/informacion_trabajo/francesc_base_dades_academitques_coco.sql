@@ -17,8 +17,8 @@ SELECT * FROM db_uoc_prod.stg_dadesra.autors_producte where id = 259395;
 SELECT * FROM db_uoc_prod.stg_dadesra.autors_producte where id = 265006;
 SELECT * FROM db_uoc_prod.stg_dadesra.autors_producte where id = 233201;
 SELECT * FROM db_uoc_prod.stg_dadesra.autors_producte where PARAULA_CLAU is not NULL limit 50;
-SELECT * FROM db_uoc_prod.stg_dadesra.autors_producte where codi_recurs_origen is not NULL limit 50;
-SELECT * FROM db_uoc_prod.stg_dadesra.autors_producte where codi_recurs_origen is not NULL limit 50;
+SELECT * FROM db_uoc_prod.stg_dadesra.autors_producte where CODI_RECURS_origen is not NULL limit 50;
+SELECT * FROM db_uoc_prod.stg_dadesra.autors_producte where CODI_RECURS_origen is not NULL limit 50;
 
 -- MÒDULS_PRODUCTES = Relació entre producte i mòdul relacionat
 SELECT * FROM db_uoc_prod.stg_dadesra.autors_moduls_productes where producte_id = 259395;

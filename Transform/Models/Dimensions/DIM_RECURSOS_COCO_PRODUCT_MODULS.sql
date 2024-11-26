@@ -8,7 +8,7 @@ CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
 With productos_aux AS ( 
         SELECT                               
             
-            autors_producte.id AS codi_recurs,                      --   autors_producte.ID,                 -- COCO: id del producte
+            autors_producte.id AS CODI_RECURS,                      --   autors_producte.ID,                 -- COCO: id del producte
             autors_producte.titol AS titol_recurs,                  --   autors_producte.TITOL,                 -- COCO: Títol del producte
             'PROPI' AS origen_recurs,
             'COCO_PROD' AS source_recurs,
@@ -60,7 +60,7 @@ With productos_aux AS (
  
 ,  modulos_aux AS (
     SELECT 
-        coalesce(autors_modul.ID, autors_producte.codi_recurs) AS codi_recurs,                                                  -- Id del Mòdulo (Camp ja definit)
+        coalesce(autors_modul.ID, autors_producte.codi_recurs) AS CODI_RECURS,                                                  -- Id del Mòdulo (Camp ja definit)
         coalesce(autors_modul.DESCRIPCIO, autors_producte.titol_recurs)  AS titol_recurs,                                       -- (Camp ja definit) (Corresponde al campo Título en la tabla Producte)  --> PROBLEMA EN MODULOS, COMO LO SACO / RELACIONO
         'PROPI' AS origen_recurs,                                                                                               -- Tipus de recurs  (Camp ja definit)
         CASE 
@@ -128,13 +128,13 @@ algunos modulos no tienen producto origen --> tenemso que quedarnos con el modul
 -- Step 1: Create a temporary table with duplicate rows to delete
 CREATE TEMPORARY TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP AS
 SELECT 
-    codi_recurs,
+    CODI_RECURS,
     source_recurs
 FROM 
     (SELECT 
-        codi_recurs, 
+        CODI_RECURS, 
         source_recurs,
-        ROW_NUMBER() OVER(PARTITION BY codi_recurs ORDER BY codi_recurs) AS row_num
+        ROW_NUMBER() OVER(PARTITION BY CODI_RECURS ORDER BY CODI_RECURS) AS row_num
      FROM 
         DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
     ) AS subquery
@@ -144,7 +144,7 @@ WHERE
 -- Step 2: Delete the duplicates using the temporary table
 DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
 WHERE (codi_recurs, source_recurs) IN (
-    SELECT codi_recurs, source_recurs
+    SELECT CODI_RECURS, source_recurs
     FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP
 );
 

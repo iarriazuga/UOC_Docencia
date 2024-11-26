@@ -3,8 +3,8 @@
 ---########################################################################################################################################################################
 
 /***
--- SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where codi_recurs = '145195' -- idioma  catalan , recurso = web 
--- SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where codi_recurs = '145193' 
+-- SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where CODI_RECURS = '145195' -- idioma  catalan , recurso = web 
+-- SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS where CODI_RECURS = '145193' 
 
 -- modulo : 145195 
 -- producto 145193 
@@ -40,7 +40,7 @@ where producte_creacio_id is null
 //*** CODIGOS QUE NO TIENEN PADRE  */
 with aux AS ( 
 
-        SELECT id AS codi_recurs
+        SELECT id AS CODI_RECURS
         FROM db_uoc_prod.stg_dadesra.autors_modul autors_modul  
         where producte_creacio_id is null  
 
@@ -51,7 +51,7 @@ FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE  -- 84
 
 where 1=1 
     AND format_recurs is null  
-    and  codi_recurs not in ( SELECT codi_recurs FROM aux )
+    and  CODI_RECURS not in ( SELECT CODI_RECURS FROM aux )
     AND ORIGEN_RECURS = 'PROPI'
 
 
@@ -69,7 +69,7 @@ PADRE	ID_CODI_RECURS	CODI_RECURS	TITOL_RECURS	ORIGEN_RECURS	TIPUS_RECURS	SOURCE_
 
 SELECT * 
 FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE 
-where  codi_recurs in (
+where  CODI_RECURS in (
 '243713',
 '243713',
 '246598',

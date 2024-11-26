@@ -1025,15 +1025,15 @@ WHERE CODI_RECURS  in (
 
 /*
 TABLA ORIGEN CREACION : from db_uoc_prod.stg_dadesra.dimax_v_recurs -- ACABA EN :   db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax  
-dimax_v_recurs.id_recurs as codi_recurs,
+dimax_v_recurs.id_recurs as CODI_RECURS,
 */
 
 -- VMEMNOOS TABLAS ORIGEN : INNER JOIN CAT --> ELMINA LOS RECURSOS 
 WITH AUX AS (
-SELECT  dimax_v_recurs.id_recurs as codi_recurs, * 
+SELECT  dimax_v_recurs.id_recurs as CODI_RECURS, * 
 from db_uoc_prod.stg_dadesra.dimax_v_recurs 
 )
-SELECT DISTINCT codi_recurs FROM AUX  -- -101,871 k --> SE GENERAN DUPLICACIONS? 
+SELECT DISTINCT CODI_RECURS FROM AUX  -- -101,871 k --> SE GENERAN DUPLICACIONS? 
 
 
 

@@ -357,13 +357,13 @@ select * from db_uoc_prod.stg_dadesra.dimax_v_recurs where id_recurs = 122912 li
 
 select DISTINCT id_recurs  from db_uoc_prod.stg_dadesra.dimax_v_recurs  -- 101,985
 
-select DISTINCT CODI_recurs  from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax -- 100,821
+select DISTINCT CODI_RECURS  from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax -- 100,821
 
 --# RECURSOS NO INCLUIDOS: 
 select DISTINCT id_recurs  
 from db_uoc_prod.stg_dadesra.dimax_v_recurs  -- 101,985
 
 WHERE ID_RECURS NOT IN (
-    select DISTINCT CODI_recurs  
+    select DISTINCT CODI_RECURS  
     from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax --  101,985 VS 100,821  = 1,164 
 )

@@ -7,13 +7,13 @@
 -- CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
 With productos_aux AS ( --que hace unico a un recurso 
         SELECT                              -- agafa els mateixos camps per conservar la estructura però dades de COCO (taules Autors)
-            autors_producte.id AS codi_recurs,                      --   autors_producte.ID,                 -- COCO: id del producte
+            autors_producte.id AS CODI_RECURS,                      --   autors_producte.ID,                 -- COCO: id del producte
             autors_producte.titol AS titol_recurs,                  --   autors_producte.TITOL,                 -- COCO: Títol del producte
             'PROPI' AS origen_recurs,
             'COCO_PROD' AS source_recurs,
             autors_producte.versio_creacio_id,                      -- COCO: Id del pla de publicació en que es va crear                  
             -- revisar 
-            'AUTORS_MODUL.PRODUCTE_CREACIO_ID' AS codi_recurs2,                   --  (Campo a recuperar de PRODUCTO) Producto padre - fk de producte
+            'AUTORS_MODUL.PRODUCTE_CREACIO_ID' AS CODI_RECURS2,                   --  (Campo a recuperar de PRODUCTO) Producto padre - fk de producte
             autors_producte.producte_origen_id,                     -- COCO: Id del producte origen
 
 
@@ -63,13 +63,13 @@ With productos_aux AS ( --que hace unico a un recurso
 modulos_aux AS (
     SELECT 
     
-        AUTORS_MODUL.ID AS codi_recurs,                     -- Id del Mòdulo (Camp ja definit)
+        AUTORS_MODUL.ID AS CODI_RECURS,                     -- Id del Mòdulo (Camp ja definit)
         AUTORS_MODUL.DESCRIPCIO AS titol_recurs,            -- (Camp ja definit) (Corresponde al campo Título en la tabla Producte)  --> PROBLEMA EN MODULOS, COMO LO SACO / RELACIONO
         'PROPI' AS origen_recurs,                           -- Tipus de recurs  (Camp ja definit)
         'COCO_MOD'  AS source_recurs,                       -- url_idioma_recurs* : NO VALID (Campo a recuperar de PRODUCTO)                                                   --> SOLO EN PROD, NO EN MODULOS
         AUTORS_MODUL.versio_creacio_id,                      -- COCO: Id del pla de publicació en que es va crear
         -- revisar 
-        AUTORS_MODUL.PRODUCTE_CREACIO_ID AS codi_recurs2,                   --  (Campo a recuperar de PRODUCTO) Producto padre - fk de producte
+        AUTORS_MODUL.PRODUCTE_CREACIO_ID AS CODI_RECURS2,                   --  (Campo a recuperar de PRODUCTO) Producto padre - fk de producte
         autors_producte.producte_origen_id,                     -- COCO: Id del producte origen
         
         autors_producte.url AS url_idioma_recurs,           -- url_idioma_recurs* : NO VALID (Campo a recuperar de PRODUCTO)                                                   --> SOLO EN PROD, NO EN MODULOS
@@ -99,7 +99,7 @@ modulos_aux AS (
 /*
     -- revisar francesc
     'na'  AS producte_origen_id,
-    'na'  AS codi_recurs_origen, 
+    'na'  AS CODI_RECURS_origen, 
     'na'  AS num_contracte 
     
     etl
