@@ -13,7 +13,7 @@ DB_UOC_PROD.DD_OD.dim_semestre semestre
 DB_UOC_PROD.stg_dadesra.autors_element_formacio asignatura
 
 -- tablas fact calculo: 
-DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST_EVENTS
+DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS
 
 
 -- tablas fact auxiliares: 
@@ -22,7 +22,7 @@ DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO
 
 
 
-select distinct id_resource from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST_EVENTS
+select distinct id_resource from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS
 where  DIM_SEMESTRE_KEY = 20241
 and times_used is null  -- 48,805
 -- and times_used is not null  -- 8,934

@@ -1,10 +1,10 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- STAGE_DADES_ACADEMIQUES_POST 
+-- -- STAGE_POST_DADES_ACADEMIQUES 
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST_EVENTS AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_SIMPLIFIED AS 
 with auxiliar as ( 
 SELECT 
 
@@ -19,7 +19,7 @@ SELECT
     , coalesce(events.TIMES_USED, 0) as TIMES_USED -- 48k --> 8k ( ejemplo)
     , events.SOURCE
 
-FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST dades_academiques -- 7,888,532
+FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES dades_academiques -- 7,888,532
 
 left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_TRANSFORMED events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
     on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250

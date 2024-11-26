@@ -88,7 +88,6 @@ SELECT
     , node_structure_semestres.DIM_SEMESTRE_KEY
     , node_structure_asignaturas.DIM_ASSIGNATURA_KEY
 
-    , node_structure_asignaturas.node_cami as CODI_RECURS --- as recurso de aprendizaje 
     , node_structure_asignaturas.NODE_RECURS_SEMESTRE
     , node_structure_asignaturas.NODE_RECURS
     , node_structure_asignaturas.cami_node -- uso para path 
@@ -98,8 +97,7 @@ SELECT
 
 
 
-    FROM  node_structure_asignaturas   --- 6_462_779
-
+    FROM  node_structure_asignaturas    
     inner join node_structure_semestres on  node_structure_asignaturas.NODE_RECURS_SEMESTRE = node_structure_semestres.NODE_RECURS_SEMESTRE  
     
 
@@ -123,3 +121,249 @@ NODE_RECURS_SEMESTRE	COUNT(*)	TITOL  --> cambian los nums 75,569
 296535	                15286	    Root Node:FPNOV09
 
 */
+
+select *
+from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX --   inner() 3,656,132 = 3,656,132
+--  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX
+
+
+select distinct node_cami
+from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX --  3,731,701 vs inner() 3,656,132
+-- 70,239
+
+
+select distinct id_recurs -- 101,985 vs 70,239 tabla final 
+from db_uoc_prod.stg_dadesra.dimax_v_recurs 
+
+select distinct NODE_RECURS  -- 306,145
+from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX --  3,731,701 vs inner() 3,656,132
+
+
+
+select distinct id
+from db_uoc_prod.stg_dadesra.dimax_item_dimax  -- 1,755,718   > 300k incluidos en db_uoc_prod.stg_dadesra.dimax_resofite_path
+
+
+
+--# VALORACION ASIGNATURAS
+select DISTINCT  DIM_ASSIGNATURA_KEY  -- 14,294
+from node_structure_asignaturas
+
+
+select distinct dim_assignatura_key  --14,294 VS 14,142  
+from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX --  3,731,701 vs inner() 3,656,132
+
+
+select  *  -- 3,656,132 VS  3,655,656 -> 
+from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX RA
+
+LEFT JOIN DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE AP 
+ON RA.DIM_RECURSOS_APRENENTATGE_KEY = AP.DIM_RECURSOS_APRENENTATGE_KEY
+
+
+SELECT DIM_RECURSOS_APRENENTATGE_KEY AS TEST2, * 
+FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE
+
+
+
+
+
+
+select  DISTINCT NODE_CAMI -- *  -- 3,656,132 VS  3,655,656 -> 476
+from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX RA
+
+LEFT JOIN DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE AP 
+ON RA.DIM_RECURSOS_APRENENTATGE_KEY = AP.DIM_RECURSOS_APRENENTATGE_KEY
+
+WHERE  AP.DIM_RECURSOS_APRENENTATGE_KEY IS NULL 
+
+
+SELECT * 
+FROM db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax    
+WHERE CODI_RECURS IN ( 
+'122912',
+'123948',
+'123103',
+'123105',
+'122998',
+'123109') 
+
+select * from db_uoc_prod.stg_dadesra.dimax_v_recurs where id_recurs = 122912 limit 50;
+
+'123998',
+'123994',
+'123879',
+'122994',
+'123008',
+'123722',
+'123099',
+'123100',
+'122955',
+'122919',
+'122904',
+'123002',
+'14314',
+'122978',
+'123954',
+'123104',
+'123084',
+'123095',
+'123765',
+'123066',
+'123732',
+'122958',
+'123723',
+'122936',
+'105354',
+'123006',
+'123001',
+'123003',
+'123098',
+'123926',
+'122991',
+'123953',
+'123107',
+'123878',
+'123101',
+'122897',
+'122902',
+'123020',
+'123010',
+'123108',
+'122979',
+'122949',
+'122908',
+'122935',
+'14316',
+'123121',
+'122996',
+'123073',
+'122895',
+'123995',
+'123007',
+'122971',
+'123999',
+'123548',
+'122945',
+'123176',
+'123731',
+'123520',
+'122906',
+'122937',
+'124001',
+'122921',
+'123950',
+'123096',
+'122916',
+'123072',
+'123997',
+'123097',
+'122952',
+'123004',
+'123000',
+'122992',
+'122909',
+'122954',
+'122893',
+'123359',
+'122947',
+'122905',
+'122948',
+'123947',
+'122901',
+'123018',
+'123022',
+'122917',
+'122950',
+'124000',
+'123952',
+'123083',
+'122953',
+'122957',
+'122977',
+'123019',
+'123992',
+'123549',
+'122910',
+'122914',
+'122942',
+'123996',
+'124002',
+'123070',
+'123005',
+'123949',
+'122892',
+'123106',
+'123013',
+'122911',
+'123287',
+'122951',
+'122944',
+'122946',
+'123021',
+'123067',
+'123071',
+'123993',
+'123102',
+'122933',
+'122956',
+'123161',
+'122899',
+'123951',
+'122943',
+'123023',
+'122913',
+'122907',
+'123946',
+'122999',
+'123798'
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT * 
+-- FROM db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax  
+from db_uoc_prod.stg_dadesra.dimax_v_recurs  
+WHERE id_recurs IN ( 
+'122912',
+'123948',
+'123103',
+'123105',
+'122998',
+'123109') 
+
+FRANCESC: 
+db_uoc_prod.stg_dadesra.dimax_v_recurs
+
+USAMOS PARA HACER RA_DIMAX: 
+db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax 
+
+
+db_uoc_prod.stg_dadesra.dimax_v_recurs > db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax 
+
+select * from db_uoc_prod.stg_dadesra.dimax_v_recurs where id_recurs = 122912 limit 50;
+
+select DISTINCT id_recurs  from db_uoc_prod.stg_dadesra.dimax_v_recurs  -- 101,985
+
+select DISTINCT CODI_recurs  from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax -- 100,821
+
+--# RECURSOS NO INCLUIDOS: 
+select DISTINCT id_recurs  
+from db_uoc_prod.stg_dadesra.dimax_v_recurs  -- 101,985
+
+WHERE ID_RECURS NOT IN (
+    select DISTINCT CODI_recurs  
+    from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax --  101,985 VS 100,821  = 1,164 
+)

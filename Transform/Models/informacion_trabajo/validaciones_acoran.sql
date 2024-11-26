@@ -441,7 +441,7 @@ select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX -- 3,5m
 
 select recursos.id_asignatura, recursos.id_semestre, count(usos.*) 
 
-from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST recursos
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES recursos
 left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED usos 
     on usos.SUBJECTCODE  = recursos.id_asignatura
     and usos.semester = recursos.id_semestre
@@ -619,7 +619,7 @@ DB_UOC_PROD.stg_dadesra.autors_element_formacio asignatura
 
 -- tablas fact calculo: 
 select * --- DISTINCT OBJECT_ID
-FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST_EVENTS
+FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS
 
 
 -- tablas fact auxiliares: 
@@ -628,7 +628,7 @@ DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO
 
 
 
-select distinct id_resource from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST_EVENTS
+select distinct id_resource from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS
 where  DIM_SEMESTRE_KEY = 20241
 and times_used = 0 -- 48,805
 -- and times_used <> 0 -- 8,934
@@ -636,7 +636,7 @@ and times_used = 0 -- 48,805
 
 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST -- 2,907,484
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES -- 2,907,484
 
 /* 
 
@@ -665,7 +665,7 @@ with as (
     )
  ) 
 
- STAGE_DADES_ACADEMIQUES_POST 
+ STAGE_POST_DADES_ACADEMIQUES 
 
 
 select
@@ -675,7 +675,7 @@ select
     , titulo_prod_coco
     , plan_estudios_base
 
-from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST -- 2.9M
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES -- 2.9M
 where 1=1 
 -- and asignatura = 'B0.911' 
 and  codi_producto_coco = '201344' -- guia --> 
@@ -721,19 +721,19 @@ select distinct VERSIO_ID   from db_uoc_prod.stg_dadesra.autors_productes_versio
         and coco_products.TITOL   IS NOT NULL
 
 
-select asignatura, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST
+select asignatura, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES
 
 -- valoraciones: 
 select ID_asignatura,* 
 --- count(* ) 
-from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST 
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES 
 where codi_producto_coco is null 
 group by 1  -- 16.6K  --> todas tienen? 
 
 
 
 
-select asignatura as teest , * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST 
+select asignatura as teest , * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES 
 where codi_producto_coco is null  -- se generan por el crossjoin ?   -- previos a plan de estudios --> no recursos asociados 
 
 
@@ -782,7 +782,7 @@ SELECT
     , coalesce(events.TIMES_USED, 0) as TIMES_USED
     , events.SOURCE
 
-FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_POST dades_academiques -- 7,888,532
+FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES dades_academiques -- 7,888,532
 
 left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_TRANSFORMED events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
     on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
