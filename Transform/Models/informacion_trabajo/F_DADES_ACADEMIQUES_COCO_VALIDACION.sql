@@ -34,7 +34,7 @@ with cross_semestre_asignatura AS (
 
     SELECT 
     
-        plan_publicacion.id || ' - ' || semestre.CODI_EXTERN AS plan_estudios_base
+        plan_publicacion.id || ' - ' || semestre.CODI_EXTERN AS  PLAN_ESTUDIOS_BASE
         , asignatura.CODI_FINAL AS  titulo_asignatura
         -- , productos_plan_publicacion.PRODUCTE_ID  AS codi_producto_coco
         , coco_products.id  AS codi_producto_coco --- dimax 
@@ -67,7 +67,7 @@ with cross_semestre_asignatura AS (
             , cross_semestre_asignatura.semestre_id
             , semestres_informados.codi_producto_coco
             , semestres_informados.titulo_prod_coco
-            , semestres_informados.plan_estudios_base
+            , semestres_informados. PLAN_ESTUDIOS_BASE
         
         FROM  cross_semestre_asignatura
         left join semestres_informados 
@@ -87,7 +87,7 @@ with cross_semestre_asignatura AS (
         semestre_id AS informed_semestre_id,
         codi_producto_coco,
         titulo_prod_coco,
-        plan_estudios_base
+         PLAN_ESTUDIOS_BASE
     FROM cross_semestres_informados
     WHERE titulo_prod_coco IS NOT NULL
 )
@@ -101,7 +101,7 @@ with cross_semestre_asignatura AS (
         csi.codi_producto_coco,
         csi.titulo_prod_coco,
         
-        csi.plan_estudios_base,
+        csi. PLAN_ESTUDIOS_BASE,
         CASE 
             when csi.titulo_prod_coco is not null then NULL 
             else (
@@ -125,7 +125,7 @@ with cross_semestre_asignatura AS (
         -- nulls created 
         max(coalesce( csi.codi_producto_coco, '-')) AS codi_producto_coco,
         max(coalesce( csi.titulo_prod_coco, '-')) AS titulo_prod_coco,
-        max(coalesce( csi.plan_estudios_base, '-')) AS plan_estudios_base,
+        max(coalesce( csi. PLAN_ESTUDIOS_BASE, '-')) AS  PLAN_ESTUDIOS_BASE,
         max( inf.informed_semestre_id ) AS last_informed_semestre
         -- CASE 
         --     when csi.titulo_prod_coco is not null then NULL 
@@ -154,7 +154,7 @@ with cross_semestre_asignatura AS (
         swr.semestre_id, -- fecha  : castear 
         COALESCE(swr.codi_producto_coco, inf.codi_producto_coco) AS codi_producto_coco, -- recurso : dimax 
         COALESCE(swr.titulo_prod_coco, inf.titulo_prod_coco) AS titulo_prod_coco,
-        COALESCE(swr.plan_estudios_base, inf.plan_estudios_base) AS plan_estudios_base
+        COALESCE(swr. PLAN_ESTUDIOS_BASE, inf. PLAN_ESTUDIOS_BASE) AS  PLAN_ESTUDIOS_BASE
         
     FROM ultimo_semestre_informado swr
     LEFT JOIN informed_semesters inf
@@ -168,7 +168,7 @@ SELECT
     , semestre_id
     , codi_producto_coco
     , titulo_prod_coco
-    , plan_estudios_base
+    ,  PLAN_ESTUDIOS_BASE
 FROM propagacion_ultimo_semestre_informado
 
 where 1=1 

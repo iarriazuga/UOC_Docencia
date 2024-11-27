@@ -17,28 +17,27 @@ with dimax_resofite_path_unified AS (
 )
 , node_structure_aplanation AS ( 
     SELECT  
-        db_uoc_prod.stg_dadesra.dimax_item_dimax.cami_node,
-
-        -- dimax_resofite_path_unified.node_cami as id_resource,  -- id_ que equivale a la tabla de dim_catalog 
-        dimax_resofite_path_unified.node_cami,
-        dimax_resofite_path_unified.node_recurs, -- same as  db_uoc_prod.stg_dadesra.dimax_item_dimax.id 
-
-        ARRAY_SIZE(SPLIT(db_uoc_prod.stg_dadesra.dimax_item_dimax.cami_node, ';'))  as length_resources, 
-        
-        db_uoc_prod.stg_dadesra.dimax_item_dimax.titol,
+        db_uoc_prod.stg_dadesra.dimax_item_dimax.cami_node
+        , dimax_resofite_path_unified.node_cami
+        , dimax_resofite_path_unified.node_recurs 
+        , db_uoc_prod.stg_dadesra.dimax_item_dimax.titol
+        , ARRAY_SIZE(SPLIT(db_uoc_prod.stg_dadesra.dimax_item_dimax.cami_node, ';'))  as length_resources
         -- db_uoc_prod.stg_dadesra.dimax_v_recurs.titol AS titol_resource,
-        SUBSTR(db_uoc_prod.stg_dadesra.dimax_item_dimax.titol, 0, 6) AS DIM_ASSIGNATURA_KEY
+
  
     FROM dimax_resofite_path_unified   --- registros : 17,303,400
     
     left join db_uoc_prod.stg_dadesra.dimax_item_dimax 
         on dimax_resofite_path_unified.node_recurs = db_uoc_prod.stg_dadesra.dimax_item_dimax.id -- 17303400
+    /*
     
     left join db_uoc_prod.stg_dadesra.dimax_v_recurs 
         on dimax_resofite_path_unified.node_cami = db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs -- 17303400 
     
     left join db_uoc_prod.stg_dadesra.dimax_recurs_info_extra 
         on db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs = db_uoc_prod.stg_dadesra.dimax_recurs_info_extra.id_recurs -- 17303400
+    */
+
 
     where  ( 
         ARRAY_SIZE(SPLIT(db_uoc_prod.stg_dadesra.dimax_item_dimax.cami_node, ';')) = 5 
@@ -49,29 +48,26 @@ with dimax_resofite_path_unified AS (
 
 , node_structure_asignaturas AS ( 
  
-    SELECT   -- 3,731,701 vs  3,731,701
+    SELECT distinct-- 3,731,701 vs  3,731,701 vs ( quitando cami node )
  
-        CAMI_NODE
+        SUBSTR(titol, 0, 6) AS DIM_ASSIGNATURA_KEY
         , NODE_CAMI  -- recurso:  
-        , NODE_RECURS  -- 
-        , DIM_ASSIGNATURA_KEY  
-        , ARRAY_SIZE(SPLIT(CAMI_NODE, ';'))  as length_resources
-        , titol
-        , SPLIT_PART(CAMI_NODE, ';', ARRAY_SIZE(SPLIT(CAMI_NODE, ';'))-1) AS NODE_RECURS_SEMESTRE
-        -- , SPLIT_PART(CAMI_NODE, ';', ARRAY_SIZE(SPLIT(CAMI_NODE, ';'))-2) AS NODE_RECURS_intermedio
-        -- , SPLIT_PART(CAMI_NODE, ';', ARRAY_SIZE(SPLIT(CAMI_NODE, ';'))-3) AS NODE_RECURS_ASSIGNATURA
+        , SPLIT_PART(CAMI_NODE, ';', ARRAY_SIZE(SPLIT(CAMI_NODE, ';'))-1) AS NODE_RECURS_SEMESTRE -- 355,563  vs 3,465,109
+
+         -- , NODE_RECURS  --  3,465,109 ( identificador del grafo)
+        -- , titol  -- ligeramente diferente 3,541,969 vs 3,465,109
  
-    FROM node_structure_aplanation  -- 3,731,701 vs 310,915 ( with distinct )
-    
+    FROM node_structure_aplanation   
+
     where length_resources = 5
+ 
+ 
 
 ) 
 
 
-
-
 ,  node_structure_semestres  AS ( 
-    SELECT distinct -- 148,966
+    SELECT distinct -- 42
 
         NODE_RECURS as NODE_RECURS_SEMESTRE  
         , REPLACE(titol, 'Root Node:PV', '') as DIM_SEMESTRE_KEY 
@@ -89,23 +85,21 @@ SELECT
     , node_structure_asignaturas.DIM_ASSIGNATURA_KEY
 
     , node_structure_asignaturas.node_cami as CODI_RECURS --- as recurso de aprendizaje 
-    , node_structure_asignaturas.NODE_RECURS_SEMESTRE
-    , node_structure_asignaturas.NODE_RECURS
-    , node_structure_asignaturas.cami_node -- uso para path 
-    , node_structure_asignaturas.node_cami --- as recurso de aprendizaje 
-    -- , node_structure_asignaturas.titol_resource   
+    -- , node_structure_asignaturas.NODE_RECURS_SEMESTRE
+    -- , node_structure_asignaturas.NODE_RECURS -- eliminamos : genera duplicados  
+    -- , node_structure_asignaturas.cami_node -- uso para path : genera duplicados  
+    -- , node_structure_asignaturas.titol_resource    -- eliminamos : genera duplicados  
 
 
 
 
-    FROM  node_structure_asignaturas   --- 6_462_779
+    FROM  node_structure_asignaturas   --- 3,390,446
 
     inner join node_structure_semestres on  node_structure_asignaturas.NODE_RECURS_SEMESTRE = node_structure_semestres.NODE_RECURS_SEMESTRE  
     
 
     -- where DIM_ASSIGNATURA_KEY like '20.819' 
     -- and node_structure_asignaturas.cami_node like '%;3427092;3417142;3281320;' 
-    -- 6_462_729 va  6_342_169 --> se pierden  120,560 
     -- 1,6k La aplicación tinene 20 años y antes se usaba para otras cosas, está obsoleto lo que está bajo BIBLIO
     -- Francesc nodo BIBLIO es algo histórico y de cuando Diamx se usaba para otra función.... Ignoramos el nodo Biblio.
 

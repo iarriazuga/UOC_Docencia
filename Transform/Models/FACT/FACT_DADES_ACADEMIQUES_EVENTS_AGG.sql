@@ -4,7 +4,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_SIMPLIFIED AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG AS 
 
 with auxiliar as ( 
 SELECT 
@@ -15,7 +15,7 @@ SELECT
     , count( dades_academiques.ID_CODI_RECURS )  as TIMES_USED
  
 
-FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_ALL dades_academiques
+FROM  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS dades_academiques
 group by 1,2,3
 
 ) 
@@ -27,6 +27,4 @@ select
     , coalesce(TIMES_USED , 0) as TIMES_USED
 from auxiliar
  
-
--- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_SIMPLIFIED limit 100
--- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_ALL limit 100
+ 

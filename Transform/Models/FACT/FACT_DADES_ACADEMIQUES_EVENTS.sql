@@ -11,11 +11,18 @@ Reutilizar tables de docencia
 6M historica
 
 */
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_ALL AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS AS 
 
 with temp_table as (
     select 
-        dades_academiques.*
+ 
+
+            
+        dades_academiques.DIM_ASSIGNATURA_KEY
+        , dades_academiques.DIM_SEMESTRE_KEY
+        , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY    
+        , dades_academiques. PLAN_ESTUDIOS_BASE
+        , dades_academiques.SOURCE_DADES_ACADEMIQUES
 
         , events.ID_ASIGNATURA_RECURS
         , events.ID_CODI_RECURS
@@ -27,7 +34,7 @@ with temp_table as (
         , events.USERLOGIN
         , events.USER_SIS_ID
         , events.GROUP_NAME
-        , events.SEMESTER
+        , events.DIM_SEMESTRE_KEY
         , events.CANVASCOURSEID
         , events.SISCOURSEID
         , events.SUBJECTCODE
@@ -38,7 +45,7 @@ with temp_table as (
         , events.OBJECT_MEDIATYPE
         , events.OBJECT_TYPE
         , events.FORMAT
-        , events.MATERIAL_ID
+        , events.CODI_RECURS
         , events.SOURCE
         , events.URL
 
@@ -46,11 +53,35 @@ with temp_table as (
 
     left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
         on dades_academiques.DIM_ASSIGNATURA_KEY = events.SUBJECTCODE -- 114,821,250
-        and dades_academiques.DIM_SEMESTRE_KEY = events.SEMESTER
-        and dades_academiques.CODI_RECURS = events.MATERIAL_ID -- 43k 
+        and dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
+        and dades_academiques.CODI_RECURS = events.CODI_RECURS -- 43k  -- agrupar por 
 
 ) 
 select * from temp_table
 
 
--- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_ALL -- 14,119,411 
+-- -- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_ALL -- 14,119,411 
+
+
+-- select 
+-- dim_assignatura_key
+-- , dim_semestre_key
+-- , dim_recursos_aprenentatge_key
+-- , count(*)
+
+-- from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES_EVENTS_ALL  
+-- group by 1,2,3
+
+
+-- -- STAGE_POST_DADES_ACADEMIQUES :  5,204,193 duplicados 
+-- select 
+-- dim_assignatura_key
+-- , dim_semestre_key
+-- , dim_recursos_aprenentatge_key
+-- , count(*)
+
+-- from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES  
+-- group by 1,2,3
+-- having count(*) > 1 
+
+-- order by 4 desc

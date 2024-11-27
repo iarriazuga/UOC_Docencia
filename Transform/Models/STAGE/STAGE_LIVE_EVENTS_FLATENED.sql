@@ -31,7 +31,7 @@ SELECT
     GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".user_login')::string AS userlogin,
     GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".user_sis_id')::string AS user_sis_id,    
     GET_PATH(JSON, 'data[0]:group.name')::string AS group_name,  
-    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".semester')::string AS semester,
+    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".semester')::string AS DIM_SEMESTRE_KEY,
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".canvasCourseId')::string AS canvasCourseId,   
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".sisCourseId')::string AS sisCourseId, 
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".subjectCode')::string AS subjectCode, 
@@ -46,7 +46,7 @@ SELECT
     --GET_PATH(JSON, 'data[0]:object.extensions') AS object_extensions,
     --GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti"') AS ralti,
     GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".format')::string AS format,
-    GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string AS material_id,
+    GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string AS CODI_RECURS,
     GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".source')::string AS source,
     GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".url')::string AS url--,
     --le.*
@@ -61,4 +61,15 @@ and ID_ASIGNATURA_RECURS is not null
 and ID_CODI_RECURS is not null  
 ;
 -- fact_docencia_recursos_aprenentatje : como final ( eventos + catalogo de producto )
+
+/*
+
+ select  semester, count(*) 
+ from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED 
+ group by 1 order by 2 desc
+
+ select distinct semester, event_date, event_time, action
+ from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED 
+*/ 
+ 
  

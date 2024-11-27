@@ -2,25 +2,25 @@
 --#########################################################################################
 -- SNOWFLAKE: 
 --#########################################################################################
-select cast( plan_estudios_base as string) as plan_estudios_base1  from aux_planes_estudio_base
+select cast(  PLAN_ESTUDIOS_BASE as string) as  PLAN_ESTUDIOS_BASE1  from aux_planes_estudio_base
 
-where plan_estudios_base not in (
+where  PLAN_ESTUDIOS_BASE not in (
     select distinct 
  
     CASE 
-        WHEN CHARINDEX('-', plan_estudios_base) > 0 THEN 
-            SUBSTRING(plan_estudios_base, 1, CHARINDEX('-', plan_estudios_base) - 1)
-        ELSE plan_estudios_base
-    END AS plan_estudios_base1
+        WHEN CHARINDEX('-',  PLAN_ESTUDIOS_BASE) > 0 THEN 
+            SUBSTRING( PLAN_ESTUDIOS_BASE, 1, CHARINDEX('-',  PLAN_ESTUDIOS_BASE) - 1)
+        ELSE  PLAN_ESTUDIOS_BASE
+    END AS  PLAN_ESTUDIOS_BASE1
 
     from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO 
-    WHERE plan_estudios_base IS NOT NULL AND plan_estudios_base <> ''
+    WHERE  PLAN_ESTUDIOS_BASE IS NOT NULL AND  PLAN_ESTUDIOS_BASE <> ''
 
 )
 
 
 /*
-PLAN_ESTUDIOS_BASE1
+ PLAN_ESTUDIOS_BASE1
 39463
 48584
 44432
@@ -362,7 +362,7 @@ PLAN_ESTUDIOS_BASE1
 
 
 with aux_planes_estudio_base  as ( 
-    select  distinct VERSIO_ID  as plan_estudios_base, *  
+    select  distinct VERSIO_ID  as  PLAN_ESTUDIOS_BASE, *  
     from db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247.4K
     
     inner join  db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
@@ -385,17 +385,17 @@ with aux_planes_estudio_base  as (
 
 select * from aux_planes_estudio_base
 
-where plan_estudios_base not in (
+where  PLAN_ESTUDIOS_BASE not in (
     select distinct 
  
     CASE 
-        WHEN CHARINDEX('-', plan_estudios_base) > 0 THEN 
-            SUBSTRING(plan_estudios_base, 1, CHARINDEX('-', plan_estudios_base) - 1)
-        ELSE plan_estudios_base
-    END AS plan_estudios_base1
+        WHEN CHARINDEX('-',  PLAN_ESTUDIOS_BASE) > 0 THEN 
+            SUBSTRING( PLAN_ESTUDIOS_BASE, 1, CHARINDEX('-',  PLAN_ESTUDIOS_BASE) - 1)
+        ELSE  PLAN_ESTUDIOS_BASE
+    END AS  PLAN_ESTUDIOS_BASE1
 
     from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO 
-    WHERE plan_estudios_base IS NOT NULL AND plan_estudios_base <> ''
+    WHERE  PLAN_ESTUDIOS_BASE IS NOT NULL AND  PLAN_ESTUDIOS_BASE <> ''
 
 )
 
@@ -416,19 +416,19 @@ where productos_plan_publicacion.versio_id not in (
     select distinct 
  
     CASE 
-        WHEN CHARINDEX('-', plan_estudios_base) > 0 THEN 
-            SUBSTRING(plan_estudios_base, 1, CHARINDEX('-', plan_estudios_base) - 1)
-        ELSE plan_estudios_base
-    END AS plan_estudios_base1
+        WHEN CHARINDEX('-',  PLAN_ESTUDIOS_BASE) > 0 THEN 
+            SUBSTRING( PLAN_ESTUDIOS_BASE, 1, CHARINDEX('-',  PLAN_ESTUDIOS_BASE) - 1)
+        ELSE  PLAN_ESTUDIOS_BASE
+    END AS  PLAN_ESTUDIOS_BASE1
 
     from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO 
-    WHERE plan_estudios_base IS NOT NULL AND plan_estudios_base <> ''
+    WHERE  PLAN_ESTUDIOS_BASE IS NOT NULL AND  PLAN_ESTUDIOS_BASE <> ''
 
 )
 
 -- empezar semestre pasado -- 20232 --> no puede anterior 
 /*
-PLAN_ESTUDIOS_BASE 
+ PLAN_ESTUDIOS_BASE 
 
 --> cast as int ID_PRODUCTO
 */
@@ -514,7 +514,7 @@ group by 1  order by 1 desc -- 84
 
 select codi_producto_coco, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 53.5K  --> pocos
 
-select plan_estudios_base, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 42.0K vs 42.3K --> diferencia elementos --> 
+select  PLAN_ESTUDIOS_BASE, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 42.0K vs 42.3K --> diferencia elementos --> 
 
 
 
@@ -660,7 +660,7 @@ with as (
     , semestre_id
     , codi_producto_coco
     , titulo_prod_coco
-    , plan_estudios_base
+    ,  PLAN_ESTUDIOS_BASE
     , flag_dimax --> diferenciar 
     )
  ) 
@@ -673,7 +673,7 @@ select
     , semestre_id
     , codi_producto_coco
     , titulo_prod_coco
-    , plan_estudios_base
+    ,  PLAN_ESTUDIOS_BASE
 
 from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES -- 2.9M
 where 1=1 
@@ -692,7 +692,7 @@ select semestre_id, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQ
 
 select codi_producto_coco, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 53.5K  --> pocos
 
-select plan_estudios_base, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 42.0K vs 42.3K --> diferencia elementos --> 
+select  PLAN_ESTUDIOS_BASE, count(* ) from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO group by 1 order by 2 desc -- 42.0K vs 42.3K --> diferencia elementos --> 
 
  
 select distinct VERSIO_ID   from db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247.4K vs  42.3K
@@ -741,7 +741,7 @@ where codi_producto_coco is null  -- se generan por el crossjoin ?   -- previos 
 
 -- ##################################################################################
 with aux_planes_estudio_base  as ( 
-    select  distinct VERSIO_ID  as plan_estudios_base 
+    select  distinct VERSIO_ID  as  PLAN_ESTUDIOS_BASE 
     from db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247.4K
     
     inner join  db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
@@ -776,7 +776,7 @@ SELECT
     , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY
     , dades_academiques.ID_RESOURCE
     , dades_academiques.TITOL_RESOURCE 
-    , dades_academiques.plan_estudios_base
+    , dades_academiques. PLAN_ESTUDIOS_BASE
     , dades_academiques.SOURCE_DADES_ACADEMIQUES
 
     , coalesce(events.TIMES_USED, 0) as TIMES_USED

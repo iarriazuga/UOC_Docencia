@@ -111,7 +111,7 @@ SELECT count(*) FROM db_uoc_prod.stg_dadesra.autors_encarrec;
 
 -- Creacio de la dimensio de materials de Recursos d Aprenentatge
 SELECT
-material_id,
+CODI_RECURS,
 autors_producte_id,
 titol,
 'Propi' AS recurs,
@@ -120,7 +120,7 @@ FROM
 (
 -- Conjunt de materials que disposen de modul existent
 SELECT 
-ifnull(autors_modul.id,autors_producte.id) AS material_id,
+ifnull(autors_modul.id,autors_producte.id) AS CODI_RECURS,
 autors_producte.id AS autors_producte_id,
 ifnull(autors_modul.descripcio,autors_producte.titol) AS titol,
 ifnull(autors_producte.fk_suport_producte_suport_id,0) AS suport_producte
@@ -135,7 +135,7 @@ on autors_moduls_productes.modul_id = autors_modul.id
 union all
 -- Unio per identificar tots els registres que contenen moduls pero que tambe han d estar presents
 SELECT distinct
-autors_producte.id AS material_id,
+autors_producte.id AS CODI_RECURS,
 autors_producte.id AS autors_producte_id,
 autors_producte.titol,
 ifnull(autors_producte.fk_suport_producte_suport_id,0) AS suport_producte
@@ -178,7 +178,7 @@ left join db_uoc_prod.stg_dadesra.autors_productes_versions
 on autors_productes_versions.versio_id = autors_versio.id
 inner join
 (SELECT
-material_id,
+CODI_RECURS,
 autors_producte_id,
 titol,
 'Propi' AS recurs,
@@ -187,7 +187,7 @@ FROM
 (
 -- Conjunt de materials que disposen de modul existent
 SELECT 
-ifnull(autors_modul.id,autors_producte.id) AS material_id,
+ifnull(autors_modul.id,autors_producte.id) AS CODI_RECURS,
 autors_producte.id AS autors_producte_id,
 ifnull(autors_modul.descripcio,autors_producte.titol) AS titol,
 ifnull(autors_producte.fk_suport_producte_suport_id,0) AS suport_producte
@@ -202,7 +202,7 @@ on autors_moduls_productes.modul_id = autors_modul.id
 union all
 -- Unio per identificar tots els registres que contenen moduls pero que tambe han d estar presents
 SELECT distinct
-autors_producte.id AS material_id,
+autors_producte.id AS CODI_RECURS,
 autors_producte.id AS autors_producte_id,
 autors_producte.titol,
 ifnull(autors_producte.fk_suport_producte_suport_id,0) AS suport_producte

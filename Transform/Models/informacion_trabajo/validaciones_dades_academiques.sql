@@ -192,7 +192,7 @@ SELECT
     , semestre_id
     , codi_producto_coco
     , titulo_prod_coco
-    , plan_estudios_base
+    ,  PLAN_ESTUDIOS_BASE
 FROM DB_UOC_PROD.DDP_DOCENCIA.DADES_ACADEMIQUES
 
 

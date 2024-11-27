@@ -12,7 +12,7 @@ with cross_semestre_asignatura AS (
         , asignatura.codi_final AS DIM_ASSIGNATURA_KEY
      
     FROM DB_UOC_PROD.DD_OD.dim_semestre semestre
-    cross join   db_uoc_prod.stg_dadesra.autors_element_formacio asignatura 
+    cross join   db_uoc_prod.stg_dadesra.autors_element_formacio asignatura  -- dim asignatura 
     
     where 1=1 
         and semestre.DIM_SEMESTRE_KEY is not null 
@@ -26,7 +26,7 @@ with cross_semestre_asignatura AS (
 
     SELECT 
     
-        plan_publicacion.id || ' - ' || semestre.CODI_EXTERN AS plan_estudios_base
+        plan_publicacion.id || ' - ' || semestre.CODI_EXTERN AS  PLAN_ESTUDIOS_BASE
         , asignatura.CODI_FINAL AS  DIM_ASSIGNATURA_KEY
         , coco_products.id  AS ID_RESOURCE 
         , coco_products.TITOL AS TITOL_RESOURCE
@@ -58,7 +58,7 @@ with cross_semestre_asignatura AS (
             , cross_semestre_asignatura.DIM_SEMESTRE_KEY
             , semestres_informados.ID_RESOURCE
             , semestres_informados.TITOL_RESOURCE
-            , semestres_informados.plan_estudios_base
+            , semestres_informados. PLAN_ESTUDIOS_BASE
         
         FROM  cross_semestre_asignatura
         left join semestres_informados 
@@ -78,7 +78,7 @@ with cross_semestre_asignatura AS (
         DIM_SEMESTRE_KEY AS informed_DIM_SEMESTRE_KEY,
         ID_RESOURCE,
         TITOL_RESOURCE,
-        plan_estudios_base
+         PLAN_ESTUDIOS_BASE
     FROM cross_semestres_informados
     WHERE TITOL_RESOURCE IS NOT NULL
 )
@@ -92,7 +92,7 @@ with cross_semestre_asignatura AS (
         csi.ID_RESOURCE,
         csi.TITOL_RESOURCE,
         
-        csi.plan_estudios_base,
+        csi. PLAN_ESTUDIOS_BASE,
         CASE 
             when csi.TITOL_RESOURCE is not null then NULL 
             else (
@@ -111,7 +111,7 @@ with cross_semestre_asignatura AS (
         swr.DIM_SEMESTRE_KEY, -- fecha  : castear 
         COALESCE(swr.ID_RESOURCE, inf.ID_RESOURCE) AS ID_RESOURCE, -- recurso : dimax 
         COALESCE(swr.TITOL_RESOURCE, inf.TITOL_RESOURCE) AS TITOL_RESOURCE,
-        COALESCE(swr.plan_estudios_base, inf.plan_estudios_base) AS plan_estudios_base
+        COALESCE(swr. PLAN_ESTUDIOS_BASE, inf. PLAN_ESTUDIOS_BASE) AS  PLAN_ESTUDIOS_BASE
         
     FROM ultimo_semestre_informado swr
     LEFT JOIN informed_semesters inf
@@ -127,7 +127,7 @@ SELECT
 
     , propagacion_ultimo_semestre_informado.ID_RESOURCE
     , propagacion_ultimo_semestre_informado.TITOL_RESOURCE
-    , propagacion_ultimo_semestre_informado.plan_estudios_base
+    , propagacion_ultimo_semestre_informado. PLAN_ESTUDIOS_BASE
  
 FROM propagacion_ultimo_semestre_informado
 
