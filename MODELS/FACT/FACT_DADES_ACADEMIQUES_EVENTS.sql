@@ -23,9 +23,16 @@ with temp_table as (
         , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY    
         , dades_academiques. PLAN_ESTUDIOS_BASE
         , dades_academiques.SOURCE_DADES_ACADEMIQUES
+        , dades_academiques.CODI_RECURS
 
+        -- , events.DIM_SEMESTRE_KEY
+        -- , events.CODI_RECURS
+        -- , events.DIM_ASSIGNATURA_KEY
+        
+        --REVIEW
         , events.ID_ASIGNATURA_RECURS
         , events.ID_CODI_RECURS
+        
         , events.EVENT_TIME
         , events.EVENT_DATE
         , events.ACTION
@@ -34,10 +41,10 @@ with temp_table as (
         , events.USERLOGIN
         , events.USER_SIS_ID
         , events.GROUP_NAME
-        , events.DIM_SEMESTRE_KEY
+
         , events.CANVASCOURSEID
         , events.SISCOURSEID
-        , events.SUBJECTCODE
+
         , events.ROL
         , events.MEMBERSHIP_STATUS
         , events.OBJECT_NAME
@@ -45,14 +52,14 @@ with temp_table as (
         , events.OBJECT_MEDIATYPE
         , events.OBJECT_TYPE
         , events.FORMAT
-        , events.CODI_RECURS
+
         , events.SOURCE
         , events.URL
 
-    FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES dades_academiques -- 7,888,532
+    FROM  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES dades_academiques -- 7,888,532
 
     left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
-        on dades_academiques.DIM_ASSIGNATURA_KEY = events.SUBJECTCODE -- 114,821,250
+        on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
         and dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
         and dades_academiques.CODI_RECURS = events.CODI_RECURS -- 43k  -- agrupar por 
 

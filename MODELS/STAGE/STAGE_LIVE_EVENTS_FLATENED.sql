@@ -14,7 +14,7 @@ Reutilizar tables de docencia
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED AS 
 with aux AS (
 SELECT 
-    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".subjectCode')::string   || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS ID_ASIGNATURA_RECURS,  -- material id
+    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".DIM_ASSIGNATURA_KEY')::string   || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS ID_ASIGNATURA_RECURS,  -- material id
     upper(GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".source')::string) || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS ID_CODI_RECURS,  -- material id
    --JSON:dataVersion::string dataVersion,
     --JSON:data::string data,
@@ -34,7 +34,7 @@ SELECT
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".semester')::string AS DIM_SEMESTRE_KEY,
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".canvasCourseId')::string AS canvasCourseId,   
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".sisCourseId')::string AS sisCourseId, 
-    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".subjectCode')::string AS subjectCode, 
+    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".DIM_ASSIGNATURA_KEY')::string AS DIM_ASSIGNATURA_KEY, 
     --GET_PATH(JSON, 'data[0]:id')::string AS id_ralti,    
     GET_PATH(JSON, 'data[0]:membership.roles.roles')::string AS rol,
     GET_PATH(JSON, 'data[0]:membership.status')::string AS membership_status,
@@ -52,7 +52,7 @@ SELECT
     --le.*
 
 FROM  DB_UOC_PROD.STG_DADESRA.LIVE_EVENTS_CALIPER_DUMMY le 
-    --where subjectCode = 'M8.020'
+    --where DIM_ASSIGNATURA_KEY = 'M8.020'
     -- order by event_time DESC
 ) 
 SELECT * FROM aux    

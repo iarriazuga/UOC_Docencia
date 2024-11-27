@@ -53,8 +53,7 @@ with dimax_resofite_path_unified AS (
         SUBSTR(titol, 0, 6) AS DIM_ASSIGNATURA_KEY
         , NODE_CAMI  -- recurso:  
         , SPLIT_PART(CAMI_NODE, ';', ARRAY_SIZE(SPLIT(CAMI_NODE, ';'))-1) AS NODE_RECURS_SEMESTRE -- 355,563  vs 3,465,109
-
-         -- , NODE_RECURS  --  3,465,109 ( identificador del grafo)
+        -- , NODE_RECURS  --  3,465,109 ( identificador del grafo)
         -- , titol  -- ligeramente diferente 3,541,969 vs 3,465,109
  
     FROM node_structure_aplanation   
@@ -90,21 +89,17 @@ SELECT
     -- , node_structure_asignaturas.cami_node -- uso para path : genera duplicados  
     -- , node_structure_asignaturas.titol_resource    -- eliminamos : genera duplicados  
 
-
-
-
     FROM  node_structure_asignaturas   --- 3,390,446
 
     inner join node_structure_semestres on  node_structure_asignaturas.NODE_RECURS_SEMESTRE = node_structure_semestres.NODE_RECURS_SEMESTRE  
     
 
-    -- where DIM_ASSIGNATURA_KEY like '20.819' 
-    -- and node_structure_asignaturas.cami_node like '%;3427092;3417142;3281320;' 
-    -- 1,6k La aplicación tinene 20 años y antes se usaba para otras cosas, está obsoleto lo que está bajo BIBLIO
-    -- Francesc nodo BIBLIO es algo histórico y de cuando Diamx se usaba para otra función.... Ignoramos el nodo Biblio.
 
 
 /*
+
+FRANCESC: La aplicación tinene 20 años y antes se usaba para otras cosas, está obsoleto lo que está bajo BIBLIO, es algo histórico y de cuando Diamx se usaba para otra función.... 
+Ignoramos el nodo Biblio.
 
 NODE_RECURS_SEMESTRE	COUNT(*)	TITOL  --> cambian los nums 75,569 
 30058	                43	        Root Node:PROVES

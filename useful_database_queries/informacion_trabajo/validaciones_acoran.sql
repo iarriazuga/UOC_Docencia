@@ -443,10 +443,10 @@ select recursos.id_asignatura, recursos.id_semestre, count(usos.*)
 
 from DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES recursos
 left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED usos 
-    on usos.SUBJECTCODE  = recursos.id_asignatura
+    on usos.DIM_ASSIGNATURA_KEY  = recursos.id_asignatura
     and usos.semester = recursos.id_semestre
 
-    where usos.SUBJECTCODE is not null
+    where usos.DIM_ASSIGNATURA_KEY is not null
 
 group by 1,2 
 order by 3 asc

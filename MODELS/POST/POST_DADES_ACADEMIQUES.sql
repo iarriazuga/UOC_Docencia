@@ -4,7 +4,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_POST_DADES_ACADEMIQUES AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES AS 
 
 SELECT 
 
