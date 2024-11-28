@@ -3,12 +3,12 @@
 
 -- SELECT * FROM DB_UOC_PROD.DDP_UNEIX.fitxer29_valors_base
 
-create or replace sequence DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_ID_TEST start 1 increment 1;  -- not in a view 
+CREATE OR REPLACE sequence DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_ID_TEST start 1 increment 1;  -- not in a view 
 
 -- Creacio de la taula fitxer29 amb les descripcions en els idiomes que es disponibilitzan i els atributs particulars.
 -- Pendent de identificar nous requeriments a incloure a la dimensio.
 
-create or replace TEMPORARY table DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE(
+CREATE OR REPLACE TEMPORARY table DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE(
  
     IDP	                NUMBER(38,0),
     ANY_ACADEMICO	    VARCHAR(9),
@@ -31,7 +31,7 @@ create or replace TEMPORARY table DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE(
 SELECT * FROM DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE;
 
 -- Creacio del procediment de carrega i/o actualització de dades programable
-create or replace procedure DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_LOADS()  --("ANY_ACADEMIC" VARCHAR(16777216)) 
+CREATE OR REPLACE procedure DB_UOC_PROD.DDP_UNEIX.FITXER29_VALORS_BASE_LOADS()  --("ANY_ACADEMIC" VARCHAR(16777216)) 
     returns varchar(16777216)
     language SQL
     execute AS caller

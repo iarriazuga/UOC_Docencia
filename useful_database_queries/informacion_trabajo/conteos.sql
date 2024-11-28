@@ -72,7 +72,7 @@ order by 4 desc   247,151
 
 versio_id
 
-with aux as ( 
+with aux_cte_table as ( 
 
 select codi_final , count(*) 
 from  db_uoc_prod.stg_dadesra.autors_element_formacio  
@@ -153,12 +153,12 @@ select * from temp_table
 
 
 
-with aux as ( 
+with aux_cte_table as ( 
 select DIM_ASSIGNATURA_KEY ||DIM_SEMESTRE_KEY || CODI_RECURS as mastery_key,  * 
 from  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES FACT_DADES_ACADEMIQUES_EVENTS 
 
 ) 
-select * from aux 
+select * from aux_cte_table 
 where mastery_key not in (
         select DIM_ASSIGNATURA_KEY ||DIM_SEMESTRE_KEY || CODI_RECURS as mastery_key  
         from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS 
@@ -181,7 +181,7 @@ from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG
  
 
 
-with aux as ( 
+with aux_cte_table as ( 
 select DIM_ASSIGNATURA_KEY ||DIM_SEMESTRE_KEY || CODI_RECURS as mastery_key,  * 
 from  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES FACT_DADES_ACADEMIQUES_EVENTS 
 
@@ -223,7 +223,7 @@ where CODI_RECURS is null --6,074,242
 
 ----##########################################################################################################################
 ----##########################################################################################################################
-with aux as ( 
+with aux_cte_table as ( 
     select   
         DIM_ASSIGNATURA_KEY 
         , DIM_SEMESTRE_KEY
@@ -237,7 +237,7 @@ select
     , cast( DIM_ASSIGNATURA_KEY || DIM_SEMESTRE_KEY || CODI_RECURS  as string ) as master
 
 from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES
-where cast( DIM_ASSIGNATURA_KEY || DIM_SEMESTRE_KEY || CODI_RECURS  as string )  not in ( select master from aux )
+where cast( DIM_ASSIGNATURA_KEY || DIM_SEMESTRE_KEY || CODI_RECURS  as string )  not in ( select master from aux_cte_table )
 
 ----##########################################################################################################################
 

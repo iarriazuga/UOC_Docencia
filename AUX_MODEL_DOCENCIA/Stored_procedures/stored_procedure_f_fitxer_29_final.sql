@@ -3,12 +3,12 @@
 
 -- SELECT * FROM DB_UOC_PROD.DDP_UNEIX.fitxer29_final
 
--- create or replace sequence DB_UOC_PROD.DDP_UNEIX.fitxer29_final_ID_TEST start 1 increment 1;  -- not in a view 
+-- CREATE OR REPLACE sequence DB_UOC_PROD.DDP_UNEIX.fitxer29_final_ID_TEST start 1 increment 1;  -- not in a view 
 
 -- Creacio de la taula fitxer29 amb les descripcions en els idiomes que es disponibilitzan i els atributs particulars.
 -- Pendent de identificar nous requeriments a incloure a la dimensio.
 
-create or replace table db_uoc_prod.ddp_uneix.fitxer29_final(
+CREATE OR REPLACE table db_uoc_prod.ddp_uneix.fitxer29_final(
         IDP NUMBER(38,0), 
         CODIUNIVERSITAT VARCHAR(10),
         CURSACADEMIC VARCHAR(10),
@@ -35,7 +35,7 @@ create or replace table db_uoc_prod.ddp_uneix.fitxer29_final(
  
 
 -- Creacio del procediment de carrega i/o actualització de dades programable
-create or replace procedure DB_UOC_PROD.DDP_UNEIX.fitxer29_final_LOADS()  --("ANY_ACADEMIC" VARCHAR(16777216)) 
+CREATE OR REPLACE procedure DB_UOC_PROD.DDP_UNEIX.fitxer29_final_LOADS()  --("ANY_ACADEMIC" VARCHAR(16777216)) 
     returns varchar(16777216)
     language SQL
     execute AS caller

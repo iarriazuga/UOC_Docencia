@@ -5,9 +5,9 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX AS 
+CREATE OR REPLACE   TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX AS 
 
-with aux AS (
+with aux_cte_table AS (
 SELECT 
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".DIM_ASSIGNATURA_KEY')::string   || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS ID_ASIGNATURA_RECURS,  -- material id
     upper(GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".source')::string) || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS DIM_RECURSOS_APRENENTATGE_KEY,  -- material id
@@ -54,7 +54,7 @@ FROM  DB_UOC_PROD.STG_DADESRA.LIVE_EVENTS_CALIPER_DUMMY le
     --where DIM_ASSIGNATURA_KEY = 'M8.020'
     -- order by event_time DESC
 ) 
-SELECT * FROM aux    
+SELECT * FROM aux_cte_table    
 where 1=1
     -- and ID_ASIGNATURA_RECURS is not null
     -- AND DIM_SEMESTRE_KEY IS NOT NULL
@@ -89,7 +89,7 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED (
     URL VARCHAR(16777216)
 ) AS
 
-WITH aux AS (
+WITH aux_cte_table AS (
     SELECT 
         ID_ASIGNATURA_RECURS, 
         LEFT(DIM_ASSIGNATURA_KEY, 6) AS DIM_ASSIGNATURA_KEY,  -- Truncate to fit VARCHAR(6)
@@ -119,7 +119,7 @@ WITH aux AS (
     FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX
 ) 
 SELECT * 
-FROM aux    
+FROM aux_cte_table    
 WHERE DIM_ASSIGNATURA_KEY IS NOT NULL
   AND DIM_SEMESTRE_KEY IS NOT NULL
   AND CODI_RECURS IS NOT NULL;

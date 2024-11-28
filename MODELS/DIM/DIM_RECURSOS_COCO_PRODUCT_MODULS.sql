@@ -4,7 +4,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 -- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
-CREATE or replace  TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
+CREATE OR REPLACE  TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
 With productos_aux AS ( 
         SELECT                               
             
@@ -126,7 +126,7 @@ algunos modulos no tienen producto origen --> tenemso que quedarnos con el modul
  
 // DELETE DUPLICATES: 
 -- Step 1: Create a temporary table with duplicate rows to delete
-CREATE TEMPORARY TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP AS
+CREATE   TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP AS
 SELECT 
     CODI_RECURS,
     source_recurs

@@ -2,9 +2,9 @@
 
 
 
-create or replace sequence db_uoc_prod.dd_od.sequencia_via_opc_acces start 1 increment 1;
+CREATE OR REPLACE sequence db_uoc_prod.dd_od.sequencia_via_opc_acces start 1 increment 1;
 
-create or replace table db_uoc_prod.dd_od.dim_acces
+CREATE OR REPLACE table db_uoc_prod.dd_od.dim_acces
 (id_acces numeric (16) not null comment 'Clau única i numèrica que identifica els registres de la dimensió viàs opc acces'
 ,dim_acces_key varchar (500) not null comment 'Es la clau primaria de la taula'
 ,tipo_docencia varchar(5) not null
@@ -21,7 +21,7 @@ create or replace table db_uoc_prod.dd_od.dim_acces
 
 
 
-create or replace procedure db_uoc_prod.dd_od.dim_acces_loads()
+CREATE OR REPLACE procedure db_uoc_prod.dd_od.dim_acces_loads()
 returns varchar(16777216)
 language SQL
 execute AS caller

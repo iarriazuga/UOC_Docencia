@@ -1,6 +1,6 @@
 -- Creem la taula de STAGE que contindra tots els IDs de les diferents dimensions
 
-create or replace table db_uoc_prod.dd_od.fact_docencia (
+CREATE OR REPLACE table db_uoc_prod.dd_od.fact_docencia (
 	id_docencia number(20,0),
     id_semestre number(16,0) comment 'Aquest ID correspon a la taula DIM_SEMESTRE.',
     id_assignatura number(16,0) comment 'Aquest ID correspon a la taula DIM_ASSIGNATURA.',
@@ -86,7 +86,7 @@ FROM db_uoc_prod.dd_od.stage_docencia_post
 */
 
 -- Creacio del procediment que carregara i actualitzara els camps necessaris de la taula, actualitzant els IDs de les dimensions que siguin necessaris.
-create or replace procedure db_uoc_prod.dd_od.fact_docencia_loads()
+CREATE OR REPLACE procedure db_uoc_prod.dd_od.fact_docencia_loads()
 returns varchar(16777216)
 language sql
 execute AS caller

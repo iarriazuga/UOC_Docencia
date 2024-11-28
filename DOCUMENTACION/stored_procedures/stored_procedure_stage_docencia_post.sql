@@ -7,7 +7,7 @@ let start_time timestamp_ntz := convert_timezone(''America/Los_Angeles'',''Europ
 let execution_time float;
 
  
-create or replace temporary table db_uoc_prod.dd_od.semestres_relatius_temporary_table AS
+CREATE OR REPLACE temporary table db_uoc_prod.dd_od.semestres_relatius_temporary_table AS
 with p AS (
 SELECT idp,
        super_expedient,

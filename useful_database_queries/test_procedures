@@ -15,7 +15,7 @@
 
 -- Creacio de la taula dim_matricula amb els atributs particulars.
 
-CREATE or replace TABLE db_uoc_prod.DB_UOC_PROD.DD_OD.DIM_MATRICULA_LOADS.dim_matricula (
+CREATE OR REPLACE TABLE db_uoc_prod.DB_UOC_PROD.DD_OD.DIM_MATRICULA_LOADS.dim_matricula (
   id_matricula NUMBER(16) NOT NULL AUTOINCREMENT START 1 INCREMENT 1 COMMENT 'Clau unica i numerica que identifica els registres de la dimensio matricula',
   dim_matricula_key NUMBER(16) NOT NULL COMMENT 'Codi unic de matricula: Piolin -> num_matricula  Gat -> CONCAT(em.num_expediente, em.any_academico, em.num_matricula)',
   origen VARCHAR(6) NOT NULL COMMENT 'GAT/PIOLIN',

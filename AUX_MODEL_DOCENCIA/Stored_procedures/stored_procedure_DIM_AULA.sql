@@ -1,11 +1,11 @@
 -- Creacio de la sequencia que donara peu a identificador unic de la taula.
 
-create or replace sequence db_uoc_prod.dd_od.dim_aula_id_aula start 1 increment 1;
+CREATE OR REPLACE sequence db_uoc_prod.dd_od.dim_aula_id_aula start 1 increment 1;
 
 -- Creacio de la taula DIM_AULA amb les descripcions en els idiomes que es disponibilitzan i els atributs particulars.
 -- Pendent de identificar nous requeriments a incloure a la dimensio.
 
-create or replace TABLE db_uoc_prod.dd_od.dim_aula (
+CREATE OR REPLACE TABLE db_uoc_prod.dd_od.dim_aula (
 
 	COD_AULA NUMBER(10,0)
 	,COD_ASIGNATURA VARCHAR(8)
@@ -16,7 +16,7 @@ create or replace TABLE db_uoc_prod.dd_od.dim_aula (
 
 
 -- Creacio del procediment de carrega i/o actualització de dades programable
-create or replace procedure db_uoc_prod.dd_od.dim_aula_loads()
+CREATE OR REPLACE procedure db_uoc_prod.dd_od.dim_aula_loads()
     returns varchar(16777216)
     language SQL
     execute AS caller
@@ -144,7 +144,7 @@ SELECT * FROM db_uoc_prod.dd_od.dim_aula;
 
 -- SELECT * FROM DB_UOC_PROD.STG_DOCENCIA.GAT_AULAS_ASIG
 
--- create or replace TRANSIENT TABLE DB_UOC_PROD.STG_DOCENCIA.aux_aula (
+-- CREATE OR REPLACE TRANSIENT TABLE DB_UOC_PROD.STG_DOCENCIA.aux_aula (
 
 -- 	COD_AULA NUMBER(10,0),
 -- 	COD_ASIGNATURA VARCHAR(8),

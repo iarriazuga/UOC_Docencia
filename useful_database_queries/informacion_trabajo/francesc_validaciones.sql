@@ -1,4 +1,4 @@
-with aux as ( 
+with aux_cte_table as ( 
 
 SELECT 
     db_uoc_prod.stg_dadesra.dimax_item_dimax.cami_node,
@@ -32,7 +32,7 @@ SELECT
         and db_uoc_prod.stg_dadesra.dimax_v_recurs.id_recurs =  69226
 
 
-) select * from aux 
+) select * from aux_cte_table 
 
 
     where 1=1 and  titol like '%Root Node:PV%'

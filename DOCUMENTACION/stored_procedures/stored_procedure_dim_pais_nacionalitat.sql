@@ -1,4 +1,4 @@
-Create or replace view DB_UOC_PROD.DD_OD.dim_pais_nacionalitat comment = "Dimensió nacionalitat. Es tracta d'una vista creada mitjançant la dim país residència i la taula de gat tercers_paisos per tenir la descripció nacionalitat associada al país" AS 
+CREATE OR REPLACE view DB_UOC_PROD.DD_OD.dim_pais_nacionalitat comment = "Dimensió nacionalitat. Es tracta d'una vista creada mitjançant la dim país residència i la taula de gat tercers_paisos per tenir la descripció nacionalitat associada al país" AS 
 SELECT distinct min(id_pais_residencia) AS id_pais_nacionalitat,
                 continent, 
                 regio, 

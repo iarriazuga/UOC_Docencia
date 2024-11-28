@@ -1,11 +1,11 @@
 -- Creacio de la sequencia que donara peu a identificador unic de la taula.
 
-create or replace sequence db_uoc_prod.dd_od.sequencia_id_semestre start 1 increment 1;
+CREATE OR REPLACE sequence db_uoc_prod.dd_od.sequencia_id_semestre start 1 increment 1;
 
 -- Creacio de la taula ANY_ACADEMIC (SEMESTRE) amb els atributs particulars.
 -- Pendent de identificar si es possible vincular-la a la dimensio de data estandar.
 
-create or replace table db_uoc_prod.dd_od.dim_semestre 
+CREATE OR REPLACE table db_uoc_prod.dd_od.dim_semestre 
 (
 id_semestre number(16) not null comment 'Clau unica i numerica que identifica els registres de la dimensio any academic'
 ,dim_semestre_key varchar(6) not null comment 'Codi UOC any academic. Els anys academics es poden anomenar semestres en alguns equips i departaments. En alguns casos existeix el concepte de 3er any academic, que correspon a formacions adicionals i/o seminaris'
@@ -46,11 +46,11 @@ values (0,19000,'ND',1900,0,'ND','1900-01-01 00:00:00.000','1900-01-01 00:00:00.
 -- SELECT * FROM db_uoc_prod.dd_od.dim_any_academic;
 
 -- Creacio de la sequencia autonumerica pel registre de les execucions de OD i reseteja els numeros per tal que comenci de nou.
--- create or replace sequence db_uoc_prod.dd_od.sequencia_id_log;
-create or replace sequence db_uoc_prod.dd_od.sequencia_id_log start 1 increment 1;
+-- CREATE OR REPLACE sequence db_uoc_prod.dd_od.sequencia_id_log;
+CREATE OR REPLACE sequence db_uoc_prod.dd_od.sequencia_id_log start 1 increment 1;
 
 -- Taula de registre de les execucions de les taules de OD
-create or replace table db_uoc_prod.dd_od.procedures_log
+CREATE OR REPLACE table db_uoc_prod.dd_od.procedures_log
 (
 id_log number(38) not null
 ,procedure_name varchar(255)
@@ -62,7 +62,7 @@ id_log number(38) not null
 );
 
 -- Creacio del procediment de carrega i/o actualització de dades programable
-create or replace procedure db_uoc_prod.dd_od.dim_semestre_loads()
+CREATE OR REPLACE procedure db_uoc_prod.dd_od.dim_semestre_loads()
 returns varchar(16777216)
 language SQL
 execute AS caller

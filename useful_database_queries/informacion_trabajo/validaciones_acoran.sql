@@ -462,7 +462,7 @@ from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED
 
 -- SEMESTRE PARA DIMAX
 
-with aux as (
+with aux_cte_table as (
 
 select  
 
@@ -487,7 +487,7 @@ FROM db_uoc_prod.stg_dadesra.dimax_resofite_path  --- registros : 17,303,400
 order by 1 desc 
 
 ) 
-select * from aux -- 3,749,497
+select * from aux_cte_table -- 3,749,497
 WHERE titol_test LIKE '%' || SEMESTRE || '%'; -- 3,272,054
 
 
@@ -1029,11 +1029,11 @@ dimax_v_recurs.id_recurs as CODI_RECURS,
 */
 
 -- VMEMNOOS TABLAS ORIGEN : INNER JOIN CAT --> ELMINA LOS RECURSOS 
-WITH AUX AS (
+WITH aux_cte_table AS (
 SELECT  dimax_v_recurs.id_recurs as CODI_RECURS, * 
 from db_uoc_prod.stg_dadesra.dimax_v_recurs 
 )
-SELECT DISTINCT CODI_RECURS FROM AUX  -- -101,871 k --> SE GENERAN DUPLICACIONS? 
+SELECT DISTINCT CODI_RECURS FROM aux_cte_table  -- -101,871 k --> SE GENERAN DUPLICACIONS? 
 
 
 

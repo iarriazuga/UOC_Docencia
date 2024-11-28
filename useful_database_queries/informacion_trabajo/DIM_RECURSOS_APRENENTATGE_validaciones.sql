@@ -38,7 +38,7 @@ where producte_creacio_id is null
 
 
 //*** CODIGOS QUE NO TIENEN PADRE  */
-with aux AS ( 
+with aux_cte_table AS ( 
 
         SELECT id AS CODI_RECURS
         FROM db_uoc_prod.stg_dadesra.autors_modul autors_modul  
@@ -51,7 +51,7 @@ FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE  -- 84
 
 where 1=1 
     AND format_recurs is null  
-    and  CODI_RECURS not in ( SELECT CODI_RECURS FROM aux )
+    and  CODI_RECURS not in ( SELECT CODI_RECURS FROM aux_cte_table )
     AND ORIGEN_RECURS = 'PROPI'
 
 

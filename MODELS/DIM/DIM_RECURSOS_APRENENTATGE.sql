@@ -5,7 +5,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE or Replace TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE AS -- DDP_DOCENCIA  vs  DDP_DADESRA 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE AS -- DDP_DOCENCIA  vs  DDP_DADESRA 
 With dim_coco_productes_moduls AS ( 
     
     SELECT

@@ -326,7 +326,7 @@ català
 
 
 
-with aux AS (
+with aux_cte_table AS (
 
 SELECT AUTORS_MODUL.ID AS ID_test FROM db_uoc_prod.stg_dadesra.AUTORS_MODUL AUTORS_MODUL  inner join db_uoc_prod.stg_dadesra.autors_producte on autors_producte.id = AUTORS_MODUL.PRODUCTE_CREACIO_ID 
 union all 
@@ -334,7 +334,7 @@ SELECT autors_producte.id AS ID_test FROM   db_uoc_prod.stg_dadesra.autors_produ
 
 
 )
-SELECT ID_test, count(*) FROM aux 
+SELECT ID_test, count(*) FROM aux_cte_table 
 group by 1
 having count (*) > 1
 
@@ -360,7 +360,7 @@ inner join db_uoc_prod.stg_dadesra.autors_producte on autors_producte.id = AUTOR
 
 
 
-with aux AS (
+with aux_cte_table AS (
 
 SELECT AUTORS_MODUL.ID AS ID_test FROM db_uoc_prod.stg_dadesra.AUTORS_MODUL AUTORS_MODUL  inner join db_uoc_prod.stg_dadesra.autors_producte on autors_producte.id = AUTORS_MODUL.PRODUCTE_CREACIO_ID 
 union all 
@@ -368,7 +368,7 @@ SELECT autors_producte.id AS ID_test FROM   db_uoc_prod.stg_dadesra.autors_produ
 
 
 )
-SELECT ID_test, count(*) FROM aux 
+SELECT ID_test, count(*) FROM aux_cte_table 
 group by 1
 having count (*) > 1
 

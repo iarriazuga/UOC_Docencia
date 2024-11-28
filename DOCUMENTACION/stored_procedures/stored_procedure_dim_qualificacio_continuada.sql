@@ -1,11 +1,11 @@
 -- Creacio de la sequencia que donara peu a identificador unic de la taula de qualificacio continuada.
 
-create or replace sequence db_uoc_prod.dd_od.sequencia_id_qualificacio_continuada start 1 increment 1;
+CREATE OR REPLACE sequence db_uoc_prod.dd_od.sequencia_id_qualificacio_continuada start 1 increment 1;
 
 -- Creacio de la taula DIM_QUALIFICACIO amb les descripcions i atributs particulars.
 -- Pendent de identificar nous requeriments a incloure a la dimensio.
 
-create or replace table db_uoc_prod.dd_od.dim_qualificacio_continuada 
+CREATE OR REPLACE table db_uoc_prod.dd_od.dim_qualificacio_continuada 
 (
 id_qualificacio_continuada number(16) not null comment 'Clau unica i numerica que identifica els registres de la dimensio qualificacio'
 ,dim_qualificacio_continuada_key varchar(6) not null comment 'Codi UOC de qualificacio.'
@@ -19,7 +19,7 @@ id_qualificacio_continuada number(16) not null comment 'Clau unica i numerica qu
 ;
 
 -- Creacio del procediment de carrega i/o actualització de dades programable
-create or replace procedure db_uoc_prod.dd_od.dim_qualificacio_continuada_loads()
+CREATE OR REPLACE procedure db_uoc_prod.dd_od.dim_qualificacio_continuada_loads()
 returns varchar(16777216)
 language SQL
 execute AS caller

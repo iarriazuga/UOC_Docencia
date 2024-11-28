@@ -1,10 +1,10 @@
 -- Creacio de la sequencia que donara peu a identificador unic de la taula.
 
-create or replace sequence db_uoc_prod.dd_od.sequencia_id_pais_residencia start 1 increment 1;
+CREATE OR REPLACE sequence db_uoc_prod.dd_od.sequencia_id_pais_residencia start 1 increment 1;
 
 -- Creació de la taula dim_residencia amb els atributs definists
 
-create or replace table db_uoc_prod.dd_od.dim_pais_residencia
+CREATE OR REPLACE table db_uoc_prod.dd_od.dim_pais_residencia
 (id_pais_residencia number(16) not null comment 'Clau unica i numerica que identifica els registres de la dimensio residencia'
  ,continent varchar(254) not null comment 'Continent al que pertany el pais. Els paisos amb ND son paisos o que no son propiament paisos, no estan reconeguts o ja no existeixen'
 ,regio varchar(254) not null COMMENT 'regio al que pertany el pais. Els paisos amb ND son paisos o que no son propiament paisos, no estan reconeguts o ja no existeixen'
@@ -45,7 +45,7 @@ SELECT * FROM db_uoc_prod.dd_od.dim_pais_residencia;
 
 -- Creacio del procediment de carrega i/o actualització de dades programable
 
-create or replace procedure db_uoc_prod.dd_od.dim_pais_residencia_loads()
+CREATE OR REPLACE procedure db_uoc_prod.dd_od.dim_pais_residencia_loads()
 returns varchar(16777216)
 language SQL
 execute AS caller
