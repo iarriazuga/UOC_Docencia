@@ -4,7 +4,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 -- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
-CREATE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
+CREATE or replace  TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
 With productos_aux AS ( 
         SELECT                               
             
@@ -38,10 +38,10 @@ With productos_aux AS (
             'NA' AS MODUL_ORIGEN_ID,                                -- Id del mòdul que original (Campo específico de módulo)
             'NA' AS OBRA_ID,                                        -- Id de la obra (Campo específico de módulo)
  
- SELECT * 
-        FROM db_uoc_prod.stg_dadesra.autors_producte 
+ 
+        FROM db_uoc_prod.stg_dadesra.autors_producte  -- 55,848
             
-        inner join db_uoc_prod.stg_dadesra.autors_suport_producte_i18n
+        left join db_uoc_prod.stg_dadesra.autors_suport_producte_i18n  -- 51,711: revisar inner 
             on autors_producte.fk_suport_producte_suport_id = autors_suport_producte_i18n.fk_suport_producte_suport_id
             and autors_suport_producte_i18n.idioma = 'CAT'
         

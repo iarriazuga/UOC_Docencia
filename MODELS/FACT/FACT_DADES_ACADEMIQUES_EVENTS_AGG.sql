@@ -12,7 +12,7 @@ SELECT
     dades_academiques.DIM_ASSIGNATURA_KEY
     , dades_academiques.DIM_SEMESTRE_KEY
     , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY
-    , count( dades_academiques.ID_CODI_RECURS )  as TIMES_USED
+    , count( dades_academiques.EVENT_CODI_RECURS )  as TIMES_USED
  
 
 FROM  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS dades_academiques
