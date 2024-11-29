@@ -3,8 +3,7 @@
 -- -- RECURSOS_APRENDIZATJE
 -- -- #################################################################################################
 -- -- #################################################################################################
--- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS AS
 With productos_aux AS ( 
         SELECT                               
             
@@ -31,7 +30,7 @@ With productos_aux AS (
             autors_producte.paraula_clau,                           -- COCO: Paraula Clau
             autors_producte.codi_recurs_origen,                     -- COCO: Codi recurs Origen 
             autors_producte.num_contracte,                          -- COCO: Codi contracte autoria
-            autors_producte.data_tancament_real ,                    -- COCO: Data de producció del material
+            autors_producte.data_tancament_real ,                   -- COCO: Data de producció del material
 
             -- ADDED: check concat all 
             'NA' AS OBSERVACIONS,                                   --  Observacions del mòdul (Campo específico de módulo)
@@ -117,8 +116,8 @@ algunos modulos no tienen producto origen --> tenemso que quedarnos con el modul
 -- productos : 51,568 
 -- modulos   : 60,775
  
---  SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
---  drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
+--  SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
+--  drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
 
 */
 
@@ -126,7 +125,7 @@ algunos modulos no tienen producto origen --> tenemso que quedarnos con el modul
  
 // DELETE DUPLICATES: 
 -- Step 1: Create a temporary table with duplicate rows to delete
-CREATE   TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP AS
+CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP AS
 SELECT 
     CODI_RECURS,
     source_recurs
@@ -136,13 +135,13 @@ FROM
         source_recurs,
         ROW_NUMBER() OVER(PARTITION BY CODI_RECURS ORDER BY CODI_RECURS) AS row_num
      FROM 
-        DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
+        DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
     ) AS subquery
 WHERE 
     row_num > 1 AND source_recurs = 'COCO_PROD';
 
 -- Step 2: Delete the duplicates using the temporary table
-DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
+DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
 WHERE (codi_recurs, source_recurs) IN (
     SELECT CODI_RECURS, source_recurs
     FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP
@@ -151,8 +150,7 @@ WHERE (codi_recurs, source_recurs) IN (
 -- Step 3: Drop the temporary table after use
 DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP;
 
-
-
+ 
 
 
 

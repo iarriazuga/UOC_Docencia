@@ -59,10 +59,6 @@ With dim_coco_productes_moduls AS (
         -- not exist in DIMAX
         , DESCRIPCIO_TRAMESA_RECURS --- error: CLASIFIED AS A TIMESTAMP 
         , DESCRIPCIO_IDIOMA_RECURS
-
-
-
-
         , NUM_CONTRACTE
         , OBSERVACIONS
         , MODUL_ORIGEN_ID
@@ -72,7 +68,7 @@ With dim_coco_productes_moduls AS (
         , URL_IDIOMA_RECURS
 
  
-    FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
+    FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
                    
 ), 
 
@@ -138,13 +134,10 @@ dimax AS (
         -- fields of coco : publicat al aula 
         , NULL AS DESCRIPCIO_TRAMESA_RECURS -- CHANGES: 
         , NULL AS DESCRIPCIO_IDIOMA_RECURS
-
-
         , '' AS NUM_CONTRACTE
         , '' AS OBSERVACIONS
         , '' AS MODUL_ORIGEN_ID
         , 0 AS VERSIO_CREACIO_ID
-
         , '' AS OBRA_ID
         , '' AS CODI_MIGRACIO
         , '' AS URL_IDIOMA_RECURS
