@@ -44,13 +44,13 @@ with cross_semestre_asignatura AS (
      -- completar distinct de estas tablas --> SELECT * 
     FROM db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247,364 
     
-    inner join  db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
         on plan_publicacion.id =  productos_plan_publicacion.versio_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
     on  asignatura.id = plan_publicacion.fk_element_formacio_element_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_producte coco_products 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_producte coco_products 
     on  coco_products.id = productos_plan_publicacion.PRODUCTE_ID 
     
     inner join db_uoc_prod.stg_dadesra.autors_periode semestre  

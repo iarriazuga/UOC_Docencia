@@ -124,7 +124,7 @@ left join (SELECT 'E' AS cod_pais,
        tcp.fecha_baja AS baja_localitzacio,
        tcp.fecha_modificacion AS modifica_localitzacio
 FROM DB_UOC_PROD.STG_DOCENCIA.TERCERS_CODIGOS_POSTALES AS tcp
-INNER JOIN  DB_UOC_PROD.STG_DOCENCIA.TERCERS_POBLACIONES AS tp on tcp.cod_poblacion = tp.cod_poblacion 
+INNER JOIN DB_UOC_PROD.STG_DOCENCIA.TERCERS_POBLACIONES AS tp on tcp.cod_poblacion = tp.cod_poblacion 
 inner join DB_UOC_PROD.STG_DOCENCIA.TERCERS_PROVINCIAS AS tpr on tp.cod_provincia = tpr.cod_provincia
 inner join DB_UOC_PROD.STG_DOCENCIA.TERCERS_COMUNIDADES AS tc on tp.cod_comunidad = tc.cod_comunidad
 inner join DB_UOC_PROD.STG_UNEIX.TERCERS_COMARCAS AS tco on tp.cod_comarca = tco.cod_comarca and tp.cod_comunidad = tco.cod_comunidad where cod_postal = '99999'
@@ -191,7 +191,7 @@ left join (SELECT 'E' AS cod_pais,
        tcp.fecha_baja AS baja_localizacion,
        tcp.fecha_modificacion AS modifica_localizacion
 FROM DB_UOC_PROD.STG_DOCENCIA.TERCERS_CODIGOS_POSTALES AS tcp
-INNER JOIN  DB_UOC_PROD.STG_DOCENCIA.TERCERS_POBLACIONES AS tp on tcp.cod_poblacion = tp.cod_poblacion 
+INNER JOIN DB_UOC_PROD.STG_DOCENCIA.TERCERS_POBLACIONES AS tp on tcp.cod_poblacion = tp.cod_poblacion 
 inner join DB_UOC_PROD.STG_DOCENCIA.TERCERS_PROVINCIAS AS tpr on tp.cod_provincia = tpr.cod_provincia
 inner join DB_UOC_PROD.STG_DOCENCIA.TERCERS_COMUNIDADES AS tc on tp.cod_comunidad = tc.cod_comunidad
 inner join DB_UOC_PROD.STG_UNEIX.TERCERS_COMARCAS AS tco on tp.cod_comarca = tco.cod_comarca and tp.cod_comunidad = tco.cod_comunidad

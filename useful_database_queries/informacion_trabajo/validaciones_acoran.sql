@@ -365,13 +365,13 @@ with aux_planes_estudio_base  as (
     select  distinct VERSIO_ID  as  PLAN_ESTUDIOS_BASE, *  
     from db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247.4K
     
-    inner join  db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
         on plan_publicacion.id =  productos_plan_publicacion.versio_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
     on  asignatura.id = plan_publicacion.fk_element_formacio_element_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_producte coco_products 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_producte coco_products 
     on  coco_products.id = productos_plan_publicacion.PRODUCTE_ID 
     
     inner join db_uoc_prod.stg_dadesra.autors_periode semestre  
@@ -406,10 +406,10 @@ select distinct  coco_products.*   -- 1,319 vs
 
 FROM db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247,364 
     
-    inner join  db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
         on plan_publicacion.id =  productos_plan_publicacion.versio_id
 
-    inner join  db_uoc_prod.stg_dadesra.autors_producte coco_products 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_producte coco_products 
     on  coco_products.id = productos_plan_publicacion.PRODUCTE_ID 
        
 where productos_plan_publicacion.versio_id not in (
@@ -704,13 +704,13 @@ select distinct VERSIO_ID   from db_uoc_prod.stg_dadesra.autors_productes_versio
  
     from db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247.4K
     
-    inner join  db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
         on plan_publicacion.id =  productos_plan_publicacion.versio_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
     on  asignatura.id = plan_publicacion.fk_element_formacio_element_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_producte coco_products 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_producte coco_products 
     on  coco_products.id = productos_plan_publicacion.PRODUCTE_ID 
     
     inner join db_uoc_prod.stg_dadesra.autors_periode semestre  
@@ -744,13 +744,13 @@ with aux_planes_estudio_base  as (
     select  distinct VERSIO_ID  as  PLAN_ESTUDIOS_BASE 
     from db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247.4K
     
-    inner join  db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_versio plan_publicacion 
         on plan_publicacion.id =  productos_plan_publicacion.versio_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura 
     on  asignatura.id = plan_publicacion.fk_element_formacio_element_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_producte coco_products 
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_producte coco_products 
     on  coco_products.id = productos_plan_publicacion.PRODUCTE_ID 
     
     inner join db_uoc_prod.stg_dadesra.autors_periode semestre  

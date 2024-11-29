@@ -43,10 +43,10 @@ with cross_semestre_asignatura AS (
  
     FROM db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247,902 vs  247,902
     
-    inner join  db_uoc_prod.stg_dadesra.autors_versio plan_publicacion   --247,902  vs 247,902
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_versio plan_publicacion   --247,902  vs 247,902
         on plan_publicacion.id =  productos_plan_publicacion.versio_id
     
-    inner join  db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura -- 247,902  vs 247,902
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura -- 247,902  vs 247,902
         on  asignatura.id = plan_publicacion.fk_element_formacio_element_id
     
     inner join db_uoc_prod.stg_dadesra.autors_periode semestre  

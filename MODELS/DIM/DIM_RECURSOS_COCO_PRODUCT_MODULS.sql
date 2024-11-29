@@ -4,7 +4,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 -- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS
-CREATE OR REPLACE  TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS AS
 With productos_aux AS ( 
         SELECT                               
             
