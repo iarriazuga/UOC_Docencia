@@ -219,8 +219,8 @@ select   *
 from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES
 where CODI_RECURS is null --6,074,242
 
-
-
+----##########################################################################################################################
+---- Validacion conteos 
 ----##########################################################################################################################
 ----##########################################################################################################################
 with aux_cte_table as ( 
@@ -269,3 +269,89 @@ select  sum(times_used)
     -- , DIM_RECURSOS_APRENENTATGE_KEY
     -- , coalesce(TIMES_USED , 0) as TIMES_USED
 from auxiliar
+
+
+
+
+----##########################################################################################################################
+---- Validacion conteos 
+----##########################################################################################################################
+----##########################################################################################################################
+with aux_cte_table as ( 
+    select   
+        DIM_ASSIGNATURA_KEY 
+        , DIM_SEMESTRE_KEY
+        , CODI_RECURS
+        , cast(DIM_ASSIGNATURA_KEY || DIM_SEMESTRE_KEY || CODI_RECURS as string) as master  -- 10452227 --> perdemos 2M : 
+    
+    from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED  -- 12,210,672 
+
+) 
+select   distinct 
+        DIM_ASSIGNATURA_KEY 
+        , DIM_SEMESTRE_KEY
+        , CODI_RECURS
+    , cast( DIM_ASSIGNATURA_KEY || DIM_SEMESTRE_KEY || CODI_RECURS  as string ) as master
+
+from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES
+where cast( DIM_ASSIGNATURA_KEY || DIM_SEMESTRE_KEY || CODI_RECURS  as string )  not in ( select master from aux_cte_table )
+
+----##########################################################################################################################
+
+
+
+
+select   sum(times_used) 
+From DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG  -- 10464843 vs 12224872
+
+select * From DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG  -- 5,103,191 tiene la tabla  vs 4,990,924 no hacen cruce
+
+select * From DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG -- 4,990,924 -- coinciden los valores
+where times_used = 0
+
+
+--- vemos que asignaturas nos faltan 
+select distinct DIM_ASSIGNATURA_KEY  --- 731  vemos que asignaturas nos faltan 
+From DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG agg -- 4,990,924 -- coinciden los valores
+
+where agg.times_used = 0
+and DIM_ASSIGNATURA_KEY not in (select DIM_ASSIGNATURA_KEY From DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA)
+
+
+--- vemos que recursos nos faltan 
+select distinct DIM_RECURSOS_APRENENTATGE_KEY  --- 52,134 -- posible concatenacion  --> NIU / COCO + Codi_recurs 
+From DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG agg -- 4,990,924 -- coinciden los valores
+where agg.times_used = 0
+
+and DIM_RECURSOS_APRENENTATGE_KEY not in (select DIM_RECURSOS_APRENENTATGE_KEY From DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE)  -- no NIU
+
+
+--- vemos que semestre nos faltan 
+select distinct DIM_SEMESTRE_KEY  --- 0
+From DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG agg -- 4,990,924 -- coinciden los valores
+where agg.times_used = 0
+and DIM_SEMESTRE_KEY not in (select DIM_SEMESTRE_KEY From DB_UOC_PROD.DD_OD.DIM_SEMESTRE)
+
+
+
+
+--- vemos que asignaturas nos faltan 
+select 
+    -- distinct -- 1,715,908
+    DIM_ASSIGNATURA_KEY 
+    , DIM_RECURSOS_APRENENTATGE_KEY
+    , DIM_SEMESTRE_KEY
+From DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG agg -- 4,990,924 -- coinciden los valores
+
+where agg.times_used = 0
+or  DIM_SEMESTRE_KEY not in (select DIM_SEMESTRE_KEY From DB_UOC_PROD.DD_OD.DIM_SEMESTRE)
+and ( 
+    DIM_ASSIGNATURA_KEY not in (select DIM_ASSIGNATURA_KEY From DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA) 
+    or 
+    DIM_RECURSOS_APRENENTATGE_KEY not in (select DIM_RECURSOS_APRENENTATGE_KEY From DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE) --)  -- 1,715,908 asignados 
+    -- or 
+    -- DIM_SEMESTRE_KEY not in (select DIM_SEMESTRE_KEY From DB_UOC_PROD.DD_OD.DIM_SEMESTRE)
+)
+
+
+select * from DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP

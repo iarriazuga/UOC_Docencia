@@ -150,3 +150,16 @@ WHERE (codi_recurs, source_recurs) IN (
 
 -- Step 3: Drop the temporary table after use
 DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP;
+
+
+
+
+
+
+
+
+
+
+
+
+
