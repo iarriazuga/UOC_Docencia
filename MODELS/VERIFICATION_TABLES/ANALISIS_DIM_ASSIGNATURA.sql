@@ -121,7 +121,7 @@ from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE --8,975
 group by 1
 having count(*) > 1 
 
-delete from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE 
+
 
 
 --- valoracion de duplicados 
@@ -146,4 +146,22 @@ where codi_recurs in (
 )
  order by codi_recurs desc
 
+-- francesc
+listado asignaturas no matchean / no existen STAGE_LIVE_EVENTS_FLATENED
+listado recursos no matchean / no existen STAGE_LIVE_EVENTS_FLATENED
 
+
+/**
+niu	null	9
+niu	DIMAX	17117
+niu	COCO_PROD	12893
+niu	COCO_MOD	2909
+
+-- fase 2 
+niu	null	6
+niu	DIMAX	17195
+niu	COCO_MOD	2909
+niu	COCO_PROD	10372
+
+
+*/
