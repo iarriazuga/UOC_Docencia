@@ -115,3 +115,71 @@ where 1=1
     '305233'
 
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- -- #################################################################################################
+-- codi_recurs_origen = 'ERROR'
+-- -- #################################################################################################
+with aux  as ( 
+
+select distinct
+eve.codi_recurs , eve.source,  rec.source_recurs
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED eve
+
+left join DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE rec 
+on eve.codi_recurs = rec.codi_recurs
+) 
+
+select source , source_recurs,  count(*) 
+
+from aux
+group by 1,2
+order by 1 desc
+
+
+--- valoracion de duplicados  : conservamos --> pasar listado a frances : 
+select codi_recurs, count(*) 
+from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE --8,975
+group by 1
+having count(*) > 1 
+
+delete from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE 
+
+
+--- valoracion de duplicados 
+select codi_recurs as test2 , * --codi_recurs, count(*) 
+from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE --8,975
+where codi_recurs in ( 
+
+
+
+'114045',
+'113965',
+'122347',
+'114123',
+'113993',
+'122487',
+'113963',
+'122291',
+'122293',
+'122351',
+'122276',
+'113887'
+)
+ order by codi_recurs desc
+
+

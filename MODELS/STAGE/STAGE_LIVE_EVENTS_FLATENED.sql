@@ -9,8 +9,8 @@ CREATE OR REPLACE   TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AU
 
 with aux_cte_table AS (
 SELECT 
-    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".DIM_ASSIGNATURA_KEY')::string   || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS ID_ASIGNATURA_RECURS,  -- material id
-    upper(GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".source')::string) || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS DIM_RECURSOS_APRENENTATGE_KEY,  -- material id
+    -- GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".DIM_ASSIGNATURA_KEY')::string   || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS ID_ASIGNATURA_RECURS,  -- material id
+    -- upper(GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".source')::string) || '-' ||  GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string   AS DIM_RECURSOS_APRENENTATGE_KEY,  -- material id
     GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string AS CODI_RECURS,
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".subjectCode')::string AS DIM_ASSIGNATURA_KEY, 
     GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".semester')::string AS DIM_SEMESTRE_KEY,
@@ -63,7 +63,7 @@ where 1=1
  
 ----######################## Replace the auxiliar table 
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED (
-    ID_ASIGNATURA_RECURS VARCHAR(16777216),
+    -- ID_ASIGNATURA_RECURS VARCHAR(16777216),
     DIM_ASSIGNATURA_KEY VARCHAR(6),  
     DIM_SEMESTRE_KEY INT, 
     DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(15), 
@@ -85,18 +85,19 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED (
     OBJECT_MEDIATYPE VARCHAR(16777216),
     OBJECT_TYPE VARCHAR(16777216),
     FORMAT VARCHAR(16777216),
+    SOURCE2 VARCHAR(16777216),
     SOURCE VARCHAR(16777216),
     URL VARCHAR(16777216)
 ) AS
 
 WITH aux_cte_table AS (
     SELECT 
-        ID_ASIGNATURA_RECURS, 
+        -- ID_ASIGNATURA_RECURS, 
         LEFT(DIM_ASSIGNATURA_KEY, 6) AS DIM_ASSIGNATURA_KEY,  -- Truncate to fit VARCHAR(6)
         TRY_CAST(DIM_SEMESTRE_KEY AS INT) AS DIM_SEMESTRE_KEY, 
-        LEFT(DIM_RECURSOS_APRENENTATGE_KEY, 15) AS DIM_RECURSOS_APRENENTATGE_KEY,  
+        -- LEFT(DIM_RECURSOS_APRENENTATGE_KEY, 15) AS DIM_RECURSOS_APRENENTATGE_KEY,  
         TRY_CAST(CODI_RECURS AS INT) AS CODI_RECURS, 
-        
+
         EVENT_TIME,  
         EVENT_DATE,   
         ACTION, 
@@ -114,14 +115,61 @@ WITH aux_cte_table AS (
         OBJECT_MEDIATYPE, 
         OBJECT_TYPE, 
         FORMAT, 
+        URL, 
         SOURCE, 
-        URL
+        -- source calculation
+        case 
+            when SOURCE = 'DIMAX' then 'DIMAX'
+            when SOURCE = 'COCO' then 'COCO'
+            -- Both tables: 
+            when 
+                TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)  
+                and 
+                TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  
+            then 'BOTH'
+            -- Dimax only: 
+            when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  then 'DIMAX'
+            -- Coco only:
+            when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)   then 'COCO'
+        else 'ERROR' end as SOURCE2, 
+
+
     FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX
 ) 
-SELECT * 
-FROM aux_cte_table    
-WHERE DIM_ASSIGNATURA_KEY IS NOT NULL
-  AND DIM_SEMESTRE_KEY IS NOT NULL
-  AND CODI_RECURS IS NOT NULL;
+SELECT  
+        -- key_masters
+        DIM_ASSIGNATURA_KEY,   
+        DIM_SEMESTRE_KEY, 
+        SOURCE2 || ' - ' || CODI_RECURS  as DIM_RECURSOS_APRENENTATGE_KEY,  
+        CODI_RECURS, 
+        SOURCE, 
+        SOURCE2, 
+
+        EVENT_TIME,  
+        EVENT_DATE,   
+        ACTION, 
+        ACTOR_NAME, 
+        ACTOR_TYPE, 
+        USERLOGIN, 
+        USER_SIS_ID, 
+        GROUP_NAME, 
+        CANVASCOURSEID, 
+        SISCOURSEID, 
+        ROL, 
+        MEMBERSHIP_STATUS, 
+        OBJECT_NAME, 
+        OBJECT_ID, 
+        OBJECT_MEDIATYPE, 
+        OBJECT_TYPE, 
+        FORMAT, 
+        URL
+
+    FROM aux_cte_table
+
+WHERE 1=1 
+    AND DIM_ASSIGNATURA_KEY IS NOT NULL
+    AND DIM_SEMESTRE_KEY IS NOT NULL
+    AND CODI_RECURS IS NOT NULL
+;
 
 drop table DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX;
