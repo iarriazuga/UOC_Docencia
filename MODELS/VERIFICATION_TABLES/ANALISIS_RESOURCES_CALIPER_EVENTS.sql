@@ -5,7 +5,7 @@
 -- -- ANALISIS_CALIPER_EVENTS
 -- -- #################################################################################################
 -- -- #################################################################################################
--- CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS AS
+CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS AS
 
 with aux as (
 
@@ -14,7 +14,7 @@ select
 -- DIM_SEMESTRE_KEY, 
 -- DIM_RECURSOS_APRENENTATGE_KEY, 
 CODI_RECURS,
-upper(trim(source)) as source_event,
+upper(trim(source)) as source,
 count(*) as num_events
 
 from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED   -- 12,224,872 vs 172,784 grouped
@@ -37,28 +37,24 @@ select source_event, count(*) from aux group by 1 order by 2 desc
     
     select distinct
     CODI_RECURS,
-    case 
- 
-        when source_event = 'DIMAX' then 'DIMAX'
-        when source_event = 'COCO' then 'COCO'
-        -- Both tables: 
-        when 
-            codi_recurs in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)  
-            and 
-            codi_recurs in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  
-        then 'BOTH'
+        -- source calculation
+        case 
+            when SOURCE = 'DIMAX' or SOURCE = 'dimax' then 'DIMAX'
+            when SOURCE = 'COCO' or SOURCE = 'coco' then 'COCO'
 
-        -- Dimax only: 
-        when 
-            codi_recurs in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  
-        then 'DIMAX'
-
-        -- Coco only:
-        when 
-            codi_recurs in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)  
-        then 'COCO'
-
-    else 'ERROR' end as codi_recurs_origen
+            WHEN TRY_CAST(CODI_RECURS AS INT) IS NULL THEN 'INV'
+            
+            -- Both tables: ( no null resources)
+            when 
+                TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)  
+                and 
+                TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  
+            then 'BOTH'  --- rewrite after 
+            -- Dimax only: 
+            when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  then 'DIMAX'
+            -- Coco only:
+            when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)   then 'COCO'
+        else 'ERROR' end as SOURCE2, 
     from aux  
 )
 
@@ -90,12 +86,12 @@ ERROR	            6
 
 */
 
-select codi_recurs,   codi_recurs_origen,  
+select *
 from codi_recurs_valoration 
 
 where 1=1
 -- and codi_recurs_origen = 'ERROR'
-and codi_recurs_origen = 'BOTH'
+-- and codi_recurs_origen = 'BOTH'
 -- group by 1,2 
 -- order by 1 desc
 

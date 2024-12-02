@@ -5,7 +5,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE   TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX AS 
 
 with aux_cte_table AS (
 SELECT 
@@ -46,19 +46,23 @@ SELECT
     --GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti"') AS ralti,
     GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".format')::string AS format,
 
-    GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".source')::string AS source,
+    upper(GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".source')::string) AS source,
     GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".url')::string AS url--,
     --le.*
 
 FROM  DB_UOC_PROD.STG_DADESRA.LIVE_EVENTS_CALIPER_DUMMY le 
-    --where DIM_ASSIGNATURA_KEY = 'M8.020'
-    -- order by event_time DESC
+
+where 1=1
+    and GET_PATH(JSON, 'data[0]:object.extensions."edu.uoc.ralti".materialid')::string is not null ---         AS CODI_RECURS,
+    and GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".subjectCode')::string       is not null ---         AS DIM_ASSIGNATURA_KEY, 
+    and GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".semester')::string          is not null ---         AS DIM_SEMESTRE_KEY,
+ 
 ) 
 SELECT * FROM aux_cte_table    
 where 1=1
-    -- and ID_ASIGNATURA_RECURS is not null
-    -- AND DIM_SEMESTRE_KEY IS NOT NULL
-    -- AND CODI_RECURS IS NOT NULL
+    and DIM_ASSIGNATURA_KEY is not null
+    AND DIM_SEMESTRE_KEY IS NOT NULL
+    AND CODI_RECURS IS NOT NULL
 ;
  
 ----######################## Replace the auxiliar table 
@@ -68,6 +72,10 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED (
     DIM_SEMESTRE_KEY INT, 
     DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(15), 
     CODI_RECURS INT, 
+    SOURCE VARCHAR(6),
+    SOURCE2 VARCHAR(6),
+
+    
     EVENT_TIME VARCHAR(16777216), 
     EVENT_DATE VARCHAR(16777216), 
     ACTION VARCHAR(16777216),
@@ -85,9 +93,8 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED (
     OBJECT_MEDIATYPE VARCHAR(16777216),
     OBJECT_TYPE VARCHAR(16777216),
     FORMAT VARCHAR(16777216),
-    SOURCE2 VARCHAR(16777216),
-    SOURCE VARCHAR(16777216),
     URL VARCHAR(16777216)
+
 ) AS
 
 WITH aux_cte_table AS (
@@ -116,17 +123,25 @@ WITH aux_cte_table AS (
         OBJECT_TYPE, 
         FORMAT, 
         URL, 
-        SOURCE, 
+
+        case 
+            when SOURCE is null then 'NA'
+            else SOURCE 
+        END AS SOURCE, 
+        
         -- source calculation
         case 
-            when SOURCE = 'DIMAX' then 'DIMAX'
-            when SOURCE = 'COCO' then 'COCO'
-            -- Both tables: 
+            when SOURCE = 'DIMAX' or SOURCE = 'dimax' then 'DIMAX'
+            when SOURCE = 'COCO' or SOURCE = 'coco' then 'COCO'
+
+            WHEN TRY_CAST(CODI_RECURS AS INT) IS NULL THEN 'INV'
+            
+            -- Both tables: ( no null resources)
             when 
                 TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)  
                 and 
                 TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  
-            then 'BOTH'
+            then 'BOTH'  --- rewrite after 
             -- Dimax only: 
             when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  then 'DIMAX'
             -- Coco only:
@@ -140,7 +155,7 @@ SELECT
         -- key_masters
         DIM_ASSIGNATURA_KEY,   
         DIM_SEMESTRE_KEY, 
-        SOURCE2 || ' - ' || CODI_RECURS  as DIM_RECURSOS_APRENENTATGE_KEY,  
+        TRIM(SOURCE2) || ' - ' || CODI_RECURS  as DIM_RECURSOS_APRENENTATGE_KEY,  
         CODI_RECURS, 
         SOURCE, 
         SOURCE2, 
@@ -170,6 +185,9 @@ WHERE 1=1
     AND DIM_ASSIGNATURA_KEY IS NOT NULL
     AND DIM_SEMESTRE_KEY IS NOT NULL
     AND CODI_RECURS IS NOT NULL
+ 
 ;
 
-drop table DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX;
+-- drop table DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX;
+
+

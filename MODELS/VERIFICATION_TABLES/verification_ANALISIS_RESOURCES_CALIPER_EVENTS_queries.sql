@@ -183,3 +183,75 @@ where codi_recurs in (
  order by codi_recurs desc
 
 
+
+
+
+-- ACORAN
+
+with aux  as ( 
+
+select distinct
+eve.codi_recurs , eve.source,  rec.source_recurs
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED eve
+
+left join DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE rec 
+on eve.codi_recurs = rec.codi_recurs
+) 
+
+select source , source_recurs,  count(*) 
+
+from aux
+group by 1,2
+order by 1 desc
+
+
+--- valoracion de duplicados  : conservamos --> pasar listado a frances : 
+select codi_recurs, count(*) 
+from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE --8,975
+group by 1
+having count(*) > 1 
+
+
+
+
+--- valoracion de duplicados 
+select codi_recurs as test2 , * --codi_recurs, count(*) 
+from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE --8,975
+where codi_recurs in ( 
+
+
+
+'114045',
+'113965',
+'122347',
+'114123',
+'113993',
+'122487',
+'113963',
+'122291',
+'122293',
+'122351',
+'122276',
+'113887'
+)
+ order by codi_recurs desc
+
+-- francesc
+listado asignaturas no matchean / no existen STAGE_LIVE_EVENTS_FLATENED
+listado recursos no matchean / no existen STAGE_LIVE_EVENTS_FLATENED
+
+
+/**
+niu	null	9
+niu	DIMAX	17117
+niu	COCO_PROD	12893
+niu	COCO_MOD	2909
+
+-- fase 2 
+niu	null	6
+niu	DIMAX	17195
+niu	COCO_MOD	2909
+niu	COCO_PROD	10372
+
+
+*/
