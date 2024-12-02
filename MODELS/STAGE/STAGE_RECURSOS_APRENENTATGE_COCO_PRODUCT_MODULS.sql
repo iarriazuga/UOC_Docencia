@@ -3,7 +3,7 @@
 -- -- RECURSOS_APRENDIZATJE
 -- -- #################################################################################################
 -- -- #################################################################################################
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS AS
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS AS
 With productos_aux AS ( 
         SELECT                               
             
@@ -116,8 +116,8 @@ algunos modulos no tienen producto origen --> tenemso que quedarnos con el modul
 -- productos : 51,568 
 -- modulos   : 60,775
  
---  SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
---  drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
+--  SELECT * FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
+--  drop table DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
 
 */
 
@@ -135,13 +135,13 @@ FROM
         source_recurs,
         ROW_NUMBER() OVER(PARTITION BY CODI_RECURS ORDER BY CODI_RECURS) AS row_num
      FROM 
-        DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
+        DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
     ) AS subquery
 WHERE 
     row_num > 1 AND source_recurs = 'COCO_PROD';
 
 -- Step 2: Delete the duplicates using the temporary table
-DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
+DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
 WHERE (codi_recurs, source_recurs) IN (
     SELECT CODI_RECURS, source_recurs
     FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP

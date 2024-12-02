@@ -52,8 +52,8 @@ with temp_table as (
     left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
         on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
         and dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
-        and dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY = events.DIM_RECURSOS_APRENENTATGE_KEY -- 43k  -- agrupar por 
-        -- and dades_academiques.CODI_RECURS = events.CODI_RECURS -- 43k  -- agrupar por 
+        and dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY = events.DIM_RECURSOS_APRENENTATGE_KEY -- 43k  -- agrupar por COCO + recursos 
+        -- and dades_academiques.CODI_RECURS = events.CODI_RECURS -- 43k  -- agrupar por -->  duplicados
 
 ) 
 select * from temp_table

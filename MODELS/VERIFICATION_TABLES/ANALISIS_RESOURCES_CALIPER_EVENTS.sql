@@ -46,14 +46,14 @@ select source_event, count(*) from aux group by 1 order by 2 desc
             
             -- Both tables: ( no null resources)
             when 
-                TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)  
+                TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)  
                 and 
                 TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  
             then 'BOTH'  --- rewrite after 
             -- Dimax only: 
             when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  then 'DIMAX'
             -- Coco only:
-            when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)   then 'COCO'
+            when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)   then 'COCO'
         else 'ERROR' end as SOURCE2, 
     from aux  
 )

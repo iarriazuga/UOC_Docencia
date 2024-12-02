@@ -1,35 +1,8 @@
-'''
-Usando python quiero que proceses un archivo de texto de la siquiente manera, dentro del fichero estan diversas descripciones de tablas de esta forma 
-
--- ARCHIVO: MODELS\POST\POST_DADES_ACADEMIQUES.sql
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES (
-FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO
-FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX;
-
-
-
-quiero que me entregues una modifiacion donde hagas lo siguiente: 
-
--- ARCHIVO: MODELS\POST\POST_DADES_ACADEMIQUES.sql
-SELECT count(*), 'DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES' as table_name from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES Union all
-SELECT count(*), 'DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO' as table_name from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO  Union all
-SELECT count(*), 'DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX' as table_name from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX  Union all
-
-'''
 import os
 
 # Configuración
 carpeta_raiz = 'MODELS'  # Cambia esto por la ruta de la carpeta raíz
 archivo_salida = 'filtrado_resultado.txt'
-
-# Iterar sobre todas las subcarpetas y archivos : 
-# VERIFICAR QUE LEEMOS TODO: 
-'''for ruta_carpeta, subcarpetas, archivos in os.walk(carpeta_raiz):
-    for archivo in archivos:
-        ruta_completa = os.path.join(ruta_carpeta, archivo)
-        print(f'Leyendo archivo: {ruta_completa}')
-        '''
-
 
 # Crear o limpiar el archivo de salida
 with open(archivo_salida, 'w') as salida:
@@ -121,7 +94,7 @@ def procesar_archivo(input_file, output_file):
             if match:
                 source_tables = match.group(1)
             output_lines.append(
-                f"SELECT '{source_tables}' as table_name , count(*) from {source_tables} Union all"
+                f"SELECT '{source_tables}' as table_name , count(*),  from {source_tables} Union all"
             )
 
  

@@ -4,7 +4,7 @@
 
 -- ARCHIVO: MODELS\DIM\DIM_RECURSOS_APRENENTATGE.sql
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE AS
-FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
+FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
 FROM db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax
 SELECT * FROM dim_coco_productes_moduls
 SELECT  * FROM dimax;
@@ -13,36 +13,6 @@ FROM
 FROM
 DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE
 FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP
-
-
-
-
--- ARCHIVO: MODELS\DIM\DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS.sql
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS AS
-FROM db_uoc_prod.stg_dadesra.autors_producte
-left join db_uoc_prod.stg_dadesra.autors_suport_producte_i18n
-left join db_uoc_prod.stg_dadesra.autors_tipus_tramesa_i18n
-left join db_uoc_prod.stg_dadesra.autors_idioma_producte_i18n
-FROM db_uoc_prod.stg_dadesra.autors_modul autors_modul
-left join productos_aux autors_producte on autors_producte.codi_recurs = autors_modul.PRODUCTE_CREACIO_ID
-SELECT * FROM modulos_aux
-SELECT * FROM productos_aux
-CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP AS
-FROM
-FROM
-DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
-FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP
-
-
-
-
--- ARCHIVO: MODELS\DIM\DIM_RECURSOS_APRENENTATGE_DIMAX.sql
-create or replace table db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax (
-create or replace procedure db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax_loads()
-from db_uoc_prod.stg_dadesra.dimax_v_recurs
-left join db_uoc_prod.stg_dadesra.dimax_recurs_info_extra
-select * from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax2
-select * from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax
 
 
 
@@ -117,12 +87,42 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX 
 FROM  DB_UOC_PROD.STG_DADESRA.LIVE_EVENTS_CALIPER_DUMMY le
 SELECT * FROM aux_cte_table
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED (
-TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)
+TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)
 TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)
 when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  then 'DIMAX'
-when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)   then 'COCO'
+when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)   then 'COCO'
 FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_AUX
 FROM aux_cte_table
+
+
+
+
+-- ARCHIVO: MODELS\STAGE\STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS.sql
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS AS
+FROM db_uoc_prod.stg_dadesra.autors_producte
+left join db_uoc_prod.stg_dadesra.autors_suport_producte_i18n
+left join db_uoc_prod.stg_dadesra.autors_tipus_tramesa_i18n
+left join db_uoc_prod.stg_dadesra.autors_idioma_producte_i18n
+FROM db_uoc_prod.stg_dadesra.autors_modul autors_modul
+left join productos_aux autors_producte on autors_producte.codi_recurs = autors_modul.PRODUCTE_CREACIO_ID
+SELECT * FROM modulos_aux
+SELECT * FROM productos_aux
+CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP AS
+FROM
+FROM
+DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
+FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP
+
+
+
+
+-- ARCHIVO: MODELS\STAGE\STAGE_RECURSOS_APRENENTATGE_DIMAX.sql
+create or replace table db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax (
+create or replace procedure db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax_loads()
+from db_uoc_prod.stg_dadesra.dimax_v_recurs
+left join db_uoc_prod.stg_dadesra.dimax_recurs_info_extra
+select * from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax2
+select * from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax
 
 
 
@@ -148,7 +148,7 @@ from comprobacion
 and EVENT_CODI_RECURS not in ( select Codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES   )
 from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES dades_academiques
 from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES dades_academiques
-from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX
 FROM db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion
 from  db_uoc_prod.stg_dadesra.dimax_resofite_path
 from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE
@@ -161,10 +161,10 @@ CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER
 from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED
 select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED limit 100
 select source_event, count(*) from aux group by 1 order by 2 desc
-TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)
+TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)
 TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)
 when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax)  then 'DIMAX'
-when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)   then 'COCO'
+when TRY_CAST(CODI_RECURS AS INT) in (select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS)   then 'COCO'
 from aux
 select codi_recurs_origen , count(*) from codi_recurs_valoration group by 1 order by 2 desc
 from codi_recurs_valoration
@@ -173,6 +173,9 @@ from codi_recurs_valoration
 
 
 -- ARCHIVO: MODELS\VERIFICATION_TABLES\REUNION.sql
+from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
+where codi_recurs in ( SELECT codi_recurs FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP )
+from DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS
 from DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS
 from  DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_ASSIGNATURA_EVENTS
 
