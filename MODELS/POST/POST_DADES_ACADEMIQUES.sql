@@ -4,18 +4,17 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES (
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES(
 
-    id_assignatura INT,   
-    id_semestre INT,   
-    id_codi_recurs INT,    
+    ID_ASSIGNATURA NUMBER(38, 0) COMMENT 'Identificador de la assignatura.',
+    ID_SEMESTRE NUMBER(38, 0) COMMENT 'Identificador del semestre.',
+    ID_CODI_RECURS NUMBER(38, 0) COMMENT 'Identificador del recurs.',
+    DIM_ASSIGNATURA_KEY VARCHAR(6) COMMENT 'Clau assignatura.',
+    DIM_SEMESTRE_KEY NUMBER(38, 0) COMMENT 'Clau semestre.',
+    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(15) COMMENT 'Clau recursos d\'aprenentatge.',
+    CODI_RECURS NUMBER(38, 0) COMMENT 'Codi del recurs.',
+    SOURCE_DADES_ACADEMIQUES VARCHAR(5) COMMENT 'Font de les dades acadèmiques.'
 
-    DIM_ASSIGNATURA_KEY VARCHAR(6), -- String '93.2681.c' is too long and would be truncated 90.998.semic
-    DIM_SEMESTRE_KEY INT,    
-    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(15), 
-    CODI_RECURS INT, 
-    SOURCE_DADES_ACADEMIQUES VARCHAR(5) 
-    
 ) AS 
 
 with aux_temporary_table as (
@@ -61,3 +60,7 @@ left join DB_UOC_PROD.DD_OD.DIM_SEMESTRE as semestre
 
 left join DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE as recursos 
     on recursos.DIM_RECURSOS_APRENENTATGE_KEY  = aux_temporary_table.DIM_RECURSOS_APRENENTATGE_KEY
+
+
+
+desc table  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES

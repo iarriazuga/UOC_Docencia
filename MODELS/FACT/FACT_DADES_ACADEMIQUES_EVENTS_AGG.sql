@@ -4,7 +4,16 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG (
+
+    ID_ASSIGNATURA NUMBER(38, 0) COMMENT 'Identificador de la assignatura.',
+    ID_SEMESTRE NUMBER(38, 0) COMMENT 'Identificador del semestre.',
+    ID_CODI_RECURS NUMBER(38, 0) COMMENT 'Identificador del recurs.',
+    DIM_ASSIGNATURA_KEY VARCHAR(6) COMMENT 'Clau assignatura.',
+    DIM_SEMESTRE_KEY NUMBER(38, 0) COMMENT 'Clau semestre.',
+    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(15) COMMENT 'Clau recursos d\'aprenentatge.',
+    TIMES_USED NUMBER(18, 0) COMMENT 'Número de vegades utilitzat.'
+) AS 
 
 with auxiliar as ( 
 SELECT 
@@ -15,11 +24,12 @@ SELECT
     , dades_academiques.DIM_ASSIGNATURA_KEY
     , dades_academiques.DIM_SEMESTRE_KEY
     , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY
+    , dades_academiques.SOURCE_DADES_ACADEMIQUES 
     , count( dades_academiques.EVENT_CODI_RECURS )  as TIMES_USED
  
 
 FROM  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS dades_academiques
-group by 1,2,3,4,5,6
+group by 1,2,3,4,5,6,7
 
 ) 
 
@@ -35,3 +45,4 @@ select
 from auxiliar
  
 
+desc table DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG 

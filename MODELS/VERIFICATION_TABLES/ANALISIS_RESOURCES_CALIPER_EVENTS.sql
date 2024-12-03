@@ -5,7 +5,7 @@
 -- -- ANALISIS_CALIPER_EVENTS
 -- -- #################################################################################################
 -- -- #################################################################################################
-CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS AS
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS AS
 
 with aux as (
 

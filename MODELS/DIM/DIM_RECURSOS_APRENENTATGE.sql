@@ -156,32 +156,5 @@ union all
 SELECT  * FROM dimax; 
 
 
-/*
 
-CREATE OR REPLACE TEMP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP AS
-SELECT 
-    CODI_RECURS,
-    source_recurs
-FROM 
-    (SELECT 
-        CODI_RECURS, 
-        source_recurs,
-        ROW_NUMBER() OVER(PARTITION BY CODI_RECURS ORDER BY CODI_RECURS) AS row_num
-     FROM 
-        DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE
-    ) AS subquery
-WHERE 
-    row_num > 1 AND source_recurs = 'COCO_PROD';
-DELETE FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE 
-WHERE (codi_recurs, source_recurs) IN (
-    SELECT CODI_RECURS, source_recurs
-    FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP
-);
-
-*/
-
--- Step 3: Drop the temporary table after use
--- DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP;
--- no secuencias --> autoincrementales 
-
-
+describe table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE
