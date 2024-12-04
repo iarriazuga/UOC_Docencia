@@ -52,65 +52,151 @@ group by 1,2,3,4,5,6,7
 );
 
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG AS 
 
-with auxiliar as ( 
-SELECT 
 
-    dades_academiques.id_assignatura   
-    , dades_academiques.id_semestre
-    , dades_academiques.id_codi_recurs    
-    , dades_academiques.DIM_ASSIGNATURA_KEY
-    , dades_academiques.DIM_SEMESTRE_KEY
-    , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY
-    , dades_academiques.SOURCE_DADES_ACADEMIQUES 
-    , count( dades_academiques.EVENT_CODI_RECURS )  as TIMES_USED
+
+
+CALL db_uoc_prod.dd_od.CREA_DIM(
+    'with cross_semestre_asignatura AS (
+    
+    SELECT distinct-- 1,422,120 vs 1,397,424
+        semestre.DIM_SEMESTRE_KEY
+        , asignatura.codi_final AS DIM_ASSIGNATURA_KEY
+     
+    FROM DB_UOC_PROD.DD_OD.dim_semestre semestre
+    cross join   db_uoc_prod.stg_dadesra.autors_element_formacio asignatura  -- dim asignatura : esta tala no tiene registros unicos 
+    
+    where 1=1 
+        and semestre.DIM_SEMESTRE_KEY is not null 
+        and asignatura.codi_final is not null
+ 
+)
+
+, semestres_informados AS (
+
+    SELECT distinct
+
+        semestre.CODI_EXTERN AS DIM_SEMESTRE_KEY
+ 
+        , left(asignatura.CODI_FINAL, 6) AS  DIM_ASSIGNATURA_KEY
+
+        , coco_products.codi_recurs  AS CODI_RECURS 
+        , coco_products.titol_recurs AS TITOL_RESOURCE
+        -- ,  (plan_publicacion.id || '' - '' || semestre.CODI_EXTERN) AS  PLAN_ESTUDIOS_BASE --- genera duplicados: varios planes de publicacion 
+
+ 
+    FROM db_uoc_prod.stg_dadesra.autors_productes_versions productos_plan_publicacion  -- 247,902 vs  247,902
+    
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_versio plan_publicacion   --247,902  vs 247,902
+        on plan_publicacion.id =  productos_plan_publicacion.versio_id
+    
+    inner JOIN Db_uoc_prod.stg_dadesra.autors_element_formacio  asignatura -- 247,902  vs 247,902
+        on  asignatura.id = plan_publicacion.fk_element_formacio_element_id
+    
+    inner join db_uoc_prod.stg_dadesra.autors_periode semestre  
+        on semestre.id = plan_publicacion.FK_PERIODE_PERIODE_ID -- 247,902  vs 247,902 vs 247,151
+
+    inner join   DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS coco_products -- 247,902  vs 247,902
+        on  coco_products.codi_recurs = productos_plan_publicacion.PRODUCTE_ID 
+
+ 
+)
  
 
-FROM  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS dades_academiques
-group by 1,2,3,4,5,6,7
+ 
+
+,  cross_semestres_informados AS ( 
+        SELECT    --1,602,157
+            cross_semestre_asignatura.DIM_ASSIGNATURA_KEY
+            , cross_semestre_asignatura.DIM_SEMESTRE_KEY
+            , semestres_informados.CODI_RECURS
+            , semestres_informados.TITOL_RESOURCE
+            -- , semestres_informados.PLAN_ESTUDIOS_BASE
+
+        FROM  cross_semestre_asignatura 
+        
+        left join semestres_informados 
+            on cross_semestre_asignatura.DIM_ASSIGNATURA_KEY = semestres_informados.DIM_ASSIGNATURA_KEY
+                and cross_semestre_asignatura.DIM_SEMESTRE_KEY = semestres_informados.DIM_SEMESTRE_KEY
+
 
 ) 
-
-select
-    id_assignatura
-    , id_semestre
-    , id_codi_recurs
-    , DIM_ASSIGNATURA_KEY
-    , DIM_SEMESTRE_KEY
-    , DIM_RECURSOS_APRENENTATGE_KEY
-    , coalesce(TIMES_USED , 0) as TIMES_USED
-
-from auxiliar
  
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2 ( #NL##T#ID_DIM_D.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2 number(20,0) autoincrement start 1 increment 1 comment 'clau subrogada que identifica de forma unica els registres de la taula.', #NL##T#status VARCHAR(16777216), #NL##T#CREATION_DATE TIMESTAMP_NTZ(9) NOT NULL COMMENT 'data de creacio del registre de la informacio.',#NL##T#UPDATE_DATE TIMESTAMP_NTZ(9) NOT NULL COMMENT 'data de carrega de la informacio.'#NL#);#NL#create or replace procedure DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2_LOADS() returns varchar(16777216) language sql execute as caller as #NL##T#begin #NL##T##T#--Declaracions variables#NL##T##T#let start_time timestamp_ntz := convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz); #NL##T##T#let execution_time float; #NL##T##T#--merge 1: registre dummy#NL##T##T#merge into DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2#NL##T##T##T#using (#NL##T##T##T##T#select#NL##T##T##T##T##T#'ND' as status,#NL##T##T##T##T##T#convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz) as creation_date,#NL##T##T##T##T##T#convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz) as update_date#NL##T##T##T#) as ALIAS_QUERY_IN#NL##T##T##T##T#ON (#NL##T##T##T##T##T#ALIAS_QUERY_IN.id_assignatura = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_assignatura AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.id_semestre = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_semestre AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.id_codi_recurs = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_codi_recurs AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.DIM_ASSIGNATURA_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_ASSIGNATURA_KEY AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.DIM_SEMESTRE_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_SEMESTRE_KEY AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.DIM_RECURSOS_APRENENTATGE_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_RECURSOS_APRENENTATGE_KEY#NL##T##T##T##T#)#NL##T##T##T#when not matched#NL##T##T##T##T#then insert (status,creation_date,update_date)#NL##T##T##T##T##T#values ('ND',convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz), convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz));#NL##T##T#-- MERGE 2: volcat de registres#NL##T##T#merge into DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2#NL##T##T##T#using (#NL##T##T##T##T#CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG AS 
 
-with auxiliar as ( 
+, informed_semesters AS (
+    SELECT distinct --- 246,045
+        DIM_ASSIGNATURA_KEY,
+        DIM_SEMESTRE_KEY AS informed_DIM_SEMESTRE_KEY,
+        CODI_RECURS,
+        TITOL_RESOURCE,
+        --  PLAN_ESTUDIOS_BASE
+    FROM cross_semestres_informados
+    WHERE TITOL_RESOURCE IS NOT NULL
+
+
+)
+
+, ultimo_semestre_informado AS (
+    SELECT
+        csi.DIM_ASSIGNATURA_KEY as DIM_ASSIGNATURA_KEY,
+        csi.DIM_SEMESTRE_KEY as DIM_SEMESTRE_KEY,
+        
+        -- nulls created : no plan de estudios
+        csi.CODI_RECURS as CODI_RECURS,
+        csi.TITOL_RESOURCE as TITOL_RESOURCE,
+        
+        -- csi.PLAN_ESTUDIOS_BASE as PLAN_ESTUDIOS_BASE ,
+        CASE 
+            when csi.TITOL_RESOURCE is not null then NULL 
+            else (
+        
+                SELECT  max( is2.informed_DIM_SEMESTRE_KEY ) 
+                FROM informed_semesters is2
+                WHERE is2.DIM_ASSIGNATURA_KEY = csi.DIM_ASSIGNATURA_KEY AND is2.informed_DIM_SEMESTRE_KEY <= csi.DIM_SEMESTRE_KEY
+            )
+        end AS last_informed_semestre
+    FROM cross_semestres_informados csi
+)
+
+, propagacion_ultimo_semestre_informado AS (
+    SELECT distinct
+        swr.DIM_ASSIGNATURA_KEY,
+        swr.DIM_SEMESTRE_KEY, -- fecha  : castear 
+        COALESCE(swr.CODI_RECURS, inf.CODI_RECURS) AS CODI_RECURS, -- recurso : dimax 
+        -- COALESCE(swr.PLAN_ESTUDIOS_BASE, inf.PLAN_ESTUDIOS_BASE) AS  PLAN_ESTUDIOS_BASE
+        
+    FROM ultimo_semestre_informado swr
+    LEFT JOIN informed_semesters inf
+        ON swr.DIM_ASSIGNATURA_KEY = inf.DIM_ASSIGNATURA_KEY
+        AND swr.last_informed_semestre = inf.informed_DIM_SEMESTRE_KEY  -- 2,799,507
+ 
+)
+
 SELECT 
 
-    dades_academiques.id_assignatura   
-    , dades_academiques.id_semestre
-    , dades_academiques.id_codi_recurs    
-    , dades_academiques.DIM_ASSIGNATURA_KEY
-    , dades_academiques.DIM_SEMESTRE_KEY
-    , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY
-    , dades_academiques.SOURCE_DADES_ACADEMIQUES 
-    , count( dades_academiques.EVENT_CODI_RECURS )  as TIMES_USED
+    propagacion_ultimo_semestre_informado.DIM_ASSIGNATURA_KEY
+    , propagacion_ultimo_semestre_informado.DIM_SEMESTRE_KEY
+    , ''COCO'' || '' - '' ||  propagacion_ultimo_semestre_informado.CODI_RECURS  as DIM_RECURSOS_APRENENTATGE_KEY
+    , propagacion_ultimo_semestre_informado.CODI_RECURS as CODI_RECURS
+
+    -- , propagacion_ultimo_semestre_informado.PLAN_ESTUDIOS_BASE
  
+FROM propagacion_ultimo_semestre_informado
 
-FROM  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS dades_academiques
-group by 1,2,3,4,5,6,7
+ -- no tienen plan de estudios asociado: crossjoin genera los campos inicio semestre, tomamos a partir del primer plan de estudios  
+where propagacion_ultimo_semestre_informado.CODI_RECURS is not null --  2.9M vs  1.9M
+', --query genera DIM
 
-) 
-
-select
-    id_assignatura
-    , id_semestre
-    , id_codi_recurs
-    , DIM_ASSIGNATURA_KEY
-    , DIM_SEMESTRE_KEY
-    , DIM_RECURSOS_APRENENTATGE_KEY
-    , coalesce(TIMES_USED , 0) as TIMES_USED
-
-from auxiliar#NL##T##T##T#) as ALIAS_QUERY_IN#NL##T##T##T##T# ON (#NL##T##T##T##T##T#ALIAS_QUERY_IN.id_assignatura = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_assignatura AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.id_semestre = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_semestre AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.id_codi_recurs = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_codi_recurs AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.DIM_ASSIGNATURA_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_ASSIGNATURA_KEY AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.DIM_SEMESTRE_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_SEMESTRE_KEY AND #NL##T##T##T##T##T#ALIAS_QUERY_IN.DIM_RECURSOS_APRENENTATGE_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_RECURSOS_APRENENTATGE_KEY#NL##T##T##T##T#)#NL##T##T##T#when matched AND (#NL##T##T##T##T#ALIAS_QUERY_IN.status <> DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.status#NL##T##T##T#) then#NL##T##T##T##T#update set#NL##T##T##T##T##T#status = ALIAS_QUERY_IN.status,#NL##T##T##T##T##T#update_date = convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz)#NL##T##T##T#when not matched#NL##T##T##T##T#then insert (#NL##T##T##T##T##T#status,#NL##T##T##T##T##T#creation_date, update_date#NL##T##T##T##T#) values (#NL##T##T##T##T##T#ALIAS_QUERY_IN.status,#NL##T##T##T##T##T#convert_timezone('America/Los_Angeles','Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ),#NL##T##T##T##T##T#convert_timezone('America/Los_Angeles','Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)#NL##T##T##T##T#);#NL##T##T#--LOGS#NL##T##T#execution_time := datediff(millisecond, start_time, convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz));#NL##T##T#insert into db_uoc_prod.dd_od.procedures_log (id_log, procedure_name, executed_by, execution_date, execution_time, remarks)#NL##T##T#values (db_uoc_prod.dd_od.sequencia_id_log.nextval, 'DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2', current_user(), :start_time, :execution_time, 'DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2 Success');#NL##T##T#return 'Update completed successfully';#NL##T#end;#NL#select max(update_date) from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2;#NL#select count(*) from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2;#NL#select * from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2 limit 10;#NL#truncate table DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2;#NL#-- Comanda per executar el procediment enmagatzemat al entorn.#NL#call DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2_LOADS();#NL#-- Afegir aquesta declaracio de columna a taula POST i FACT#NL#ID_DIM_D.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2 number(20,0) comment 'Camp que importem de la dimensio DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2 per tal de fer de vincle entre els objectes.', #NL#-- Afegir aquesta sentencia UPDATE a la seccio updates del procediment que alimenta la taula POST#NL#UPDATE DB_UOC_PROD.DD_OD.AS_TEST set ID_DIM_D.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2 = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.ID_DIM_D.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2#NL##T#FROM DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2#NL##T##T#WHERE #NL##T##T##T##T##T#DB_UOC_PROD.DD_OD.AS_TEST.id_assignatura = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_assignatura AND #NL##T##T##T##T##T#DB_UOC_PROD.DD_OD.AS_TEST.id_semestre = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_semestre AND #NL##T##T##T##T##T#DB_UOC_PROD.DD_OD.AS_TEST.id_codi_recurs = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.id_codi_recurs AND #NL##T##T##T##T##T#DB_UOC_PROD.DD_OD.AS_TEST.DIM_ASSIGNATURA_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_ASSIGNATURA_KEY AND #NL##T##T##T##T##T#DB_UOC_PROD.DD_OD.AS_TEST.DIM_SEMESTRE_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_SEMESTRE_KEY AND #NL##T##T##T##T##T#DB_UOC_PROD.DD_OD.AS_TEST.DIM_RECURSOS_APRENENTATGE_KEY = DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2.DIM_RECURSOS_APRENENTATGE_KEY#NL##T##T##T##T#;
+    'DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO_2', --nom taula DIM
+    
+    [], --camps identificador unic
+    
+    [], --camps identificador unic NULLABLES
+    
+    'DB_UOC_PROD.DD_OD.STAGE_COFROS_EFECTES_PRODUCTES_POST', --nom taula POST
+    
+    'DIM_COFROS', --prefix
+    
+    0 --debug (1 true, 0 false)
+);

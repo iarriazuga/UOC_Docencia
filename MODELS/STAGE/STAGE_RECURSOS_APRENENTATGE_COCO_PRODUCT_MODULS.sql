@@ -161,3 +161,33 @@ DROP TABLE DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP;
 
 
 
+/***
+
+
+SOURCE_RECURS	DESCRIPCIO_IDIOMA_RECURS
+COCO_MOD	    Francès
+COCO_MOD	    null
+COCO_MOD	    Anglès
+COCO_MOD	    Castellà
+COCO_MOD	    Català
+COCO_PROD	    Xinès
+COCO_PROD	    Anglès
+COCO_PROD	    null
+COCO_PROD	    Francès
+COCO_PROD	    Castellà
+COCO_PROD	    Català
+COCO_PROD	    Alemany
+DIMAX	        en
+DIMAX	        pt
+DIMAX	        de
+DIMAX	        null
+DIMAX	        ca
+DIMAX	        gl
+DIMAX	        it
+DIMAX	        es
+DIMAX	        fr
+DIMAX	        eu
+
+
+
+*/

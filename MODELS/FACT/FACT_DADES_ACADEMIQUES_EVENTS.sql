@@ -9,6 +9,9 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS (
     ID_ASSIGNATURA NUMBER(38, 0),
     ID_SEMESTRE NUMBER(38, 0),
     ID_CODI_RECURS NUMBER(38, 0),
+    ID_PERSONA NUMBER(38, 0) COMMENT 'Identificador del persona.',
+
+    DIM_PERSONA_KEY NUMBER(10,0) COMMENT 'Clau DIM_PERSONA_KEY.',
     DIM_ASSIGNATURA_KEY VARCHAR2(6),
     DIM_SEMESTRE_KEY NUMBER(38, 0),
     DIM_RECURSOS_APRENENTATGE_KEY VARCHAR2(15),
@@ -44,6 +47,10 @@ with temp_table as (
         dades_academiques.id_assignatura   
         , dades_academiques.id_semestre
         , dades_academiques.id_codi_recurs    
+
+        , dades_academiques.ID_PERSONA        
+        , dades_academiques.DIM_PERSONA_KEY   
+
         , dades_academiques.DIM_ASSIGNATURA_KEY
         , dades_academiques.DIM_SEMESTRE_KEY
         , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY    

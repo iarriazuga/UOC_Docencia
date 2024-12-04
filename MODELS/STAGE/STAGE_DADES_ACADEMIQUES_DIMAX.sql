@@ -4,7 +4,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX AS  -- DDP_DOCENCIA
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO_2 AS  -- DDP_DOCENCIA
 
 with dimax_resofite_path_unified AS (  
     select  distinct

@@ -21,11 +21,6 @@ with cross_semestre_asignatura AS (
         and asignatura.codi_final is not null
  
 
-/*
-  select  codi_final, count(*) from db_uoc_prod.stg_dadesra.autors_element_formacio  group by 1  order by 2 desc -- duplicados
-  select  DIM_SEMESTRE_KEY, count(*) from DB_UOC_PROD.DD_OD.dim_semestre semestre  group by 1  order by 2 desc
-*/
-
 )
 
 , semestres_informados AS (
@@ -54,12 +49,7 @@ with cross_semestre_asignatura AS (
 
     inner join   DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS coco_products -- 247,902  vs 247,902
         on  coco_products.codi_recurs = productos_plan_publicacion.PRODUCTE_ID 
-
- 
 )
- 
-
- 
 
 ,  cross_semestres_informados AS ( 
         SELECT    --1,602,157
@@ -74,11 +64,7 @@ with cross_semestre_asignatura AS (
         left join semestres_informados 
             on cross_semestre_asignatura.DIM_ASSIGNATURA_KEY = semestres_informados.DIM_ASSIGNATURA_KEY
                 and cross_semestre_asignatura.DIM_SEMESTRE_KEY = semestres_informados.DIM_SEMESTRE_KEY
-
-
 ) 
- 
-
 
 , informed_semesters AS (
     SELECT distinct --- 246,045
