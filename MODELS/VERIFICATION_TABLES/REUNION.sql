@@ -1,3 +1,5 @@
+
+
 -- francesc
 -- listado recursos no matchean / no existen STAGE_LIVE_EVENTS_FLATENED
 -- listado asignaturas no matchean / no existen STAGE_LIVE_EVENTS_FLATENED
@@ -15,7 +17,7 @@ select *
 from DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS
 
 where 1=1
--- and SOURCE2 = 'ERROR' -- no aparecen en dimax ni coco  -- 6 : ---> francesc revisa 
+-- AND SOURCE2 = 'ERROR' -- no aparecen en dimax ni coco  -- 6 : ---> francesc revisa 
 and SOURCE2 = 'BOTH'  -- codigo en las 2 pero no sabemos como asignarlo  -- 3,534
 
 select SOURCE2, count(*) 
@@ -77,8 +79,8 @@ with temp_table_dim_key as (
 
     left join  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES dades_academiques   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
         on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
-        and dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
-        and dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY = events.DIM_RECURSOS_APRENENTATGE_KEY -- 43k  -- agrupar por 
+        AND dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
+        AND dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY = events.DIM_RECURSOS_APRENENTATGE_KEY -- 43k  -- agrupar por 
  
 
 ) 
@@ -90,14 +92,14 @@ with temp_table_dim_key as (
     from temp_table_dim_key --- 12,527,830 vs not null  --9,861,422 -- mucho mas cercano 
 
     where 1=1 
-    and REC_CODI_RECURS is null  --  2,666,408
-    -- and source2 <> 'BOTH'  --- 1,778,133
+    AND REC_CODI_RECURS is null  --  2,666,408
+    -- AND source2 <> 'BOTH'  --- 1,778,133
 ) 
 
 SELECT distinct EVENT_CODI_RECURS-- * 5,248 resources no aparecen
 from comprobacion 
 where 1=1 
--- and DIM_ASSIGNATURA_KEY not in ( select DIM_ASSIGNATURA_KEY from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES   ) -- all resources included
+-- AND DIM_ASSIGNATURA_KEY not in ( select DIM_ASSIGNATURA_KEY from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES   ) -- all resources included
 and EVENT_CODI_RECURS not in ( select Codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES   ) -- all resources included 1,762,759 vs  1,781,031 (BOTH difference)
 
 /*
@@ -117,9 +119,9 @@ null	20232	21.152	DIMAX - 98638	null	98638
 SELECT * 
 from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES dades_academiques  
 where 1=1
-    and dades_academiques.DIM_ASSIGNATURA_KEY = 'UX.195'
-    -- and dades_academiques.DIM_SEMESTRE_KEY = '20232' -- solo 2 recursos para ese semestre --> francesc         299073, 60730
-    and dades_academiques.codi_recurs  in  (
+    AND dades_academiques.DIM_ASSIGNATURA_KEY = 'UX.195'
+    -- AND dades_academiques.DIM_SEMESTRE_KEY = '20232' -- solo 2 recursos para ese semestre --> francesc         299073, 60730
+    AND dades_academiques.codi_recurs  in  (
         '299233',
         '299073',
         '282957',
@@ -133,9 +135,9 @@ where 1=1
 SELECT * 
 from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES dades_academiques  
 where 1=1
-    and dades_academiques.DIM_ASSIGNATURA_KEY = '71.529'
-    and dades_academiques.DIM_SEMESTRE_KEY = '20232' -- solo 2 recursos para ese semestre --> francesc         299073, 60730
-    and dades_academiques.codi_recurs  in  (
+    AND dades_academiques.DIM_ASSIGNATURA_KEY = '71.529'
+    AND dades_academiques.DIM_SEMESTRE_KEY = '20232' -- solo 2 recursos para ese semestre --> francesc         299073, 60730
+    AND dades_academiques.codi_recurs  in  (
         '299233',
         '299073',
         '282957',
@@ -283,3 +285,7 @@ where node_cami in (
 
 
 
+dim_assignatura --> var_assignatura : estado activo en dim_assignatura 
+
+renombrando los esquemas 
+* procedimiento_oficial --> tardara 

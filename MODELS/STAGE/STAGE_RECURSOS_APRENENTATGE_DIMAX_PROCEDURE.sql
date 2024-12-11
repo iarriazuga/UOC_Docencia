@@ -3,10 +3,10 @@
 -- -- RECURSOS_APRENDIZATJE
 -- -- #################################################################################################
 -- -- #################################################################################################
--- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS  DIM_RECURSOS_APRENENTATGE_DIMAX
+
 
  
-create or replace table db_uoc_prod.ddp_docencia.stage_recursos_aprenentatge_dimax2 (
+create or replace table db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax (
     codi_recurs number(20,0)                   comment 'Codi del recurs aprenentatge proporcionat pel cataleg intern. Originalment es proporciona amb la nomenclatura ID_RECURS.',
     titol_recurs varchar(4000)                 comment 'Titol del recurs aprenentatge disponible al sistema.',
     origen_recurs varchar(256)                 comment 'Origen o tipologia del recurs. Indica si el recurs es INTERN o EXTERN com a forma de catalogacio. La forma de catalogar-lo depen de la font de la que extreiem el recurs COCO (intern) o DIMAX (extern).',
@@ -37,10 +37,10 @@ create or replace table db_uoc_prod.ddp_docencia.stage_recursos_aprenentatge_dim
 	update_date timestamp_ntz(9) not null      comment 'Data de carrega de la informacio.')
 ;
 
--- Creacio del procediment que carrega la informacio de DIMAX a la taula stage_recursos_aprenentatge_dimax2.
+-- Creacio del procediment que carrega la informacio de DIMAX a la taula stage_recursos_aprenentatge_dimax.
 -- Aquest procediment actualitzará tots els registres si es carrega repetit (amb el que mantindra la darrera versio del recurs) o insertara els registres en cas de que no existeixi una correspondencia en el codi del recurs.
 
-create or replace procedure db_uoc_prod.ddp_docencia.stage_recursos_aprenentatge_dimax2_loads()
+create or replace procedure db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax_loads()
 returns varchar(16777216)
 language SQL
 execute as caller
@@ -51,7 +51,7 @@ let execution_time float;
 
 -- Sentencia que importa la informacio de les dades en brut (RAW) de DIMAX i que valida la existencia en les taules STAGE. Es un procediment, el MERGE, de UPDATE o INSERT.
 
-merge into db_uoc_prod.ddp_docencia.stage_recursos_aprenentatge_dimax2
+merge into db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax
 using (
     select distinct
         dimax_v_recurs.id_recurs as codi_recurs,
@@ -110,7 +110,7 @@ using (
 
 ) as load_recursos_aprenentatge_dimax
 -- Hem carregat tota la informacio i hem establert un alies a la taula resultant per tal que les equivalencies entre camps siguin directes.
-on db_uoc_prod.ddp_docencia.stage_recursos_aprenentatge_dimax2.codi_recurs = load_recursos_aprenentatge_dimax.codi_recurs
+on db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax.codi_recurs = load_recursos_aprenentatge_dimax.codi_recurs
 when matched then
 update set
     codi_recurs = load_recursos_aprenentatge_dimax.codi_recurs,
@@ -122,7 +122,7 @@ update set
     llicencia_altres = load_recursos_aprenentatge_dimax.llicencia_altres,
     llicencia_biblioteca = load_recursos_aprenentatge_dimax.llicencia_biblioteca,
     wait_recurs = load_recursos_aprenentatge_dimax.wait_recurs,
-    idioma_recurs = load_recursos_aprenentatge_dimax.idioma_recurs,
+    idioma_recurs = load_recursos_aprenentatge_dimax.idioma_recurs, 
     format_recurs = load_recursos_aprenentatge_dimax.format_recurs,
     data_inici_recurs = load_recursos_aprenentatge_dimax.data_inici_recurs,
     data_caducitat_recurs = load_recursos_aprenentatge_dimax.data_caducitat_recurs,
@@ -207,23 +207,34 @@ values
 
 execution_time := datediff(millisecond, start_time, convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz));
 
--- insert into db_uoc_prod.dd_od.procedures_log (id_log, procedure_name, executed_by, execution_date, execution_time, remarks)
---     values (db_uoc_prod.dd_od.sequencia_id_log.nextval, 'stage_recursos_aprenentatge_dimax2_loads', CURRENT_USER(), :start_time, :execution_time, 'stage_recursos_aprenentatge_dimax2 Success');
-    
+    -- LOGS
+    EXECUTION_TIME := DATEDIFF(MILLISECOND, START_TIME, CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ));
+    INSERT INTO DB_UOC_PROD.DD_OD.PROCEDURES_LOG (
+        ID_LOG, PROCEDURE_NAME, EXECUTED_BY, EXECUTION_DATE, EXECUTION_TIME, REMARKS
+    )
+    VALUES (
+        DB_UOC_PROD.DD_OD.SEQUENCIA_ID_LOG.NEXTVAL, 
+        'db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax', 
+        CURRENT_USER(), 
+        :START_TIME, 
+        :EXECUTION_TIME, 
+        'db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax Success'
+    );
+ 
 return 'Update completed successfully';
 
 end
 ;
 
 -- Comanda per executar el procediment enmagatzemat al entorn.
-call db_uoc_prod.ddp_docencia.stage_recursos_aprenentatge_dimax2_loads();
+call db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax_loads();
+
 
 
 
  
-
-
-
-
-
-
+select * 
+from db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax
+where 1=1
+-- and dim_recursos_aprenentatge_key = 'DIMAX - 59578'
+and codi_recurs = 59578

@@ -1,10 +1,4 @@
--- -- #################################################################################################
--- -- #################################################################################################
--- -- STAGE_DADES_ACADEMIQUES_COCO
--- -- #################################################################################################
--- -- #################################################################################################
- 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO AS 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO2 AS 
 
 
 with cross_semestre_asignatura AS (
@@ -17,8 +11,8 @@ with cross_semestre_asignatura AS (
     cross join   db_uoc_prod.stg_dadesra.autors_element_formacio asignatura  -- dim asignatura : esta tala no tiene registros unicos 
     
     where 1=1 
-        and semestre.DIM_SEMESTRE_KEY is not null 
-        and asignatura.codi_final is not null
+        AND semestre.DIM_SEMESTRE_KEY is not null 
+        AND asignatura.codi_final is not null
  
 
 )
@@ -63,7 +57,7 @@ with cross_semestre_asignatura AS (
         
         left join semestres_informados 
             on cross_semestre_asignatura.DIM_ASSIGNATURA_KEY = semestres_informados.DIM_ASSIGNATURA_KEY
-                and cross_semestre_asignatura.DIM_SEMESTRE_KEY = semestres_informados.DIM_SEMESTRE_KEY
+                AND cross_semestre_asignatura.DIM_SEMESTRE_KEY = semestres_informados.DIM_SEMESTRE_KEY
 ) 
 
 , informed_semesters AS (
@@ -130,9 +124,3 @@ FROM propagacion_ultimo_semestre_informado
 where propagacion_ultimo_semestre_informado.CODI_RECURS is not null --  2.9M vs  1.9M
 
  
- 
-
-
-
- 
-

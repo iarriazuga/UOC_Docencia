@@ -1,10 +1,10 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- STAGE_DADES_ACADEMIQUES_DIMAX
+-- -- STAGE_DADES_ACADEMIQUES_DIMAX2
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO_2 AS  -- DDP_DOCENCIA
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX2 AS  -- DDP_DOCENCIA
 
 with dimax_resofite_path_unified AS (  
     select  distinct
@@ -99,3 +99,5 @@ NODE_RECURS_SEMESTRE	COUNT(*)	TITOL  --> cambian los nums 75,569
 296535	                15286	    Root Node:FPNOV09
 
 */
+
+ 

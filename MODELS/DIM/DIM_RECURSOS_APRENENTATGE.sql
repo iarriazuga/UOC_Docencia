@@ -10,17 +10,17 @@
     -- ID_DIM_D INT AUTOINCREMENT PRIMARY KEY,
  
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE AS -- DDP_DOCENCIA  vs  DDP_DADESRA 
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE2 AS -- DDP_DOCENCIA  vs  DDP_DADESRA 
 With dim_coco_productes_moduls AS ( 
     
     SELECT
         0 as ID_CODI_RECURS      -- se genera con sequence 
-        , 'COCO'|| ' - ' || CODI_RECURS AS DIM_RECURSOS_APRENENTATGE_KEY  -- no podemos poner source_recurs pq elementos NIU no distinge entre COCO_PROD y COCO_MOD        
+        , 'COCO'|| ' - ' || CODI_RECURS AS DIM_RECURSOS_APRENENTATGE_KEY  -- no podemos poner origen_base_dades pq elementos NIU no distinge entre COCO_PROD y COCO_MOD        
         , CODI_RECURS
         , TITOL_RECURS
         , ORIGEN_RECURS
         , '' AS TIPUS_RECURS -- added: TFG, Exams, Articles (100+ elements)
-        , source_recurs
+        , origen_base_dades
 
         -- Added: empty in fields FROM DIMAX
         , '' AS LLICENCIA_LPC
@@ -87,7 +87,7 @@ dimax AS (
         , TITOL_RECURS
         , ORIGEN_RECURS
         , TIPUS_RECURS
-        , 'DIMAX' AS source_recurs
+        , 'DIMAX' AS origen_base_dades
 
         , LLICENCIA_LPC
         , LLICENCIA_LGC
@@ -96,7 +96,7 @@ dimax AS (
 
         , WAIT_RECURS as BAIXA -- BAIXA aprobado con xabi : no se visualiza ( similar a ocultar) para no romper integridad no se muestra  
 
-        , lk.DESC_IDIOMA AS DESCRIPCIO_IDIOMA_RECURS
+        , dimax.idioma_recurs AS DESCRIPCIO_IDIOMA_RECURS
         , FORMAT_RECURS
 
         , DATA_INICI_RECURS
@@ -146,10 +146,9 @@ dimax AS (
         , '' AS URL_RECURS_PROPI
  
 
-    FROM db_uoc_prod.dd_od.stage_recursos_aprenentatge_dimax  dimax
+    FROM db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax  dimax
 
-    left join DB_UOC_PROD.DDP_DOCENCIA.LK_IDIOMA_2 lk
-        on lk.desc_idioma_acronim_2_letras = dimax.idioma_recurs
+ 
 ) 
 
 
@@ -161,5 +160,4 @@ union all
 SELECT  * FROM dimax; 
 
 
---   select  distinct  source_recurs,  DESCRIPCIO_IDIOMA_RECURS 
---  from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE  ;
+ 
