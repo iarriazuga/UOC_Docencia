@@ -39,13 +39,13 @@ let execution_time float;
     -- stage_tables:
     call DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO_LOADS();
     CALL DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX_LOADS();
-    call DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_LOADS(); -- live events
+    call DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA_LOADS(); -- live events
 
     -- post_tables:
-    call DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_LOADS();  --Uncaught exception of type 'STATEMENT_ERROR' on line 8 at position 4 : String 'DIMAX-97097' is too long and would be truncated
+    call DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA_LOADS();  --Uncaught exception of type 'STATEMENT_ERROR' on line 8 at position 4 : String 'DIMAX-97097' is too long and would be truncated
     --fact_tables:
-    call DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_LOADS();
-    call DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG_LOADS();
+    call DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS();
+    call DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG_LOADS();
 
 
 execution_time := datediff(millisecond, start_time, convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz));
@@ -82,3 +82,39 @@ call DB_UOC_PROD.DDP_DOCENCIA.FULL_MODEL_RECURS_APRENENTATGE_LOAD()
 
 
 */
+
+/*
+
+
+
+ */
+Hola Equipo, 
+
+Hemos estado analizando los requerimientos del area de recursos de aprendizaje y todavia nos quedan 2 requisitos por cumplir: 
+1. Incluir la validez de la asignatura en el modelo ( flag: si / no )
+2. Incluir el area de la asignatura ( ejemplo: informática, ingeniería, ... area: ingeniería)
+
+Victor nos ha comentado que seria necesario incluir el area de ofertas en el modelo, pero al comentarlo con @Xavi, nos ha comentado que igual era mas interesante incluir estos campos dentro de la tabla de la dim_assignatura.
+
+Al analizar la tabla dim_assignatura, hemos encontrado que estas columnas no existen en la tabla.
+
+Como procederias vosotros? quien es el responsable de la tabla dim_assignatura? 
+
+Si lo hacemos nosotros, nos gustaria tener una sesion con el ultimo que haya modificado la Dim_assignatura ya que creemos que esta tabla puede impactar en un gran numero de modelos. 
+En caso contrario como podemos hacer un seguimiento? 
+
+
+Hola Equipo, 
+
+Os escribo por aqui ya que tenemos algunas dudas relacionadas con la tabla DB_UOC_PROD.STG_DADESRA.LIVE_EVENTS_CALIPER_DUMMY.
+
+Esta tabla es fundamental para incluir los USOS en el modelo de recursos de aprendizaje que estamos desarrollando. 
+
+Pero como el nombre 'DUMMY' nos genera ciertas dudas queremos hacer unas preguntas: 
+
+* Esta tabla va a tener continuidad o se va a actualizar en la UOC?
+* Existe una estandarizacion de nombres de estas tablas que podamos referenciar o usar esta como base es correcto? 
+* tiene muchos recursos y campos en null, esto es correcto? ( ej:     GET_PATH(JSON, 'data[0]:object.mediatype')::string AS object_mediatype --> esta siempre a null )
+* Cada cuanto se recarga esta tabla? 
+
+Quizas seria interesante tener una reunion para comprobar el estado o ver los desarrollos asociados, que os parece hoy a las 15:30?  

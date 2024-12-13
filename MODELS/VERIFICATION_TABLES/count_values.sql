@@ -3,12 +3,12 @@
 --FACT_DADES_ACADEMIQUES: 
 select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'STAGE_DADES_ACADEMIQUES_COCO' As tabla        from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO union all  
 select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'STAGE_DADES_ACADEMIQUES_DIMAX' As tabla      from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX union all  
-select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'POST_DADES_ACADEMIQUES' As tabla             from  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES union all
+select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'POST_DADES_ACADEMIQUES_RA' As tabla             from  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA union all
 -- EVENTS  
-select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'STAGE_LIVE_EVENTS_FLATENED' As tabla         from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED   union all  
+select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'STAGE_LIVE_EVENTS_FLATENED_RA' As tabla         from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA   union all  
 -- FACTS  
-select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'FACT_DADES_ACADEMIQUES_EVENTS' As tabla      from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS  union all  
-select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'FACT_DADES_ACADEMIQUES_EVENTS_AGG' As tabla  from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG union all 
+select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'FACT_RECURSOS_APRENENTATGE_EVENTS' As tabla      from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS  union all  
+select count(*), count(distinct *), count(DISTINCT CODI_RECURS), COUNT(DISTINCT DIM_ASSIGNATURA_KEY), 'FACT_DADES_RECURSOS_APRENENTATGE_AGG' As tabla  from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG union all 
 
 
 -- DIM_RECURSOS_APRENENTATGE: 
@@ -47,8 +47,8 @@ select
     , count(distinct CODI_RECURS, DIM_ASSIGNATURA_KEY, dim_semestre_key ) as mix_distinc 
     , count(DISTINCT CODI_RECURS) as recurs
     , COUNT(DISTINCT DIM_ASSIGNATURA_KEY) as asignatura
-    , 'POST_DADES_ACADEMIQUES' As tabla        
-from  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES  
+    , 'POST_DADES_ACADEMIQUES_RA' As tabla        
+from  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA  
 
 -- EVENTS  
 union all 
@@ -57,8 +57,8 @@ select
     , count(distinct CODI_RECURS, DIM_ASSIGNATURA_KEY, dim_semestre_key ) as mix_distinc 
     , count(DISTINCT CODI_RECURS) as recurs
     , COUNT(DISTINCT DIM_ASSIGNATURA_KEY) as asignatura
-    , 'STAGE_LIVE_EVENTS_FLATENED' As tabla        
-from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED  
+    , 'STAGE_LIVE_EVENTS_FLATENED_RA' As tabla        
+from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA  
 
 
 -- FACTS  : convertimos codi_recurs a dim_recursos_aprenentatge_key
@@ -68,8 +68,8 @@ select
     , count(distinct dim_recursos_aprenentatge_key, DIM_ASSIGNATURA_KEY, dim_semestre_key ) as mix_distinc 
     , count(DISTINCT dim_recursos_aprenentatge_key) as recurs
     , COUNT(DISTINCT DIM_ASSIGNATURA_KEY) as asignatura
-    , 'FACT_DADES_ACADEMIQUES_EVENTS' As tabla        
-from  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS
+    , 'FACT_RECURSOS_APRENENTATGE_EVENTS' As tabla        
+from  DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS
 
 
 union all 
@@ -78,8 +78,8 @@ select
     , count(distinct dim_recursos_aprenentatge_key, DIM_ASSIGNATURA_KEY, dim_semestre_key ) as mix_distinc 
     , count(DISTINCT dim_recursos_aprenentatge_key) as recurs
     , COUNT(DISTINCT DIM_ASSIGNATURA_KEY) as asignatura
-    , 'FACT_DADES_ACADEMIQUES_EVENTS_AGG' As tabla        
-from  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG
+    , 'FACT_DADES_RECURSOS_APRENENTATGE_AGG' As tabla        
+from  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG
 
 
 
@@ -147,8 +147,8 @@ select
     , count(distinct CODI_RECURS, DIM_ASSIGNATURA_KEY, dim_semestre_key ) as mix_distinc 
     , count(DISTINCT CODI_RECURS) as recurs
     , COUNT(DISTINCT DIM_ASSIGNATURA_KEY) as asignatura
-    , 'POST_DADES_ACADEMIQUES2' As tabla        
-from  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES2  
+    , 'POST_DADES_ACADEMIQUES_RA2' As tabla        
+from  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA2  
 
 -- EVENTS  
 union all 
@@ -157,8 +157,8 @@ select
     , count(distinct CODI_RECURS, DIM_ASSIGNATURA_KEY, dim_semestre_key ) as mix_distinc 
     , count(DISTINCT CODI_RECURS) as recurs
     , COUNT(DISTINCT DIM_ASSIGNATURA_KEY) as asignatura
-    , 'STAGE_LIVE_EVENTS_FLATENED2' As tabla        
-from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED2  
+    , 'STAGE_LIVE_EVENTS_FLATENED_RA2' As tabla        
+from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA2  
 
 
 -- FACTS  : convertimos codi_recurs a dim_recursos_aprenentatge_key
@@ -168,8 +168,8 @@ select
     , count(distinct dim_recursos_aprenentatge_key, DIM_ASSIGNATURA_KEY, dim_semestre_key ) as mix_distinc 
     , count(DISTINCT dim_recursos_aprenentatge_key) as recurs
     , COUNT(DISTINCT DIM_ASSIGNATURA_KEY) as asignatura
-    , 'FACT_DADES_ACADEMIQUES_EVENTS2' As tabla        
-from  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS2
+    , 'FACT_RECURSOS_APRENENTATGE_EVENTS2' As tabla        
+from  DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS2
 
 
 union all 
@@ -178,8 +178,8 @@ select
     , count(distinct dim_recursos_aprenentatge_key, DIM_ASSIGNATURA_KEY, dim_semestre_key ) as mix_distinc 
     , count(DISTINCT dim_recursos_aprenentatge_key) as recurs
     , COUNT(DISTINCT DIM_ASSIGNATURA_KEY) as asignatura
-    , 'FACT_DADES_ACADEMIQUES_EVENTS_AGG2' As tabla        
-from  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG2
+    , 'FACT_DADES_RECURSOS_APRENENTATGE_AGG2' As tabla        
+from  DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG2
 
 
 

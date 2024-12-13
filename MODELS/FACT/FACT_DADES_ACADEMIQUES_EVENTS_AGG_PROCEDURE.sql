@@ -1,9 +1,9 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- STAGE_POST_DADES_ACADEMIQUES_EVENTS_SIMPLIFIED 
+-- -- STAGE_POST_DADES_ACADEMIQUES_RA_EVENTS_SIMPLIFIED 
 -- -- #################################################################################################
 -- -- #################################################################################################
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG (
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG (
 
     ID_ASSIGNATURA NUMBER(38, 0) COMMENT 'Identificador de la assignatura.',
     ID_SEMESTRE NUMBER(38, 0) COMMENT 'Identificador del semestre.',
@@ -17,8 +17,11 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_A
     DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(15) COMMENT 'Clau recursos d\'aprenentatge.',
 
     ORIGEN_DADES_ACADEMIQUES VARCHAR(5) COMMENT 'Font de las dades académiques.', 
+    assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigencia de la assignatura en el semestre analitzat.', 
+
     usos_recurs_estudiants NUMBER(38, 0),
     usos_recurs_totals NUMBER(38, 0),
+
 
     CREATION_DATE TIMESTAMP_NTZ(9)  ,
     UPDATE_DATE TIMESTAMP_NTZ(9)  
@@ -26,7 +29,7 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_A
 ;
  
 
-CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG_LOADS()
+CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG_LOADS()
 RETURNS VARCHAR(16777216)
 LANGUAGE SQL
 EXECUTE AS CALLER
@@ -37,22 +40,27 @@ BEGIN
     LET execution_time FLOAT;
 
     -- INSERT: Volcat de registres
-    TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG ;
+    TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG ;
 
-    INSERT INTO DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG (
+    INSERT INTO DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG (
+        --dims_ids:
         id_assignatura
         , id_semestre
         , id_codi_recurs
         , id_persona
-
+        --dims_keys:
         , DIM_PERSONA_KEY
         , DIM_ASSIGNATURA_KEY
         , DIM_SEMESTRE_KEY
         , DIM_RECURSOS_APRENENTATGE_KEY
         
         , ORIGEN_DADES_ACADEMIQUES
+        , assignatura_vigent_semester
+
         , usos_recurs_estudiants
         , usos_recurs_totals
+
+
         , CREATION_DATE
         , UPDATE_DATE
     )
@@ -66,12 +74,15 @@ BEGIN
         , dades_academiques.DIM_SEMESTRE_KEY
         , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY
         , dades_academiques.ORIGEN_DADES_ACADEMIQUES
+        , dades_academiques.assignatura_vigent_semester
+
         , SUM(dades_academiques.usos_recurs_estudiants) AS usos_recurs_estudiants
         , SUM(dades_academiques.usos_recurs_totals) AS usos_recurs_totals
+
         , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
         , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
     FROM 
-        DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS dades_academiques
+        DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS dades_academiques
     GROUP BY 
         dades_academiques.id_assignatura,
         dades_academiques.id_semestre,
@@ -81,7 +92,10 @@ BEGIN
         dades_academiques.DIM_ASSIGNATURA_KEY,
         dades_academiques.DIM_SEMESTRE_KEY,
         dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY,
-        dades_academiques.ORIGEN_DADES_ACADEMIQUES;
+        dades_academiques.ORIGEN_DADES_ACADEMIQUES,
+        dades_academiques.assignatura_vigent_semester
+    
+    ;
 
     -- LOGS
     execution_time := DATEDIFF(MILLISECOND, start_time, CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ));
@@ -89,12 +103,12 @@ BEGIN
         id_log, procedure_name, executed_by, execution_date, execution_time, remarks
     )
     VALUES (
-        db_uoc_prod.dd_od.sequencia_id_log.NEXTVAL, 'DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG',
-        CURRENT_USER(), :start_time, :execution_time, 'DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG Success'
+        db_uoc_prod.dd_od.sequencia_id_log.NEXTVAL, 'DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG',
+        CURRENT_USER(), :start_time, :execution_time, 'DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG Success'
     );
 
     RETURN 'Update completed successfully';
 END;
 
 -- Consultes addicionals
-CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_AGG_LOADS();
+CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG_LOADS();

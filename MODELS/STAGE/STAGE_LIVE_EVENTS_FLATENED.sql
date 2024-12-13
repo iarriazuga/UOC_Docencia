@@ -1,11 +1,16 @@
 
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- STAGE_LIVE_EVENTS_FLATENED_
+-- -- STAGE_LIVE_EVENTS_FLATENED_RA_
 -- -- #################################################################################################
 -- -- #################################################################################################
 
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED2 (
+
+select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED limit 100;
+
+--     JSON:data[0]:ACTION::string AS ACCIO, revisar 
+    GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".id_sistema_usuari')::string AS id_sistema_usuari,    
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA2 (
  
     DIM_ASSIGNATURA_KEY VARCHAR(6),  
     DIM_SEMESTRE_KEY INT, 
@@ -43,14 +48,14 @@ SELECT
 
     JSON:sendTime::datetime AS event_time,
     JSON:sendTime::date AS event_date,
-    JSON:data[0]:ACCIO::string AS ACCIO,
+    JSON:data[0]:ACTION::string AS ACCIO,
     GET_PATH(JSON, 'data[0]:actor.name')::string AS NOM_ACTOR,
     GET_PATH(JSON, 'data[0]:actor.type')::string AS ACTOR_TIPUS,  
     GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".user_login')::string AS usuari_dAcces,
-    GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".id_sistema_usuari')::string AS id_sistema_usuari,    
+    GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".USER_SIS_ID')::string AS id_sistema_usuari,     --- idp de la persona 
     GET_PATH(JSON, 'data[0]:group.name')::string AS titol_assignatura,  
-    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".id_curs_canvas')::string AS id_curs_canvas,   
-    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".id_sistema_curs')::string AS id_sistema_curs, 
+    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".CANVASCOURSEID')::string AS id_curs_canvas,   
+    GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".SISCOURSEID')::string AS id_sistema_curs, 
     GET_PATH(JSON, 'data[0]:membership.roles.roles')::string AS rol,
     GET_PATH(JSON, 'data[0]:membership.status')::string AS estat_membre,
     GET_PATH(JSON, 'data[0]:object.name')::string AS titol_recurs,

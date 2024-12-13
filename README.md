@@ -52,10 +52,10 @@ Files used to transform the data insisde snwoflake
     │   │   │   ├── DIM_RECURSOS_APRENENTATGE_validaciones.sql
     │   │   │   ├── francesc_base_dades_academitques_coco.sql
     │   │   │   └── validacion_11_11_2024.sql
-    │   │   ├── STAGE_POST_DADES_ACADEMIQUES.sql
+    │   │   ├── STAGE_POST_DADES_ACADEMIQUES_RA.sql
     │   │   ├── STAGE_DADES_ACADEMIQUES_COCO.sql
     │   │   ├── STAGE_DADES_ACADEMIQUES_DIMAX.sql
-    │   │   ├── STAGE_LIVE_EVENTS_FLATENED.sql
+    │   │   ├── STAGE_LIVE_EVENTS_FLATENED_RA.sql
     │   │   └── informacion_trabajo
     │   │       └── valoracion_productos_coco.sql
     │   └── test_procedures

@@ -1,9 +1,9 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- FACT_DADES_ACADEMIQUES_EVENTS
+-- -- FACT_RECURSOS_APRENENTATGE_EVENTS
 -- -- #################################################################################################
 -- -- #################################################################################################
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS (
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS (
     
     ID_ASSIGNATURA NUMBER(16,0),
     ID_SEMESTRE NUMBER(16,0),
@@ -40,12 +40,13 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS (
 
     usos_recurs_estudiants NUMBER(38, 0),
     usos_recurs_totals NUMBER(38, 0),
+    assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigencia de la assignatura en el semestre analitzat.',
     
     CREATION_DATE TIMESTAMP_NTZ(9)   COMMENT 'Data de creació del registre de la informació.',
     UPDATE_DATE TIMESTAMP_NTZ(9)  COMMENT 'Data de càrrega de la informació.'
 );
 
-CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_LOADS() 
+CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS() 
 RETURNS VARCHAR(16777216) 
 LANGUAGE SQL 
 EXECUTE AS CALLER AS 
@@ -55,9 +56,9 @@ BEGIN
     LET execution_time FLOAT;
 
     -- INSERT: Volcat de registres
-    TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS;
+    TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS;
 
-    INSERT INTO DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS (
+    INSERT INTO DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS (
         ID_ASSIGNATURA
         , ID_SEMESTRE
         , ID_CODI_RECURS
@@ -93,6 +94,7 @@ BEGIN
         
         , usos_recurs_estudiants
         , usos_recurs_totals
+        , assignatura_vigent_semester
 
         , CREATION_DATE
         , UPDATE_DATE 
@@ -133,8 +135,12 @@ BEGIN
         , aux_temporary_table.Origen_events
         , aux_temporary_table.enllac_url
 
+        -- added last evaluation 
         , case when aux_temporary_table.ROL like '["Learner"]' then 1 else 0 end as usos_recurs_estudiants
         , case when aux_temporary_table.ROL is null then 0 else 1 end as usos_recurs_totals
+
+        , aux_temporary_table.assignatura_vigent_semester
+
         , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
         , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
 
@@ -165,12 +171,12 @@ BEGIN
             events.tipus_recurs,
             events.format_recurs,
             events.Origen_events,
-            events.enllac_url
-            
+            events.enllac_url, 
+            dades_academiques.assignatura_vigent_semester
 
 
-        FROM DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES dades_academiques
-        LEFT JOIN DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED events
+        FROM DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques
+        LEFT JOIN DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA events
             ON dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY
             AND dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
             AND dades_academiques.CODI_RECURS = events.CODI_RECURS
@@ -196,11 +202,11 @@ BEGIN
     )
     VALUES (
         DB_UOC_PROD.DD_OD.SEQUENCIA_ID_LOG.NEXTVAL, 
-        'DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS', 
+        'DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS', 
         CURRENT_USER(), 
         :START_TIME, 
         :EXECUTION_TIME, 
-        'DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS Success'
+        'DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS Success'
     );
 
     RETURN 'Update completed successfully';
@@ -209,7 +215,7 @@ END;
  
 
 -- Procedure Execution
-CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS_LOADS();
+CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS();
 
 
 

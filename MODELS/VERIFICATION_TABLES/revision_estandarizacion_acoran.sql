@@ -1,6 +1,6 @@
 -- 2024/12/04
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- FACT_DADES_ACADEMIQUES_EVENTS: 
+-- FACT_RECURSOS_APRENENTATGE_EVENTS: 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SELECT 
 
@@ -41,8 +41,8 @@ SELECT
     , SOURCE as Origen_events  -- esdeveniments mireia 
     , URL as enllac_url -- ç
 
-from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS ; 
-select * from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS limit 100; 
+from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS ; 
+select * from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS limit 100; 
 
 
 

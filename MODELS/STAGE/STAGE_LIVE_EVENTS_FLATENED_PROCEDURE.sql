@@ -1,11 +1,11 @@
 
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- STAGE_LIVE_EVENTS_FLATENED_
+-- -- STAGE_LIVE_EVENTS_FLATENED_RA_
 -- -- #################################################################################################
 -- -- #################################################################################################
-
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED (
+-- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA limit 100;
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA (
  
     DIM_ASSIGNATURA_KEY VARCHAR(6),  
     DIM_SEMESTRE_KEY INT, 
@@ -34,7 +34,7 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED (
 );
 
 
-CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_LOADS() 
+CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA_LOADS() 
 RETURNS VARCHAR(16777216) 
 LANGUAGE SQL 
 EXECUTE AS CALLER AS 
@@ -44,9 +44,9 @@ BEGIN
     LET execution_time FLOAT;
 
     -- INSERT: Volcat de registres
-    TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED ;
+    TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA ;
 
-    INSERT INTO DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED  (
+    INSERT INTO DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA  (
         DIM_ASSIGNATURA_KEY,
         DIM_SEMESTRE_KEY,
         CODI_RECURS,
@@ -77,14 +77,14 @@ BEGIN
             GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".semester')::string AS DIM_SEMESTRE_KEY,
             JSON:sendTime::datetime AS event_time,
             JSON:sendTime::date AS event_date,
-            JSON:data[0]:ACCIO::string AS ACCIO,
+           JSON:data[0]:action::string AS ACCIO,
             GET_PATH(JSON, 'data[0]:actor.name')::string AS NOM_ACTOR,
             GET_PATH(JSON, 'data[0]:actor.type')::string AS ACTOR_TIPUS,  
             GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".user_login')::string AS usuari_dAcces,
-            GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".id_sistema_usuari')::string AS id_sistema_usuari,    
+            GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".user_sis_id')::string AS id_sistema_usuari,    
             GET_PATH(JSON, 'data[0]:group.name')::string AS titol_assignatura,  
-            GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".id_curs_canvas')::string AS id_curs_canvas,   
-            GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".id_sistema_curs')::string AS id_sistema_curs, 
+            GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".canvasCourseId')::string AS id_curs_canvas,   
+            GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".sisCourseId')::string AS id_sistema_curs, 
             GET_PATH(JSON, 'data[0]:membership.roles.roles')::string AS rol,
             GET_PATH(JSON, 'data[0]:membership.status')::string AS estat_membre,
             GET_PATH(JSON, 'data[0]:object.name')::string AS titol_recurs,
@@ -135,11 +135,11 @@ BEGIN
     )
     VALUES (
         DB_UOC_PROD.DD_OD.SEQUENCIA_ID_LOG.NEXTVAL, 
-        'DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED', 
+        'DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA', 
         CURRENT_USER(), 
         :START_TIME, 
         :EXECUTION_TIME, 
-        'DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED Success'
+        'DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA Success'
     );
 
     RETURN 'Update completed successfully';
@@ -148,7 +148,11 @@ END;
  
 
 -- Procedure Execution
-CALL DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_LOADS();
+CALL DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA_LOADS();
 
 
- -- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED
+ -- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA
+
+
+
+ (el área de estudio hablamos: ECIC, EAH, EEE, etc, el que sale de forma fea codificada en la tabla de GAT ASIGNATURAS)

@@ -1,10 +1,10 @@
 
 -- -- #################################################################################################
 -- -- #################################################################################################
--- -- FACT_DADES_ACADEMIQUES_EVENTS
+-- -- FACT_RECURSOS_APRENENTATGE_EVENTS
 -- -- #################################################################################################
 -- -- #################################################################################################
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS2 (
+CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS2 (
     ID_ASSIGNATURA NUMBER(38, 0),
     ID_SEMESTRE NUMBER(38, 0),
     ID_CODI_RECURS NUMBER(38, 0),
@@ -39,7 +39,8 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS2 
     enllac_url VARCHAR2(16777216),
 
     usos_recurs_estudiants NUMBER(38, 0),
-    usos_recurs_totals NUMBER(38, 0)
+    usos_recurs_totals NUMBER(38, 0), 
+    assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigencia de la assignatura en el semestre analitzat.'
         
  
 
@@ -55,6 +56,7 @@ with aux_temporary_table as (
 
         , dades_academiques.ORIGEN_DADES_ACADEMIQUES
         , dades_academiques.CODI_RECURS
+        , dades_academiques.assignatura_vigent_semester
 
         --REVIEW
         , events.CODI_RECURS as EVENT_CODI_RECURS
@@ -78,9 +80,9 @@ with aux_temporary_table as (
         , events.Origen_events
         , events.enllac_url
 
-    FROM  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES dades_academiques -- 7,888,532
+    FROM  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques -- 7,888,532
 
-    left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
+    left join DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA events   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
         on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
         AND dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
         -- AND dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY = events.DIM_RECURSOS_APRENENTATGE_KEY   --      14_859_255
@@ -125,7 +127,7 @@ select
         , aux_temporary_table.enllac_url
         , case when aux_temporary_table.ROL like '["Learner"]' then 1 else 0 end as usos_recurs_estudiants
         , case when aux_temporary_table.ROL is null then 0 else 1 end as usos_recurs_totals
-
+        , aux_temporary_table.assignatura_vigent_semester
 
 from aux_temporary_table
 
@@ -173,10 +175,10 @@ null  --> no incluir
 /*
 
 select distinct usos_recurs_totals
-from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS2
+from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS2
 
 select distinct  ROL, usos_recurs_estudiants, usos_recurs_totals
-from DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_ACADEMIQUES_EVENTS2
+from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS2
 -- where ROL is null 
 
 
@@ -190,5 +192,17 @@ ROL	                                USOS_RECURS_ESTUDIANTS	    USOS_RECURS_TOTAL
 ["Mentor"]	                        0	1
 ["Instructor","Mentor"]	            0	1
 null	                            0	0
+
+
+
+
+
+
+
+"DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA -> DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA_RA
+DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA -> DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA_RA
+DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS -> DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS
+DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG -> DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATGE_AGG"
+
 
 */
