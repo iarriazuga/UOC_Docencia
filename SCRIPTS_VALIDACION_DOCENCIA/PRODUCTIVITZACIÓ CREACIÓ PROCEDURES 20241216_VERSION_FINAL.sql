@@ -77,7 +77,7 @@ end';
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 /* TAULA DESTÍ: DIM_ASSIGNATURA */
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA_TEST_LOADS()
+CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA_LOADS_TEST()
 RETURNS VARCHAR(16777216)
 LANGUAGE SQL
 EXECUTE AS CALLER

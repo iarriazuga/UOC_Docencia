@@ -155,4 +155,4 @@ CALL DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA_LOADS();
 
 
 
- (el área de estudio hablamos: ECIC, EAH, EEE, etc, el que sale de forma fea codificada en la tabla de GAT ASIGNATURAS)
+ 
