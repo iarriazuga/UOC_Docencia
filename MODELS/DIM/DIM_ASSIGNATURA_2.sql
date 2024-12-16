@@ -29,7 +29,7 @@ create or replace TABLE DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA (
 	IND_EXA_PRESENCIAL VARCHAR(2),
 	IND_PROVA_CONF VARCHAR(2),
 	COD_ESTUDIS_AREA VARCHAR(8),
-    DESC_ESTUDIS_AREA VARCHAR(2000) COMMENT 'Descripcio del area de estudios, usada para el area Recurs de aprenentatge, viene de la tabla db_uoc_prod.stg_docencia.gat_descripciones.',
+    DESC_ESTUDIS_AREA VARCHAR(2000) COMMENT 'Descripcio del area de estudios, usada para el area Recurs de aprenentatge, viene de la tabla desc_asignaturas.',
 	TIPUS_EDUCACIO VARCHAR(8),
 	TIPUS_DOCENCIA_DETALL VARCHAR(8),
 	CREATION_DATE TIMESTAMP_NTZ(9) NOT NULL COMMENT 'Data de creacio del registre de la informacio',
@@ -184,52 +184,52 @@ merge into DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA
 
         from (
             select
-            ifnull(db_uoc_prod.stg_dadesra.gat_asignaturas.cod_asignatura,ifnull(db_uoc_prod.stg_docencia.gat_asig_semestres.cod_asignatura,trim(db_uoc_prod.stg_docencia.gat_descripciones.clave))) as cod_assignatura,
-            db_uoc_prod.stg_docencia.gat_asig_semestres.any_acad_inicio_doc,
-            db_uoc_prod.stg_docencia.gat_asig_semestres.any_acad_extincion,
+            ifnull(asignaturas.cod_asignatura,ifnull(asignaturas_semestres.cod_asignatura,trim(desc_asignaturas.clave))) as cod_assignatura,
+            asignaturas_semestres.any_acad_inicio_doc,
+            asignaturas_semestres.any_acad_extincion,
             case 
-                when db_uoc_prod.stg_docencia.gat_asig_semestres.any_acad_extincion is null then ''S''
+                when asignaturas_semestres.any_acad_extincion is null then ''S''
                 else ''N'' 
             END as assignatura_vigent,
  
-            db_uoc_prod.stg_docencia.gat_asig_semestres.any_acad_ini_eees,
-            ifnull(db_uoc_prod.stg_docencia.gat_asig_semestres.idioma_docencia,''ND'') as idioma_docencia,
-            db_uoc_prod.stg_docencia.gat_descripciones.cod_idioma,
-            db_uoc_prod.stg_docencia.gat_descripciones.descripcion,
-            db_uoc_prod.stg_docencia.gat_descripciones.clave,
-            db_uoc_prod.stg_docencia.gat_asig_semestres.ind_tfc,
-            db_uoc_prod.stg_docencia.gat_asig_semestres.ind_practicum,
-            db_uoc_prod.stg_docencia.gat_asig_semestres.ind_arees,
-            db_uoc_prod.stg_docencia.gat_asig_semestres.ind_anual,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.desc_asignatura as descripcio_assignatura,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.tipo_asignatura as tipus_assignatura,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.num_creditos as num_credits,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.num_creditos_teoricos as num_credits_teorics,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.num_creditos_practicos as num_credits_practics,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.valor_asignatura as valor_assignatura,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.ind_eval_continuada,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.ind_exa_presencial,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.ind_prueba_conf as ind_prova_conf,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.cod_estudios_area as cod_estudis_area,
+            asignaturas_semestres.any_acad_ini_eees,
+            ifnull(asignaturas_semestres.idioma_docencia,''ND'') as idioma_docencia,
+            desc_asignaturas.cod_idioma,
+            desc_asignaturas.descripcion,
+            desc_asignaturas.clave,
+            asignaturas_semestres.ind_tfc,
+            asignaturas_semestres.ind_practicum,
+            asignaturas_semestres.ind_arees,
+            asignaturas_semestres.ind_anual,
+            asignaturas.desc_asignatura as descripcio_assignatura,
+            asignaturas.tipo_asignatura as tipus_assignatura,
+            asignaturas.num_creditos as num_credits,
+            asignaturas.num_creditos_teoricos as num_credits_teorics,
+            asignaturas.num_creditos_practicos as num_credits_practics,
+            asignaturas.valor_asignatura as valor_assignatura,
+            asignaturas.ind_eval_continuada,
+            asignaturas.ind_exa_presencial,
+            asignaturas.ind_prueba_conf as ind_prova_conf,
+            asignaturas.cod_estudios_area as cod_estudis_area,
             desc_area_estudis.descripcion as DESC_ESTUDIS_AREA,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.tipo_educacion as tipus_educacio,
-            db_uoc_prod.stg_dadesra.gat_asignaturas.tipo_docencia_detalle as tipus_docencia_detall,
-            db_uoc_prod.stg_docencia.gat_descripciones.nom_tabla,
-            db_uoc_prod.stg_docencia.gat_descripciones.nom_campo
+            asignaturas.tipo_educacion as tipus_educacio,
+            asignaturas.tipo_docencia_detalle as tipus_docencia_detall,
+            desc_asignaturas.nom_tabla,
+            desc_asignaturas.nom_campo
         
-        from db_uoc_prod.stg_dadesra.gat_asignaturas
+        from db_uoc_prod.stg_dadesra.gat_asignaturas as asignaturas
             
-        left join db_uoc_prod.stg_docencia.gat_asig_semestres
-            on db_uoc_prod.stg_docencia.gat_asig_semestres.cod_asignatura = db_uoc_prod.stg_dadesra.gat_asignaturas.cod_asignatura
+        left join db_uoc_prod.stg_docencia.gat_asig_semestres as asignaturas_semestres
+            on asignaturas_semestres.cod_asignatura = asignaturas.cod_asignatura
         
-        left join db_uoc_prod.stg_docencia.gat_descripciones
-            on db_uoc_prod.stg_dadesra.gat_asignaturas.cod_asignatura = db_uoc_prod.stg_docencia.gat_descripciones.clave -- Anteriormente la clave tenia un trim. En la tabla descripciones algunas claves esta duplicadas lo unico que algunas con 7 caracteres (un espacio extra) y otras 6. Eso hacia duplicar resultados y dar errores
-            and db_uoc_prod.stg_docencia.gat_descripciones.nom_tabla = ''ASIGNATURAS''
-            and db_uoc_prod.stg_docencia.gat_descripciones.nom_campo = ''DESC_ASIGNATURA''
+        left join db_uoc_prod.stg_docencia.gat_descripciones as desc_asignaturas 
+            on asignaturas.cod_asignatura = desc_asignaturas.clave -- Anteriormente la clave tenia un trim. En la tabla descripciones algunas claves esta duplicadas lo unico que algunas con 7 caracteres (un espacio extra) y otras 6. Eso hacia duplicar resultados y dar errores
+            and desc_asignaturas.nom_tabla = ''ASIGNATURAS''
+            and desc_asignaturas.nom_campo = ''DESC_ASIGNATURA''
         
         
-        left join db_uoc_prod.stg_docencia.gat_descripciones desc_area_estudis
-            on db_uoc_prod.stg_dadesra.gat_asignaturas.cod_estudios_area = desc_area_estudis.clave -- Anteriormente la clave tenia un trim. En la tabla descripciones algunas claves esta duplicadas lo unico que algunas con 7 caracteres (un espacio extra) y otras 6. Eso hacia duplicar resultados y dar errores
+        left join db_uoc_prod.stg_docencia.gat_descripciones  as desc_area_estudis
+            on asignaturas.cod_estudios_area = desc_area_estudis.clave -- Anteriormente la clave tenia un trim. En la tabla descripciones algunas claves esta duplicadas lo unico que algunas con 7 caracteres (un espacio extra) y otras 6. Eso hacia duplicar resultados y dar errores
             and desc_area_estudis.cod_idioma = ''CAT''
             and desc_area_estudis.nom_tabla = ''AREAS_ESTUDIOS''
 
