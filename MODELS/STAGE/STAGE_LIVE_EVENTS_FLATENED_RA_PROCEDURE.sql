@@ -5,6 +5,11 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 -- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA limit 100;
+-- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA order by event_date desc 
+-- drop   TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA;
+ 
+
+
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA (
  
     DIM_ASSIGNATURA_KEY VARCHAR(6),  
@@ -30,7 +35,9 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA (
     OBJECT_MEDIATYPE VARCHAR(16777216),
     tipus_recurs VARCHAR(16777216),
     format_recurs VARCHAR(16777216),
-    enllac_url VARCHAR(16777216)
+    enllac_url VARCHAR(16777216),
+    creation_date timestamp_ntz(9) not null    comment 'Data de creacio del registre de la informacio.',
+	update_date timestamp_ntz(9) not null      comment 'Data de carrega de la informacio.'
 );
 
 
@@ -44,7 +51,7 @@ BEGIN
     LET execution_time FLOAT;
 
     -- INSERT: Volcat de registres
-    TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA ;
+    -- TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA ; --change to daily 
 
     INSERT INTO DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA  (
         DIM_ASSIGNATURA_KEY,
@@ -68,7 +75,9 @@ BEGIN
         OBJECT_MEDIATYPE,
         tipus_recurs,
         format_recurs,
-        enllac_url
+        enllac_url, 
+        creation_date,
+        update_date
     )
     WITH aux_cte_table AS (
         SELECT 
@@ -121,11 +130,19 @@ BEGIN
         OBJECT_MEDIATYPE, 
         tipus_recurs, 
         format_recurs, 
-        enllac_url
+        enllac_url,  
+        convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz),
+        convert_timezone('America/Los_Angeles','Europe/Madrid', current_timestamp()::timestamp_ntz)
+    
     FROM aux_cte_table
-    WHERE DIM_ASSIGNATURA_KEY IS NOT NULL
-    AND DIM_SEMESTRE_KEY IS NOT NULL
-    AND CODI_RECURS IS NOT NULL;
+    WHERE 1=1
+        and DIM_ASSIGNATURA_KEY IS NOT NULL
+        AND DIM_SEMESTRE_KEY IS NOT NULL
+        AND CODI_RECURS IS NOT NULL
+        AND event_date >= CURRENT_DATE() -- to load information daily 
+    
+    
+    ;
 
 
     -- LOGS
