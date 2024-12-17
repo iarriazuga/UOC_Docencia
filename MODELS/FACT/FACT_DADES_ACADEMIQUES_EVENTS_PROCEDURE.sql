@@ -55,6 +55,8 @@ BEGIN
     LET start_time TIMESTAMP_NTZ := CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ); 
     LET execution_time FLOAT;
 
+    --merge inicial 
+    -- truncate table DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS;
     MERGE INTO DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS AS target
         USING (
             SELECT 
@@ -95,8 +97,8 @@ BEGIN
                 CASE WHEN aux_temporary_table.ROL IS NULL THEN 0 ELSE 1 END AS usos_recurs_totals,
                 aux_temporary_table.assignatura_vigent_semester,
 
-                CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS CREATION_DATE,
-                CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS UPDATE_DATE
+                aux_temporary_table.CREATION_DATE, 
+                aux_temporary_table.UPDATE_DATE
 
             FROM (
                 SELECT 
@@ -126,10 +128,13 @@ BEGIN
                     events.format_recurs,
                     events.Origen_events,
                     events.enllac_url, 
-                    dades_academiques.assignatura_vigent_semester
+                    dades_academiques.assignatura_vigent_semester,
+                    CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS CREATION_DATE,
+                    CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS UPDATE_DATE
 
-                FROM DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques
-                LEFT JOIN DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA events
+                FROM DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques -- 5,103,788
+
+                LEFT JOIN DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA events  --- 16,556,218
                     ON dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY
                     AND dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
                     AND dades_academiques.CODI_RECURS = events.CODI_RECURS
@@ -152,14 +157,34 @@ BEGIN
         AND target.DIM_ASSIGNATURA_KEY = source.DIM_ASSIGNATURA_KEY
         AND target.DIM_SEMESTRE_KEY = source.DIM_SEMESTRE_KEY
         AND target.DIM_RECURSOS_APRENENTATGE_KEY = source.DIM_RECURSOS_APRENENTATGE_KEY
-        AND target.id_idp_usuari_events = source.id_idp_usuari_events -- idp
         AND target.EVENT_TIME = source.EVENT_TIME 
+        AND target.id_idp_usuari_events= source.id_idp_usuari_events
         
         WHEN MATCHED THEN
             UPDATE SET 
-                target.EVENT_DATE = source.EVENT_DATE,
-                target.ACCIO = source.ACCIO,
-                target.UPDATE_DATE = source.UPDATE_DATE
+                    target.ORIGEN_DADES_ACADEMIQUES= source.ORIGEN_DADES_ACADEMIQUES
+                    , target.CODI_RECURS= source.CODI_RECURS
+                    , target.EVENT_CODI_RECURS= source.EVENT_CODI_RECURS
+                    , target.EVENT_DATE= source.EVENT_DATE
+                    , target.ACCIO= source.ACCIO
+                    , target.NOM_ACTOR= source.NOM_ACTOR
+                    , target.ACTOR_TIPUS= source.ACTOR_TIPUS
+                    , target.usuari_dAcces= source.usuari_dAcces
+                    
+                    , target.titol_assignatura= source.titol_assignatura
+                    , target.id_curs_canvas= source.id_curs_canvas
+                    , target.id_sistema_curs= source.id_sistema_curs
+                    , target.ROL= source.ROL
+                    , target.estat_membre= source.estat_membre
+                    , target.titol_recurs= source.titol_recurs
+                    , target.enllac= source.enllac
+                    , target.OBJECT_MEDIATYPE= source.OBJECT_MEDIATYPE
+                    , target.tipus_recurs= source.tipus_recurs
+                    , target.format_recurs= source.format_recurs
+                    , target.Origen_events= source.Origen_events
+                    , target.enllac_url= source.enllac_url
+                    , target.assignatura_vigent_semester = source.assignatura_vigent_semester 
+                    , target.UPDATE_DATE =  source.UPDATE_DATE
 
         WHEN NOT MATCHED THEN
             INSERT (
@@ -259,8 +284,6 @@ END;
  
 
 -- Procedure Execution
-CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS();
+CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS(); 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS;  -- 16,552,336
--- truncate table DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS
---  select *  from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS
+

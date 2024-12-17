@@ -63,11 +63,9 @@ with temp_table_dim_key as (
  
         , events.DIM_SEMESTRE_KEY
         , events.DIM_ASSIGNATURA_KEY
-        , events.DIM_RECURSOS_APRENENTATGE_KEY   
+        , events.CODI_RECURS   
 
-        , events.source
-        , events.source2
-        --REVIEW
+ 
         , dades_academiques.CODI_RECURS as REC_CODI_RECURS
         , events.CODI_RECURS as EVENT_CODI_RECURS
 
@@ -80,7 +78,7 @@ with temp_table_dim_key as (
     left join  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
         on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
         AND dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
-        AND dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY = events.DIM_RECURSOS_APRENENTATGE_KEY -- 43k  -- agrupar por 
+        AND dades_academiques.CODI_RECURS = events.CODI_RECURS -- 43k  -- agrupar por 
  
 
 ) 
@@ -100,7 +98,7 @@ SELECT distinct EVENT_CODI_RECURS-- * 5,248 resources no aparecen
 from comprobacion 
 where 1=1 
 -- AND DIM_ASSIGNATURA_KEY not in ( select DIM_ASSIGNATURA_KEY from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA   ) -- all resources included
-and EVENT_CODI_RECURS not in ( select Codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA   ) -- all resources included 1,762,759 vs  1,781,031 (BOTH difference)
+and EVENT_CODI_RECURS not in ( select Codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA ) -- all resources included 1,762,759 vs  1,781,031 (BOTH difference)
 
 /*
 
@@ -313,12 +311,12 @@ where cod_asignatura = '80.560' and any_academico =20231
 -- DUPLICADOS FLATENED --> 303 vs 357 
 ---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 select * 
-from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA limit 100;
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA  
 where 1=1
 -- and event_time like '2024-12-17 09:47:19.497'   -- revisar duplicados 
 -- and event_time like '2024-12-12 06:04:46.252' --2 
-and event_time like '2024-05-18 06:12:18.091'; --4
-
+-- and event_time like '2024-05-18 06:12:18.091'; --4
+and event_time like '2024-04-16 16:10:29.351'; -- registros 8 
 
 
 select event_time,nom_actor, count(*) 
@@ -348,3 +346,191 @@ M4.351	20232	DIMAX - 76912	2024-03-08 10:32:02.847	2
 
 
 */
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--3) Recursos que estan en las tablas de dimension de recursos pero no en las que creamos las stage --> base para el resto 
+-- REVISION FRANCESC 
+--- ANALISIS DE REGISTROS FALTANTES
+
+
+with temp_table_dim_key as (
+    select 
+        dades_academiques.DIM_ASSIGNATURA_KEY || dades_academiques.DIM_SEMESTRE_KEY || dades_academiques.CODI_RECURS as concat_key
+ 
+        , events.DIM_SEMESTRE_KEY
+        , events.DIM_ASSIGNATURA_KEY
+        , events.CODI_RECURS   
+
+ 
+        , dades_academiques.CODI_RECURS as REC_CODI_RECURS
+        , events.CODI_RECURS as EVENT_CODI_RECURS
+
+
+ 
+    -- invers 
+    --FROM  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques  
+    FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA events
+
+    left join  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
+        on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
+        AND dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
+        AND dades_academiques.CODI_RECURS = events.CODI_RECURS -- 43k  -- agrupar por 
+ 
+
+) 
+
+, comprobacion as (
+    select * -- source2 , count(*) 
+    from temp_table_dim_key --- 12,527,830 vs not null  --9,861,422 -- mucho mas cercano 
+    where 1=1 
+    AND REC_CODI_RECURS is null   
+) 
+
+SELECT distinct EVENT_CODI_RECURS-- * 5,248 resources no aparecen
+from comprobacion 
+where 1=1 
+-- AND DIM_ASSIGNATURA_KEY not in ( select DIM_ASSIGNATURA_KEY from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA) -- all resources included
+and EVENT_CODI_RECURS not in ( select Codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA ) -- 
+
+
+-- recursos que aparecen en events ( stage_live_events) pero no en (post_dades_academiques) el catalogo proporcionado por profesor : -- 5,267 --> count 
+/*
+245850
+274926
+200473
+192444
+255112
+267839
+232776
+124765
+244943
+166814
+247940
+243436
+144794
+258545
+263706
+137392
+194769
+214459
+275290
+234348
+
+
+*/
+
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--3) Recursos que estan en las tablas de dimension de recursos pero no en las que creamos las stage --> base para el resto 
+-- REVISION FRANCESC 
+--- ANALISIS DE REGISTROS FALTANTES
+with temp_table_dim_key as (
+    select 
+        dades_academiques.DIM_ASSIGNATURA_KEY || dades_academiques.DIM_SEMESTRE_KEY || dades_academiques.CODI_RECURS as concat_key
+ 
+        , events.DIM_SEMESTRE_KEY
+        , events.DIM_ASSIGNATURA_KEY
+        , events.CODI_RECURS   
+
+ 
+        , dades_academiques.CODI_RECURS as REC_CODI_RECURS
+        , events.CODI_RECURS as EVENT_CODI_RECURS
+
+
+ 
+    -- invers 
+    --FROM  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques  
+    FROM  DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA events
+
+    left join  DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques   -- 4 ultimos anos : 8,741,384 vs 123,019 --> datos by semestre, asignatura, producto grouped
+        on dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY -- 114,821,250
+        AND dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
+        AND dades_academiques.CODI_RECURS = events.CODI_RECURS -- 43k  -- agrupar por 
+ 
+
+) 
+
+, comprobacion as (
+    select * -- source2 , count(*) 
+    from temp_table_dim_key --- 12,527,830 vs not null  --9,861,422 -- mucho mas cercano 
+    where 1=1 
+    AND REC_CODI_RECURS is null   
+) 
+
+SELECT distinct DIM_ASSIGNATURA_KEY-- * 5,248 resources no aparecen
+from comprobacion 
+where 1=1 
+AND DIM_ASSIGNATURA_KEY not in ( select DIM_ASSIGNATURA_KEY from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA) -- all resources included
+-- and EVENT_CODI_RECURS not in ( select Codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA ) -- 
+
+
+-- recursos que aparecen en events ( stage_live_events) pero no en (post_dades_academiques) el catalogo proporcionado por profesor : -- 5,267
+/*
+ 
+
+
+*/
+
+
+
+--  posibilidad combinatoria asignatura y recurso 
+
+* --> 12
+ --> b0112
+ -->  post_dades_academiques --> catalogo ( 12 , b0112  )
+
+
+--- : 
+-- select * from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS;  -- 16,552,336  -- 16,555,471 
+-- -- truncate table DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS
+-- --  select *  from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS
+
+select * 
+from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS
+where usos_recurs_totals = 0;  -- 4,987,916 
+
+select sum(usos_recurs_totals)
+from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS  -- 11_568_302 / 16_
+
+
+
+select *  
+
+
+
+
+
+---> contestar el mail con la confirmacion --> preparacion de revision 
+
+
+
+
+--- fact validacion ;
+---  select count(*) from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS -- 16559844 vs 16559844 vs 16559844
+
+select *  from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS limit 100
+
+--- ver numero de registros --> subiendo --> 
+
+/***
+
+Uncaught exception of type 'STATEMENT_ERROR' on line 8 at position 4 : Duplicate row detected during DML action
+Row Values: [8105, 82, 106513, 49627407, 601914, "80.199", 20241, "COCO - 290134", "COCO", 290134, 290134, "2024-10-17 19:50:55.835", "2024-10-17", "NavigatedTo", "Alicia Martinez Barros", "Person", "amartinezbarros", "1461717", "80.199 - Psicología de la percepción y la emoción - Aula 7", "45947", "A_20241_80.199_7", "["Learner"]", "Active", NULL, "https://ralti.uoc.edu/niu/523100/290134", NULL, "DigitalResource", "info", "NIU", NULL, 1, 1, "Vigent", 1734457389508000000, 1734457389508000000]
+
+*/
+
+
+
+  --- DIM_PERSONA_KEY, 
+-- DIM_ASSIGNATURA_KEY, DIM_SEMESTRE_KEY, codi_recurs,  EVENT_TIME, count(*)
+ 
+--  from  DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA       
+-- -- from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS
+-- group by 1,2,3,4
+-- having count(*) > 1 
+
+
+ -- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA
+-- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA  --  13,501,002

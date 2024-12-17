@@ -19,6 +19,7 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_DADES_RECURSOS_APRENENTATG
     ORIGEN_DADES_ACADEMIQUES VARCHAR(5) COMMENT 'Font de las dades académiques.', 
     assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigencia de la assignatura en el semestre analitzat.', 
 
+    usos_unics_recurs NUMBER(38, 0),
     usos_recurs_estudiants NUMBER(38, 0),
     usos_recurs_totals NUMBER(38, 0),
 
@@ -56,7 +57,8 @@ BEGIN
         
         , ORIGEN_DADES_ACADEMIQUES
         , assignatura_vigent_semester
-
+        
+        , usos_unics_recurs
         , usos_recurs_estudiants
         , usos_recurs_totals
 
@@ -75,8 +77,9 @@ BEGIN
         , dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY
         , dades_academiques.ORIGEN_DADES_ACADEMIQUES
         , dades_academiques.assignatura_vigent_semester
-
-        , SUM(dades_academiques.usos_recurs_estudiants) AS usos_recurs_estudiants
+        
+        , count( distinct dades_academiques.id_idp_usuari_events) AS usos_unics_recurs 
+        , SUM(dades_academiques.usos_recurs_estudiants) AS usos_recurs_estudiants 
         , SUM(dades_academiques.usos_recurs_totals) AS usos_recurs_totals
 
         , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
