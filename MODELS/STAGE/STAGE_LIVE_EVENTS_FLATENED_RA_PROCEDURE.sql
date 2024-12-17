@@ -10,6 +10,7 @@
  
 
 
+
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA (
  
     DIM_ASSIGNATURA_KEY VARCHAR(6),  
@@ -24,7 +25,7 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA (
     NOM_ACTOR VARCHAR(16777216),
     ACTOR_TIPUS VARCHAR(16777216),
     usuari_dAcces VARCHAR(16777216),
-    id_sistema_usuari VARCHAR(16777216),
+    id_idp_usuari_events VARCHAR(16777216),
     titol_assignatura VARCHAR(16777216),
     id_curs_canvas VARCHAR(16777216),
     id_sistema_curs VARCHAR(16777216),
@@ -40,6 +41,7 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA (
 	update_date timestamp_ntz(9) not null      comment 'Data de carrega de la informacio.'
 );
 
+ 
 
 CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA_LOADS() 
 RETURNS VARCHAR(16777216) 
@@ -51,7 +53,7 @@ BEGIN
     LET execution_time FLOAT;
 
     -- INSERT: Volcat de registres
-    -- TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA ; --change to daily 
+    TRUNCATE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA ; --change to daily 
 
     INSERT INTO DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA  (
         DIM_ASSIGNATURA_KEY,
@@ -64,7 +66,7 @@ BEGIN
         NOM_ACTOR,
         ACTOR_TIPUS,
         usuari_dAcces,
-        id_sistema_usuari,
+        id_idp_usuari_events,
         titol_assignatura,
         id_curs_canvas,
         id_sistema_curs,
@@ -90,7 +92,7 @@ BEGIN
             GET_PATH(JSON, 'data[0]:actor.name')::string AS NOM_ACTOR,
             GET_PATH(JSON, 'data[0]:actor.type')::string AS ACTOR_TIPUS,  
             GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".user_login')::string AS usuari_dAcces,
-            GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".user_sis_id')::string AS id_sistema_usuari,    
+            GET_PATH(JSON, 'data[0]:actor.extensions."com.instructure.canvas".user_sis_id')::string AS id_idp_usuari_events,    
             GET_PATH(JSON, 'data[0]:group.name')::string AS titol_assignatura,  
             GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".canvasCourseId')::string AS id_curs_canvas,   
             GET_PATH(JSON, 'data[0]:extensions."edu.uoc.ralti".sisCourseId')::string AS id_sistema_curs, 
@@ -119,7 +121,7 @@ BEGIN
         NOM_ACTOR, 
         ACTOR_TIPUS, 
         usuari_dAcces, 
-        id_sistema_usuari, 
+        id_idp_usuari_events, 
         titol_assignatura, 
         id_curs_canvas, 
         id_sistema_curs, 
@@ -139,7 +141,7 @@ BEGIN
         and DIM_ASSIGNATURA_KEY IS NOT NULL
         AND DIM_SEMESTRE_KEY IS NOT NULL
         AND CODI_RECURS IS NOT NULL
-        AND event_date >= CURRENT_DATE() -- to load information daily 
+        -- AND event_date >= CURRENT_DATE() -- to load information daily - 1 day 
     
     
     ;
@@ -172,4 +174,4 @@ CALL DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA_LOADS();
 
 
 
- 
+

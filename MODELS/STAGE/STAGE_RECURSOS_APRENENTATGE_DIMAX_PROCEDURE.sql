@@ -232,9 +232,4 @@ call db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax_loads();
 
 
 
- 
-select * 
-from db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax
-where 1=1
--- and dim_recursos_aprenentatge_key = 'DIMAX - 59578'
-and codi_recurs = 59578
+ select * from  db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax ;

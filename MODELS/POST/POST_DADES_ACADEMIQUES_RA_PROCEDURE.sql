@@ -37,9 +37,17 @@ BEGIN
         ORIGEN_DADES_ACADEMIQUES,
         assignatura_vigent_semester
     )
+    with profesores_assignaturas as ( 
+        select 
+            cod_asignatura 
+            , any_academico
+            , max(idp) as idp  -- seleccionamos al max profesor : no granularidad 1:1 victor
+        from DB_UOC_PROD.STG_DADESRA.GAT_PERSONAS_ASIGNATURAS
+        group by  1,2 
+    )
     SELECT 
         -- DIM_KEYS:
-        personas_assignaturas.idp AS DIM_PERSONA_KEY, -- Included to show the professor for the course --> 1:1 relationship -> does not create duplicates
+        profesores_assignaturas.idp AS DIM_PERSONA_KEY, -- Included to show the professor for the course --> 1:1 relationship -> does not create duplicates
         aux_temporary_table.DIM_ASSIGNATURA_KEY,
         aux_temporary_table.DIM_SEMESTRE_KEY,
         aux_temporary_table.DIM_RECURSOS_APRENENTATGE_KEY,
@@ -70,9 +78,9 @@ BEGIN
             'DIMAX' AS ORIGEN_DADES_ACADEMIQUES
         FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX
     ) aux_temporary_table
-        LEFT JOIN DB_UOC_PROD.STG_DADESRA.GAT_PERSONAS_ASIGNATURAS AS personas_assignaturas
-            ON personas_assignaturas.cod_asignatura = aux_temporary_table.DIM_ASSIGNATURA_KEY
-            AND personas_assignaturas.any_academico = aux_temporary_table.DIM_SEMESTRE_KEY
+        LEFT JOIN profesores_assignaturas
+            ON profesores_assignaturas.cod_asignatura = aux_temporary_table.DIM_ASSIGNATURA_KEY
+            AND profesores_assignaturas.any_academico = aux_temporary_table.DIM_SEMESTRE_KEY
 
         -- VALIDEZ DE LA ASSIGNATURA: 
         left join db_uoc_prod.stg_docencia.gat_asig_semestres validez_asig_semestres
@@ -100,6 +108,9 @@ END;
 -- Procedure Execution
 CALL DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA_LOADS() ;
 
--- select * from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA
+select * from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA;
 
-
+-- sum anteriores: 
+-- STAGE_DADES_ACADEMIQUES_COCO:  1,712,881
+-- STAGE_DADES_ACADEMIQUES_DIMAX 3,390,907
+-- suma : 5,103,788 

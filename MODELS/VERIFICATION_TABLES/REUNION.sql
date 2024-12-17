@@ -289,3 +289,62 @@ dim_assignatura --> var_assignatura : estado activo en dim_assignatura
 
 renombrando los esquemas 
 * procedimiento_oficial --> tardara 
+
+
+
+---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
+comentarios post actualizacion: 
+*/
+---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+select cod_asignatura , any_academico, count(*) 
+from DB_UOC_PROD.STG_DADESRA.GAT_PERSONAS_ASIGNATURAS
+group by  1,2
+having count(*) > 1 
+order by 3 desc 
+
+
+select * 
+from DB_UOC_PROD.STG_DADESRA.GAT_PERSONAS_ASIGNATURAS  -- 18 profesores
+where cod_asignatura = '80.560' and any_academico =20231
+
+---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- DUPLICADOS FLATENED --> 303 vs 357 
+---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+select * 
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA limit 100;
+where 1=1
+-- and event_time like '2024-12-17 09:47:19.497'   -- revisar duplicados 
+-- and event_time like '2024-12-12 06:04:46.252' --2 
+and event_time like '2024-05-18 06:12:18.091'; --4
+
+
+
+select event_time,nom_actor, count(*) 
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA 
+group by 1,2
+having count(*) > 1;
+
+
+/*
+
+-- 303 duplicados
+03.521	20241	COCO - 298615	2024-12-12 06:04:46.252	2
+20.026	20241	COCO - 279634	2024-12-05 15:53:10.073	2
+71.500	20241	COCO - 278690	2024-12-16 21:39:46.926	2
+86.615	20241	COCO - 276035	2024-10-08 09:49:16.344	2
+73.555	20241	COCO - 295623	2024-10-22 16:37:09.768	2
+10.176	20232	DIMAX - 108204	2024-05-14 15:54:28.017	2
+00.668	20241	COCO - 258591	2024-10-24 16:51:02.348	2
+CA.057	20241	COCO - 295911	2024-10-10 12:46:37.193	2
+00.668	20241	COCO - 258593	2024-10-12 17:04:19.795	2
+10.213	20241	COCO - 289195	2024-11-23 19:15:40.860	2
+20.130	20232	DIMAX - 72247	2024-04-09 12:35:28.712	2
+18.108	20232	DIMAX - 118344	2024-06-22 15:08:23.981	2
+80.197	20241	DIMAX - 66272	2024-11-21 10:42:15.236	2
+M4.351	20232	DIMAX - 76912	2024-03-08 10:32:02.847	2
+86.614	20232	DIMAX - 66012	2024-03-27 18:58:48.500	2
+
+
+*/
