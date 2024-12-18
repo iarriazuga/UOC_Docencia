@@ -7,7 +7,7 @@
 
  
 create or replace table db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax (
-    codi_recurs number(20,0)                   comment 'Codi del recurs aprenentatge proporcionat pel cataleg intern. Originalment es proporciona amb la nomenclatura ID_RECURS.',
+    codi_recurs number(38,0)                   comment 'Codi del recurs aprenentatge proporcionat pel cataleg intern. Originalment es proporciona amb la nomenclatura ID_RECURS.',
     titol_recurs varchar(4000)                 comment 'Titol del recurs aprenentatge disponible al sistema.',
     origen_recurs varchar(256)                 comment 'Origen o tipologia del recurs. Indica si el recurs es INTERN o EXTERN com a forma de catalogacio. La forma de catalogar-lo depen de la font de la que extreiem el recurs COCO (intern) o DIMAX (extern).',
     tipus_recurs varchar(256)                  comment 'Tipus de recurs aprenentatge. Aquesta informació ve proporcionada per les bases de dades i catalogada previament al sistema. Indica si un recurs, entre altres, es un document, article, url, etc.',

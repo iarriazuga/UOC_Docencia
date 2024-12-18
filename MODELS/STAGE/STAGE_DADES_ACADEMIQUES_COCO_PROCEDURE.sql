@@ -4,11 +4,10 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO (
-    -- ID_DIM_D_DDP_DOCENCIA_STAGE_DADES_ACADEMIQUES_COCO NUMBER(20,0),
     DIM_ASSIGNATURA_KEY VARCHAR(6),
-    DIM_SEMESTRE_KEY VARCHAR(6),
-    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(19),
-    CODI_RECURS VARCHAR(12),
+    DIM_SEMESTRE_KEY NUMBER(38, 0),
+    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16),
+    CODI_RECURS NUMBER(38,0),
     CREATION_DATE TIMESTAMP_NTZ(9),
     UPDATE_DATE TIMESTAMP_NTZ(9)
 );
@@ -55,7 +54,7 @@ BEGIN
             ON asignatura.id = plan_publicacion.fk_element_formacio_element_id
         INNER JOIN db_uoc_prod.stg_dadesra.autors_periode semestre
             ON semestre.id = plan_publicacion.FK_PERIODE_PERIODE_ID
-        INNER JOIN DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_COCO_PRODUCT_MODULS coco_products
+        INNER JOIN DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE coco_products
             ON coco_products.codi_recurs = productos_plan_publicacion.PRODUCTE_ID
     ),
     cross_semestres_informados AS (
@@ -140,5 +139,4 @@ END;
 CALL DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO_LOADS();
 
 
- select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO; -- STAGE_DADES_ACADEMIQUES_COCO:  1,712,881
 

@@ -4,7 +4,7 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS (
-    CODI_RECURS VARCHAR(12),
+    CODI_RECURS NUMBER(38, 0),
     TITOL_RECURS VARCHAR(255),
     ORIGEN_RECURS VARCHAR(5),
     ORIGEN_BASE_DADES VARCHAR(9),

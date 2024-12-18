@@ -3,48 +3,49 @@
 -- -- FACT_RECURSOS_APRENENTATGE_EVENTS
 -- -- #################################################################################################
 -- -- #################################################################################################
-CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS (
+-- drop table DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS
+-- CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS (
     
-    ID_ASSIGNATURA NUMBER(16,0),
-    ID_SEMESTRE NUMBER(16,0),
-    ID_CODI_RECURS NUMBER(38,0),
-    ID_PERSONA NUMBER(16,0),
+--     ID_ASSIGNATURA NUMBER(16,0),
+--     ID_SEMESTRE NUMBER(16,0),
+--     ID_CODI_RECURS NUMBER(38,0),
+--     ID_PERSONA NUMBER(16,0),
     
-    DIM_PERSONA_KEY NUMBER(10,0),
-    DIM_ASSIGNATURA_KEY VARCHAR(6),
-    DIM_SEMESTRE_KEY NUMBER(38,0),
-    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(15),
+--     DIM_PERSONA_KEY NUMBER(10,0),
+--     DIM_ASSIGNATURA_KEY VARCHAR(6),
+--     DIM_SEMESTRE_KEY NUMBER(38,0),
+--     DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16),
 
-    ORIGEN_DADES_ACADEMIQUES VARCHAR(5),
-    CODI_RECURS NUMBER(38,0),
-    EVENT_CODI_RECURS NUMBER(38,0),
-    EVENT_TIME VARCHAR(16777216),
-    EVENT_DATE VARCHAR(16777216),
-    ACCIO VARCHAR(16777216),
-    NOM_ACTOR VARCHAR(16777216),
-    ACTOR_TIPUS VARCHAR(16777216),
-    USUARI_DACCES VARCHAR(16777216),
-    id_idp_usuari_events VARCHAR(16777216),
-    TITOL_ASSIGNATURA VARCHAR(16777216),
-    ID_CURS_CANVAS VARCHAR(16777216),
-    ID_SISTEMA_CURS VARCHAR(16777216),
-    ROL VARCHAR(16777216),
-    ESTAT_MEMBRE VARCHAR(16777216),
-    TITOL_RECURS VARCHAR(16777216),
-    ENLLAC VARCHAR(16777216),
-    OBJECT_MEDIATYPE VARCHAR(16777216),
-    TIPUS_RECURS VARCHAR(16777216),
-    FORMAT_RECURS VARCHAR(16777216),
-    ORIGEN_EVENTS VARCHAR(6),
-    ENLLAC_URL VARCHAR(16777216),
+--     ORIGEN_DADES_ACADEMIQUES VARCHAR(5),
+--     CODI_RECURS NUMBER(38,0),
+--     EVENT_CODI_RECURS NUMBER(38,0),
+--     EVENT_TIME VARCHAR(16777216),
+--     EVENT_DATE VARCHAR(16777216),
+--     ACCIO VARCHAR(16777216),
+--     NOM_ACTOR VARCHAR(16777216),
+--     ACTOR_TIPUS VARCHAR(16777216),
+--     USUARI_DACCES VARCHAR(16777216),
+--     id_idp_usuari_events VARCHAR(16777216),
+--     TITOL_ASSIGNATURA VARCHAR(16777216),
+--     ID_CURS_CANVAS VARCHAR(16777216),
+--     ID_SISTEMA_CURS VARCHAR(16777216),
+--     ROL VARCHAR(16777216),
+--     ESTAT_MEMBRE VARCHAR(16777216),
+--     TITOL_RECURS VARCHAR(16777216),
+--     ENLLAC VARCHAR(16777216),
+--     OBJECT_MEDIATYPE VARCHAR(16777216),
+--     TIPUS_RECURS VARCHAR(16777216),
+--     FORMAT_RECURS VARCHAR(16777216),
+--     ORIGEN_EVENTS VARCHAR(6),
+--     ENLLAC_URL VARCHAR(16777216),
 
-    usos_recurs_estudiants NUMBER(38, 0),
-    usos_recurs_totals NUMBER(38, 0),
-    assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigencia de la assignatura en el semestre analitzat.',
+--     usos_recurs_estudiants NUMBER(38, 0),
+--     usos_recurs_totals NUMBER(38, 0),
+--     assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigencia de la assignatura en el semestre analitzat.',
     
-    CREATION_DATE TIMESTAMP_NTZ(9)   COMMENT 'Data de creació del registre de la informació.',
-    UPDATE_DATE TIMESTAMP_NTZ(9)  COMMENT 'Data de càrrega de la informació.'
-);
+--     CREATION_DATE TIMESTAMP_NTZ(9)   COMMENT 'Data de creació del registre de la informació.',
+--     UPDATE_DATE TIMESTAMP_NTZ(9)  COMMENT 'Data de càrrega de la informació.'
+-- );
 
 CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS() 
 RETURNS VARCHAR(16777216) 
@@ -72,7 +73,7 @@ BEGIN
                 
                 aux_temporary_table.ORIGEN_DADES_ACADEMIQUES,
                 aux_temporary_table.CODI_RECURS,
-                aux_temporary_table.CODI_RECURS AS EVENT_CODI_RECURS,
+                aux_temporary_table.EVENT_CODI_RECURS,
                 aux_temporary_table.EVENT_TIME,
                 aux_temporary_table.EVENT_DATE,
                 aux_temporary_table.ACCIO,
@@ -95,27 +96,30 @@ BEGIN
 
                 CASE WHEN aux_temporary_table.ROL LIKE '["Learner"]' THEN 1 ELSE 0 END AS usos_recurs_estudiants,
                 CASE WHEN aux_temporary_table.ROL IS NULL THEN 0 ELSE 1 END AS usos_recurs_totals,
-                aux_temporary_table.assignatura_vigent_semester,
-
-                aux_temporary_table.CREATION_DATE, 
-                aux_temporary_table.UPDATE_DATE
+                aux_temporary_table.assignatura_vigent_semester 
 
             FROM (
                 SELECT 
-                    dades_academiques.DIM_PERSONA_KEY,
-                    dades_academiques.DIM_ASSIGNATURA_KEY,
-                    dades_academiques.DIM_SEMESTRE_KEY,
-                    dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY,
+                    --- keys for fact 
+                    coalesce(dades_academiques.DIM_PERSONA_KEY , 0) as dim_persona_key,
+                    coalesce( dades_academiques.DIM_ASSIGNATURA_KEY , '0') as DIM_ASSIGNATURA_KEY,
+                    coalesce(dades_academiques.DIM_SEMESTRE_KEY , 0) as DIM_SEMESTRE_KEY,
+                    coalesce(dades_academiques.DIM_RECURSOS_APRENENTATGE_KEY , '0') as DIM_RECURSOS_APRENENTATGE_KEY,
+                    COALESCE(dades_academiques.CODI_RECURS, '0') as CODI_RECURS,
+                    COALESCE(events.EVENT_TIME, '1970-01-01') as EVENT_TIME,
+                    coalesce(events.id_idp_usuari_events, '0') as id_idp_usuari_events,
+                    
+                    
+ 
                     dades_academiques.ORIGEN_DADES_ACADEMIQUES,
-                    dades_academiques.CODI_RECURS,
+                    
+                    events.EVENT_DATE, 
                     events.CODI_RECURS AS EVENT_CODI_RECURS,
-                    events.EVENT_TIME,
-                    events.EVENT_DATE,
                     events.ACCIO,
                     events.NOM_ACTOR,
                     events.ACTOR_TIPUS,
                     events.usuari_dAcces,
-                    events.id_idp_usuari_events,
+      
                     events.titol_assignatura,
                     events.id_curs_canvas,
                     events.id_sistema_curs,
@@ -128,9 +132,8 @@ BEGIN
                     events.format_recurs,
                     events.Origen_events,
                     events.enllac_url, 
-                    dades_academiques.assignatura_vigent_semester,
-                    CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS CREATION_DATE,
-                    CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS UPDATE_DATE
+                    dades_academiques.assignatura_vigent_semester 
+                     
 
                 FROM DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA dades_academiques -- 5,103,788
 
@@ -140,6 +143,7 @@ BEGIN
                     AND dades_academiques.CODI_RECURS = events.CODI_RECURS
 
             ) aux_temporary_table
+
             LEFT JOIN DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA asignatura 
                 ON asignatura.DIM_ASSIGNATURA_KEY = aux_temporary_table.DIM_ASSIGNATURA_KEY
             
@@ -153,38 +157,38 @@ BEGIN
                 ON dim_persona.DIM_PERSONA_KEY = aux_temporary_table.DIM_PERSONA_KEY
 
         ) AS source
-        ON target.DIM_PERSONA_KEY = source.DIM_PERSONA_KEY
-        AND target.DIM_ASSIGNATURA_KEY = source.DIM_ASSIGNATURA_KEY
-        AND target.DIM_SEMESTRE_KEY = source.DIM_SEMESTRE_KEY
-        AND target.DIM_RECURSOS_APRENENTATGE_KEY = source.DIM_RECURSOS_APRENENTATGE_KEY
-        AND target.EVENT_TIME = source.EVENT_TIME 
-        AND target.id_idp_usuari_events= source.id_idp_usuari_events
-        
+            ON target.DIM_PERSONA_KEY = source.DIM_PERSONA_KEY
+            AND target.DIM_ASSIGNATURA_KEY = source.DIM_ASSIGNATURA_KEY
+            AND target.DIM_SEMESTRE_KEY = source.DIM_SEMESTRE_KEY
+            AND target.DIM_RECURSOS_APRENENTATGE_KEY = source.DIM_RECURSOS_APRENENTATGE_KEY
+            AND target.EVENT_TIME = source.EVENT_TIME 
+            AND target.id_idp_usuari_events= source.id_idp_usuari_events
+            AND target.CODI_RECURS = source.CODI_RECURS
+                        
         WHEN MATCHED THEN
             UPDATE SET 
-                    target.ORIGEN_DADES_ACADEMIQUES= source.ORIGEN_DADES_ACADEMIQUES
-                    , target.CODI_RECURS= source.CODI_RECURS
-                    , target.EVENT_CODI_RECURS= source.EVENT_CODI_RECURS
-                    , target.EVENT_DATE= source.EVENT_DATE
-                    , target.ACCIO= source.ACCIO
-                    , target.NOM_ACTOR= source.NOM_ACTOR
-                    , target.ACTOR_TIPUS= source.ACTOR_TIPUS
-                    , target.usuari_dAcces= source.usuari_dAcces
-                    
-                    , target.titol_assignatura= source.titol_assignatura
-                    , target.id_curs_canvas= source.id_curs_canvas
-                    , target.id_sistema_curs= source.id_sistema_curs
-                    , target.ROL= source.ROL
-                    , target.estat_membre= source.estat_membre
-                    , target.titol_recurs= source.titol_recurs
-                    , target.enllac= source.enllac
-                    , target.OBJECT_MEDIATYPE= source.OBJECT_MEDIATYPE
-                    , target.tipus_recurs= source.tipus_recurs
-                    , target.format_recurs= source.format_recurs
-                    , target.Origen_events= source.Origen_events
-                    , target.enllac_url= source.enllac_url
-                    , target.assignatura_vigent_semester = source.assignatura_vigent_semester 
-                    , target.UPDATE_DATE =  source.UPDATE_DATE
+            target.ORIGEN_DADES_ACADEMIQUES = source.ORIGEN_DADES_ACADEMIQUES
+
+            , target.EVENT_CODI_RECURS = source.EVENT_CODI_RECURS
+            , target.EVENT_DATE = source.EVENT_DATE
+            , target.ACCIO = source.ACCIO
+            , target.NOM_ACTOR = source.NOM_ACTOR
+            , target.ACTOR_TIPUS = source.ACTOR_TIPUS
+            , target.usuari_dAcces = source.usuari_dAcces
+            , target.titol_assignatura = source.titol_assignatura
+            , target.id_curs_canvas = source.id_curs_canvas
+            , target.id_sistema_curs = source.id_sistema_curs
+            , target.ROL = source.ROL
+            , target.estat_membre = source.estat_membre
+            , target.titol_recurs = source.titol_recurs
+            , target.enllac = source.enllac
+            , target.OBJECT_MEDIATYPE = source.OBJECT_MEDIATYPE
+            , target.tipus_recurs = source.tipus_recurs
+            , target.format_recurs = source.format_recurs
+            , target.Origen_events = source.Origen_events
+            , target.enllac_url = source.enllac_url
+            , target.assignatura_vigent_semester = source.assignatura_vigent_semester
+            , target.UPDATE_DATE = CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
 
         WHEN NOT MATCHED THEN
             INSERT (
@@ -258,8 +262,8 @@ BEGIN
                 , source.usos_recurs_estudiants
                 , source.usos_recurs_totals
                 , source.assignatura_vigent_semester
-                , source.CREATION_DATE
-                , source.UPDATE_DATE
+                , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
+                , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
             );
 
 
@@ -284,6 +288,12 @@ END;
  
 
 -- Procedure Execution
-CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS(); 
+CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS();
 
+select * from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS order by update_date desc limit 100;
 
+select * from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS;  
+-- 5,174,058 initial 
+-- 16,603,875  -- 21,697,453 --- 26m -- 31,884,609
+
+ 
