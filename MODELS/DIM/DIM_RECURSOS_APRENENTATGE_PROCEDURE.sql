@@ -348,5 +348,4 @@ END;
 -- Procedure Execution
 CALL DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_LOADS();
  
--- coco 116,900  
--- dimax :  102,166
+ 
