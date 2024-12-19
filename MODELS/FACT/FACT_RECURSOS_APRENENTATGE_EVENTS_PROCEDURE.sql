@@ -168,7 +168,6 @@ BEGIN
         WHEN MATCHED THEN
             UPDATE SET 
             target.ORIGEN_DADES_ACADEMIQUES = source.ORIGEN_DADES_ACADEMIQUES
-
             , target.EVENT_CODI_RECURS = source.EVENT_CODI_RECURS
             , target.EVENT_DATE = source.EVENT_DATE
             , target.ACCIO = source.ACCIO

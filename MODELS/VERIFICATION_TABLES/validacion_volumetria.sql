@@ -1,58 +1,231 @@
-
-
--- francesc
--- listado recursos no matchean / no existen STAGE_LIVE_EVENTS_FLATENED_RA
--- listado asignaturas no matchean / no existen STAGE_LIVE_EVENTS_FLATENED_RA
-
--- Previa: delete confirmation --> borramos modulos duplicados coco --> francesc 02/12/2024
-select * 
-from DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
-where codi_recurs in ( SELECT codi_recurs FROM DB_UOC_PROD.DDP_DOCENCIA.T_COCO_PROD_TEMP_DUPLICATES_TEMP ) 
-
-
+--###########################################################################################################
+-- VALIDACIONES
+--###########################################################################################################
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- 1) RECURSOS QUE NO LLEGAN
-select * 
-from DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS
-
-where 1=1
--- AND SOURCE2 = 'ERROR' -- no aparecen en dimax ni coco  -- 6 : ---> francesc revisa 
-and SOURCE2 = 'BOTH'  -- codigo en las 2 pero no sabemos como asignarlo  -- 3,534
-
-select SOURCE2, count(*) 
-from DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_RESOURCES_CALIPER_EVENTS
-group by 1
-order by 2 desc 
-
-
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---2) ASIGNATURAS QUE NO LLEGAN 
-select * 
-from  DB_UOC_PROD.DDP_DOCENCIA.ANALISIS_ASSIGNATURA_EVENTS
-where 1=1
-and DIM_ASSIGNATURA_KEY_origen = 'ERROR'
-
+-- 1) MAPPEOS CORRECTOS: Formato / valores correctos en todas las tablas ( mappeos correctos )
+describe table DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS; -- extraigo todas las columnas
+-- Generate a single SELECT with COUNT(DISTINCT ...) for each field in the table
+SELECT 
+    COUNT(DISTINCT ID_ASSIGNATURA) AS Count_Distinct_ID_ASSIGNATURA,
+    COUNT(DISTINCT ID_SEMESTRE) AS Count_Distinct_ID_SEMESTRE,
+    COUNT(DISTINCT ID_CODI_RECURS) AS Count_Distinct_ID_CODI_RECURS,
+    COUNT(DISTINCT ID_PERSONA) AS Count_Distinct_ID_PERSONA,
+    COUNT(DISTINCT DIM_PERSONA_KEY) AS Count_Distinct_DIM_PERSONA_KEY,
+    COUNT(DISTINCT DIM_ASSIGNATURA_KEY) AS Count_Distinct_DIM_ASSIGNATURA_KEY,
+    COUNT(DISTINCT DIM_SEMESTRE_KEY) AS Count_Distinct_DIM_SEMESTRE_KEY,
+    COUNT(DISTINCT DIM_RECURSOS_APRENENTATGE_KEY) AS Count_Distinct_DIM_RECURSOS_APRENENTATGE_KEY,
+    COUNT(DISTINCT ORIGEN_DADES_ACADEMIQUES) AS Count_Distinct_ORIGEN_DADES_ACADEMIQUES,
+    COUNT(DISTINCT CODI_RECURS) AS Count_Distinct_CODI_RECURS,
+    COUNT(DISTINCT EVENT_CODI_RECURS) AS Count_Distinct_EVENT_CODI_RECURS,
+    COUNT(DISTINCT EVENT_TIME) AS Count_Distinct_EVENT_TIME,
+    COUNT(DISTINCT EVENT_DATE) AS Count_Distinct_EVENT_DATE,
+    COUNT(DISTINCT ACCIO) AS Count_Distinct_ACCIO,
+    COUNT(DISTINCT NOM_ACTOR) AS Count_Distinct_NOM_ACTOR,
+    COUNT(DISTINCT ACTOR_TIPUS) AS Count_Distinct_ACTOR_TIPUS,
+    COUNT(DISTINCT USUARI_DACCES) AS Count_Distinct_USUARI_DACCES,
+    COUNT(DISTINCT ID_IDP_USUARI_EVENTS) AS Count_Distinct_ID_IDP_USUARI_EVENTS,
+    COUNT(DISTINCT TITOL_ASSIGNATURA) AS Count_Distinct_TITOL_ASSIGNATURA,
+    COUNT(DISTINCT ID_CURS_CANVAS) AS Count_Distinct_ID_CURS_CANVAS,
+    COUNT(DISTINCT ID_SISTEMA_CURS) AS Count_Distinct_ID_SISTEMA_CURS,
+    COUNT(DISTINCT ROL) AS Count_Distinct_ROL,
+    COUNT(DISTINCT ESTAT_MEMBRE) AS Count_Distinct_ESTAT_MEMBRE,
+    COUNT(DISTINCT TITOL_RECURS) AS Count_Distinct_TITOL_RECURS,
+    COUNT(DISTINCT ENLLAC) AS Count_Distinct_ENLLAC,
+    COUNT(DISTINCT OBJECT_MEDIATYPE) AS Count_Distinct_OBJECT_MEDIATYPE,
+    COUNT(DISTINCT TIPUS_RECURS) AS Count_Distinct_TIPUS_RECURS,
+    COUNT(DISTINCT FORMAT_RECURS) AS Count_Distinct_FORMAT_RECURS,
+    COUNT(DISTINCT ORIGEN_EVENTS) AS Count_Distinct_ORIGEN_EVENTS,
+    COUNT(DISTINCT ENLLAC_URL) AS Count_Distinct_ENLLAC_URL,
+    COUNT(DISTINCT USOS_RECURS_ESTUDIANTS) AS Count_Distinct_USOS_RECURS_ESTUDIANTS,
+    COUNT(DISTINCT USOS_RECURS_TOTALS) AS Count_Distinct_USOS_RECURS_TOTALS,
+    COUNT(DISTINCT ASSIGNATURA_VIGENT_SEMESTER) AS Count_Distinct_ASSIGNATURA_VIGENT_SEMESTER,
+    COUNT(DISTINCT CREATION_DATE) AS Count_Distinct_CREATION_DATE,
+    COUNT(DISTINCT UPDATE_DATE) AS Count_Distinct_UPDATE_DATE
+FROM DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS;
 /*
 
-DIM_ASSIGNATURA_KEY	    NUM_EVENTS	DIM_ASSIGNATURA_KEY_ORIGEN
-KK.RRR	                14	        ERROR
-99.807	                48	        ERROR
+COUNT_DISTINCT_ID_ASSIGNATURA	COUNT_DISTINCT_ID_SEMESTRE	COUNT_DISTINCT_ID_CODI_RECURS	COUNT_DISTINCT_ID_PERSONA	COUNT_DISTINCT_DIM_PERSONA_KEY	COUNT_DISTINCT_DIM_ASSIGNATURA_KEY	COUNT_DISTINCT_DIM_SEMESTRE_KEY	COUNT_DISTINCT_DIM_RECURSOS_APRENENTATGE_KEY	COUNT_DISTINCT_ORIGEN_DADES_ACADEMIQUES	COUNT_DISTINCT_CODI_RECURS	COUNT_DISTINCT_EVENT_CODI_RECURS	COUNT_DISTINCT_EVENT_TIME	COUNT_DISTINCT_EVENT_DATE	COUNT_DISTINCT_ACCIO	COUNT_DISTINCT_NOM_ACTOR	COUNT_DISTINCT_ACTOR_TIPUS	COUNT_DISTINCT_USUARI_DACCES	COUNT_DISTINCT_ID_IDP_USUARI_EVENTS	COUNT_DISTINCT_TITOL_ASSIGNATURA	COUNT_DISTINCT_ID_CURS_CANVAS	COUNT_DISTINCT_ID_SISTEMA_CURS	COUNT_DISTINCT_ROL	COUNT_DISTINCT_ESTAT_MEMBRE	COUNT_DISTINCT_TITOL_RECURS	COUNT_DISTINCT_ENLLAC	COUNT_DISTINCT_OBJECT_MEDIATYPE	COUNT_DISTINCT_TIPUS_RECURS	COUNT_DISTINCT_FORMAT_RECURS	COUNT_DISTINCT_ORIGEN_EVENTS	COUNT_DISTINCT_ENLLAC_URL	COUNT_DISTINCT_USOS_RECURS_ESTUDIANTS	COUNT_DISTINCT_USOS_RECURS_TOTALS	COUNT_DISTINCT_ASSIGNATURA_VIGENT_SEMESTER	COUNT_DISTINCT_CREATION_DATE	COUNT_DISTINCT_UPDATE_DATE
+15064	77	123087	1057	1059	15797	77	122566	2	116915	39890	11629351	291	1	97999	1	96288	96181	10087	17019	17019	7	1	56866	255095	0	1	51	3	98283	2	2	3	2	2
+*/
+-- Select only the fields with a single distinct value from the origin table
+-- todos los valores son correctos
+SELECT 
+    ACCIO,
+    ACTOR_TIPUS,
+    FORMAT_RECURS,
+    ORIGEN_EVENTS,
+    ASSIGNATURA_VIGENT_SEMESTER,
+    CREATION_DATE,
+    UPDATE_DATE
+FROM DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS;
 
 
--- docente : persona docente --> fact 
-asignaturas equivalentes
-periodo validez en la asignatura 
-* victor : equipo  
-* francesc 
+/**ERRORS**/
+-- problemas con el campo object_mediatype
+SELECT 
+    OBJECT_MEDIATYPE
+FROM DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS;
 
+
+describe table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE; -- extraigo todas las columnas
+-- Generate a single SELECT with COUNT(DISTINCT ...) for each field in the table
+
+SELECT 
+    COUNT(DISTINCT ID_CODI_RECURS) AS Distinct_ID_CODI_RECURS,
+    COUNT(DISTINCT DIM_RECURSOS_APRENENTATGE_KEY) AS Distinct_DIM_RECURSOS_APRENENTATGE_KEY,
+    COUNT(DISTINCT CODI_RECURS) AS Distinct_CODI_RECURS,
+    COUNT(DISTINCT TITOL_RECURS) AS Distinct_TITOL_RECURS,
+    COUNT(DISTINCT ORIGEN_RECURS) AS Distinct_ORIGEN_RECURS,
+    COUNT(DISTINCT TIPUS_RECURS) AS Distinct_TIPUS_RECURS,
+    COUNT(DISTINCT ORIGEN_BASE_DADES) AS Distinct_ORIGEN_BASE_DADES,
+    COUNT(DISTINCT LLICENCIA_LPC) AS Distinct_LLICENCIA_LPC,
+    COUNT(DISTINCT LLICENCIA_LGC) AS Distinct_LLICENCIA_LGC,
+    COUNT(DISTINCT LLICENCIA_ALTRES) AS Distinct_LLICENCIA_ALTRES,
+    COUNT(DISTINCT LLICENCIA_BIBLIOTECA) AS Distinct_LLICENCIA_BIBLIOTECA,
+    COUNT(DISTINCT BAIXA) AS Distinct_BAIXA,
+    COUNT(DISTINCT DESCRIPCIO_IDIOMA_RECURS) AS Distinct_DESCRIPCIO_IDIOMA_RECURS,
+    COUNT(DISTINCT FORMAT_RECURS) AS Distinct_FORMAT_RECURS,
+    COUNT(DISTINCT DATA_INICI_RECURS) AS Distinct_DATA_INICI_RECURS,
+    COUNT(DISTINCT DATA_CADUCITAT_RECURS) AS Distinct_DATA_CADUCITAT_RECURS,
+    COUNT(DISTINCT CERCABLE_RECURS) AS Distinct_CERCABLE_RECURS,
+    COUNT(DISTINCT INDICADOR_PUBLIC_RECURS) AS Distinct_INDICADOR_PUBLIC_RECURS,
+    COUNT(DISTINCT PUBLICAT_A_RECURS) AS Distinct_PUBLICAT_A_RECURS,
+    COUNT(DISTINCT ISBN_ISSN_RECURS) AS Distinct_ISBN_ISSN_RECURS,
+    COUNT(DISTINCT PAGINA_INICI_RECURS) AS Distinct_PAGINA_INICI_RECURS,
+    COUNT(DISTINCT PAGINA_FINAL_RECURS) AS Distinct_PAGINA_FINAL_RECURS,
+    COUNT(DISTINCT BASE_DADES_RECURS) AS Distinct_BASE_DADES_RECURS,
+    COUNT(DISTINCT ELLIBRE_RECURS) AS Distinct_ELLIBRE_RECURS,
+    COUNT(DISTINCT URL_CAT_RECURS) AS Distinct_URL_CAT_RECURS,
+    COUNT(DISTINCT URL_CAS_RECURS) AS Distinct_URL_CAS_RECURS,
+    COUNT(DISTINCT URL_ANG_RECURS) AS Distinct_URL_ANG_RECURS,
+    COUNT(DISTINCT TIPUS_GESTIO_RECURS) AS Distinct_TIPUS_GESTIO_RECURS,
+    COUNT(DISTINCT DESPESA_VARIABLE_RECURS) AS Distinct_DESPESA_VARIABLE_RECURS,
+    COUNT(DISTINCT PRODUCTE_CREACIO_ID) AS Distinct_PRODUCTE_CREACIO_ID,
+    COUNT(DISTINCT DESCRIPCIO_TRAMESA_RECURS) AS Distinct_DESCRIPCIO_TRAMESA_RECURS,
+    COUNT(DISTINCT NUM_CONTRACTE) AS Distinct_NUM_CONTRACTE,
+    COUNT(DISTINCT OBSERVACIONS) AS Distinct_OBSERVACIONS,
+    COUNT(DISTINCT MODUL_ORIGEN_ID) AS Distinct_MODUL_ORIGEN_ID,
+    COUNT(DISTINCT VERSIO_CREACIO_ID) AS Distinct_VERSIO_CREACIO_ID,
+    COUNT(DISTINCT OBRA_ID) AS Distinct_OBRA_ID,
+    COUNT(DISTINCT CODI_MIGRACIO) AS Distinct_CODI_MIGRACIO,
+    COUNT(DISTINCT URL_RECURS_PROPI) AS Distinct_URL_RECURS_PROPI,
+    COUNT(DISTINCT UPDATE_DATE) AS Distinct_UPDATE_DATE,
+    COUNT(DISTINCT CREATION_DATE) AS Distinct_CREATION_DATE
+FROM DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE; -- extraigo todas las columnas
+
+-- no unique values 
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- 2) TASK VALIDACION: 
+-- validacion recarga diaria 
+select count(*)
+-- * 
+from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS 
+order by update_date desc 
+limit 100;
+
+/**ERRORS**/ -- RECARGA DIARIA
+/*
+-- incrementals : 16648831 vs 16624076 (yesterday)
+
+Vigent	2024-12-18 17:16:08.236	2024-12-19 10:55:14.779
+Vigent	2024-12-18 17:16:08.236	2024-12-19 10:55:14.779
+
+*/
+ 
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- 3) RECURSOS QUE NO LLEGAN
+select distinct codi_recurs
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA -- valido con la tabla completa --> 13,604,836 registros 
+where 1=1
+-- and codi_recurs not in ( select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE )
+and codi_recurs not in ( select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA )
+
+/**ERRORS**/
+/* 
+NO APARECEN EN LA DIM: 6
+305213
+302378
+302376
+296708
+305233
+296716
+
+
+NO APARECEN EN LA POST: -- 5,268 registros --> problema @Francesc
+258345
+274926
+234014
+188220
+258112
+256394
+267839
+268873
+263412
+244943
 */
 
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---3) Recursos que estan en las tablas de dimension de recursos pero no en las que creamos las stage --> base para el resto 
--- REVISION FRANCESC 
---- ANALISIS DE REGISTROS FALTANTES
+-- 4) ASIGNATURAS QUE NO LLEGAN
+select distinct DIM_ASSIGNATURA_KEY
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA -- valido con la tabla completa --> 13,604,836 registros 
+where 1=1
+-- and DIM_ASSIGNATURA_KEY not in ( select  distinct DIM_ASSIGNATURA_KEY from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA )  --5,104,156 asignaturas post -> 15,797 asignaturas diferentes
+and DIM_ASSIGNATURA_KEY not in ( select    DIM_ASSIGNATURA_KEY from DB_UOC_PROD.DD_OD.DIM_ASSIGNATURA )  --18,091 asignaturas dim -> 18,091 asignaturas diferentes --> no duplicados
+
+/* 
+NO APARECEN EN DIM_ASSIGNATURA: -- 2 registros --> problema solucionado @Francesc : Asignaturas antiguas / error formato 
+99.807
+KK.RRR
+
+*/
+ 
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--5) DIFERENCIA VALORES QUE NO LLEGAN  
+select 
+-- *
+sum(usos_recurs_totals) as usos_recurs_totals  --- Flateneded: 13,604,836 registros vs 11,663,751 usados
+from DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_AGG
+where 1=1
+-- and usos_recurs_totals <> 0  --- POST: 5,111,348  solo se usan : 123,250  ( correspondientes 4 ultimos semestres)
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--6) ELEMENTOS NUM que no llegan a from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA 
+-- justificar diferenncia de  Flateneded: 13,604,836 registros vs 11,660,733 usados  => 1,944,103 
+
+select * 
+from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA 
+where codi_recurs not in ( select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA ) -- justificar   => 1,944,103  vs 1,921,341 se pierden solo con el codi_recurs 
+
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--7) ELEMENTOS NUM que no llegan a from DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA 
+-- justificar diferenncia de  Flateneded: 13,604,836 registros vs 11,660,733 usados  => 1,944,103 
+
+select *, dades_academiques.codi_recurs  
+FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA  as events  --- 13,604,836
+-- select * from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA; --- 5,104,156
+LEFT JOIN DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA  as dades_academiques -- 5,103,788
+                    ON dades_academiques.DIM_ASSIGNATURA_KEY = events.DIM_ASSIGNATURA_KEY
+                    AND dades_academiques.DIM_SEMESTRE_KEY = events.DIM_SEMESTRE_KEY
+                    AND dades_academiques.CODI_RECURS = events.CODI_RECURS
+
+where dades_academiques.codi_recurs is null -- 1,941,085 --> no cruzan
+-- and  events.codi_recurs not in ( select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA ) -- 1,921,341
+-- and events.DIM_ASSIGNATURA_KEY not in ( select  distinct DIM_ASSIGNATURA_KEY from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA ) -- todas las asignaturas estan 
+and  events.codi_recurs  in ( select codi_recurs from DB_UOC_PROD.DDP_DOCENCIA.POST_DADES_ACADEMIQUES_RA ) -- 19,744 verificacion contraria --> elementos con no combinacion de codigo , asignatura y periodo
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- EXTRA VALIDATION
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 with temp_table_dim_key as (
     select 
         dades_academiques.DIM_ASSIGNATURA_KEY || dades_academiques.DIM_SEMESTRE_KEY || dades_academiques.CODI_RECURS as concat_key
