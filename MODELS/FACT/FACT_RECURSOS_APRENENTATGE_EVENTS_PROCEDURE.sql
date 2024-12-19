@@ -3,6 +3,7 @@
 -- -- FACT_RECURSOS_APRENENTATGE_EVENTS
 -- -- #################################################################################################
 -- -- #################################################################################################
+
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS (
     
     ID_ASSIGNATURA NUMBER(16,0),
@@ -61,11 +62,11 @@ BEGIN
     MERGE INTO DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS AS target
         USING (
             SELECT 
-                asignatura.id_assignatura,
-                semestre.id_semestre,
-                recursos.id_codi_recurs,
-                dim_persona.id_persona,
-
+                coalesce(asignatura.id_assignatura, 0) as id_assignatura,
+                coalesce(semestre.id_semestre, 0) as id_semestre,
+                coalesce(recursos.id_codi_recurs, 1) as id_codi_recurs,
+                coalesce(dim_persona.id_persona, 0 ) as id_persona,
+ 
                 aux_temporary_table.DIM_PERSONA_KEY,
                 aux_temporary_table.DIM_ASSIGNATURA_KEY,
                 aux_temporary_table.DIM_SEMESTRE_KEY,
@@ -291,4 +292,4 @@ CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS();
 
 
 
- 
+--  select * from DB_UOC_PROD.DD_OD.DIM_SEMESTRE  limit 100;

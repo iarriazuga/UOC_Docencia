@@ -6,6 +6,11 @@
 -- 	as CALL DB_UOC_PROD.DDP_DOCENCIA.FULL_DOCENCIA_DATA_LOAD();
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+-- create or replace task DB_UOC_PROD.DD_OD.UPDATE_DIMENSIONS
+-- 	warehouse=WH_DD_OD
+-- 	schedule='USING CRON 30 8 * * * Europe/Madrid'
+-- 	as CALL DB_UOC_PROD.DD_OD.FULL_DIMENSIONES_DATA_LOAD();
+
 
 --- Uncoment latest: 
 create or replace task DB_UOC_PROD.DDP_DOCENCIA.UPDATE_MODEL_RECURS_APRENENTATGE
@@ -14,6 +19,9 @@ create or replace task DB_UOC_PROD.DDP_DOCENCIA.UPDATE_MODEL_RECURS_APRENENTATGE
 	schedule='USING CRON 30 9 * * * Europe/Madrid'
 	as CALL DB_UOC_PROD.DDP_DOCENCIA.FULL_MODEL_RECURS_APRENENTATGE_LOAD();
 
+
+
+-- 
 CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.FULL_MODEL_RECURS_APRENENTATGE_LOAD()
 RETURNS VARCHAR(16777216)
 LANGUAGE SQL

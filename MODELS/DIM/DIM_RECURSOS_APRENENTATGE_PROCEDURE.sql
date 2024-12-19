@@ -4,6 +4,8 @@
 -- -- RECURSOS_APRENDIZATJE
 -- -- #################################################################################################
 -- -- #################################################################################################
+
+-- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE (
     ID_CODI_RECURS  INT AUTOINCREMENT PRIMARY KEY,
     DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16),
@@ -44,6 +46,8 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE (
     CODI_MIGRACIO VARCHAR(255),
     URL_RECURS_PROPI VARCHAR(500),
 
+    data_creacio TIMESTAMP_NTZ(9), 
+    
     UPDATE_DATE TIMESTAMP_NTZ(9),
     CREATION_DATE TIMESTAMP_NTZ(9)
 );
@@ -73,7 +77,7 @@ BEGIN
             'ND' AS LLICENCIA_BIBLIOTECA,
             'ND' AS BAIXA,
             'ND' AS DESCRIPCIO_IDIOMA_RECURS,
-            'ND' AS FORMAT_RECURS,
+            'No Disponible' AS FORMAT_RECURS,
             NULL AS DATA_INICI_RECURS,
             NULL AS DATA_CADUCITAT_RECURS,
             'ND' AS CERCABLE_RECURS,
@@ -108,7 +112,9 @@ BEGIN
         AND ALIAS_QUERY_IN.ORIGEN_BASE_DADES = DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE.ORIGEN_BASE_DADES
     )
     WHEN NOT MATCHED THEN INSERT (
-        DIM_RECURSOS_APRENENTATGE_KEY, CODI_RECURS, TITOL_RECURS, ORIGEN_RECURS, TIPUS_RECURS, ORIGEN_BASE_DADES,
+        DIM_RECURSOS_APRENENTATGE_KEY
+        , CODI_RECURS
+        , TITOL_RECURS, ORIGEN_RECURS, TIPUS_RECURS, ORIGEN_BASE_DADES,
         LLICENCIA_LPC, LLICENCIA_LGC, LLICENCIA_ALTRES, LLICENCIA_BIBLIOTECA, BAIXA, DESCRIPCIO_IDIOMA_RECURS,
         FORMAT_RECURS, DATA_INICI_RECURS, DATA_CADUCITAT_RECURS, CERCABLE_RECURS, INDICADOR_PUBLIC_RECURS,
         PUBLICAT_A_RECURS, ISBN_ISSN_RECURS, PAGINA_INICI_RECURS, PAGINA_FINAL_RECURS, BASE_DADES_RECURS,
@@ -117,10 +123,16 @@ BEGIN
         NUM_CONTRACTE, OBSERVACIONS, MODUL_ORIGEN_ID, VERSIO_CREACIO_ID, OBRA_ID, CODI_MIGRACIO,
         URL_RECURS_PROPI, creation_date, update_date
     ) VALUES (
-        'ND', 0, 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', NULL, NULL, 'ND',
+        'ND', 0, 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
+        , 'No Disponible'
+        , 'No Disponible'
+        , NULL
+        , NULL
+        , 'ND',
         'ND', 'ND', 'ND', 0, 0, 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND',   0, 'ND', 'ND',
-        'ND', 'ND', 0, 'ND', 'ND', 'ND', CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ),
-        CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
+        'ND', 'ND', 0, 'ND', 'ND', 'ND'
+        , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
+        , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
     );
  
 
@@ -140,8 +152,8 @@ BEGIN
                 '' AS LLICENCIA_ALTRES,
                 '' AS LLICENCIA_BIBLIOTECA,
                 BAIXA,
-                descripcio_idioma_recurs,
-                DESCRIPCIO_SUPORT_RECURS AS FORMAT_RECURS,
+                coalesce(descripcio_idioma_recurs, 'No Disponible') as descripcio_idioma_recurs,
+                coalesce(DESCRIPCIO_SUPORT_RECURS,'No Disponible') AS FORMAT_RECURS,
                 NULL AS DATA_INICI_RECURS,
                 NULL AS DATA_CADUCITAT_RECURS,
                 '' AS CERCABLE_RECURS,
@@ -161,13 +173,18 @@ BEGIN
                 DESCRIPCIO_TRAMESA_RECURS,
                 NUM_CONTRACTE,
                 OBSERVACIONS,
-                MODUL_ORIGEN_ID,
+                case 
+                    when MODUL_ORIGEN_ID like 'NA' then 'ND'
+                    when MODUL_ORIGEN_ID is null then 'ND'
+                    else MODUL_ORIGEN_ID
+                end as MODUL_ORIGEN_ID,
                 VERSIO_CREACIO_ID,
                 OBRA_ID,
                 CODI_MIGRACIO,
                 URL_IDIOMA_RECURS AS URL_RECURS_PROPI,
                 NULL AS UPDATE_DATE,
-                DATA_TANCAMENT_REAL AS CREATION_DATE
+                DATA_TANCAMENT_REAL AS data_creacio 
+                -- CREATION_DATE
 
             FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
         ),
@@ -188,7 +205,7 @@ BEGIN
                 LLICENCIA_BIBLIOTECA,
                 WAIT_RECURS AS BAIXA,
                 dimax.idioma_recurs AS DESCRIPCIO_IDIOMA_RECURS,
-                FORMAT_RECURS,
+                coalesce(FORMAT_RECURS, 'No Disponible') as FORMAT_RECURS ,
                 DATA_INICI_RECURS,
                 DATA_CADUCITAT_RECURS,
                 CERCABLE_RECURS,
@@ -218,12 +235,12 @@ BEGIN
                 NULL AS DESCRIPCIO_TRAMESA_RECURS,
                 '' AS NUM_CONTRACTE,
                 '' AS OBSERVACIONS,
-                '' AS MODUL_ORIGEN_ID,
+                'ND' AS MODUL_ORIGEN_ID,
                 0 AS VERSIO_CREACIO_ID,
                 '' AS OBRA_ID,
                 '' AS CODI_MIGRACIO,
                 '' AS URL_RECURS_PROPI,
-                CREATION_DATE,
+                CREATION_DATE as data_creacio,
                 UPDATE_DATE
 
             FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_DIMAX dimax

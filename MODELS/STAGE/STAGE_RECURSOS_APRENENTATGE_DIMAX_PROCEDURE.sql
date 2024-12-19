@@ -16,7 +16,7 @@ create or replace table db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dim
     llicencia_altres varchar(4)                comment 'Indica si aquest recurs esta subjecte a pagament de llicencia per la seva utilització. El llicenciament dels drets es per a altres tipus Llicencia.',
     llicencia_biblioteca varchar(4)            comment 'Indica si aquest recurs esta subjecte a pagament de llicencia per la seva utilització. Aquest producte pertany a la categoria de Llicencia per subscripcio.',
     wait_recurs varchar(4)                     comment 'Indica si el recurs es visible o es troba ocult per a la seva utilitzacio. El producte es troba a la base de dades encara que no esta disponible per a la utilitzacio dels docents.',
-    idioma_recurs varchar(10)                   comment 'Indica idioma en que es mostra el recurs seleccionat.',
+    idioma_recurs varchar(20)                  comment 'Indica idioma en que es mostra el recurs seleccionat.',
     format_recurs varchar(16)                  comment 'Indica el format_recurs del recurs. El format_recurs digital inclou gran varietat de possibilitats (e.g. PDF, Video, HTML, etc.)',
     data_inici_recurs timestamp_ntz(9)         comment 'Data en que es van obtenir els drets per la utilitzacio del recurs.',
     data_caducitat_recurs timestamp_ntz(9)     comment 'Data en que els drests del recurs aprenentatge deixara de tenir vigencia i no podra tornar a ser utilitzat pels docents i/o estudiants, a no ser que es renovin.', // @francesc crec que està dupliat  data_caducitat - @xavi: eliminat el primer camps!
@@ -64,7 +64,7 @@ using (
         dimax_v_recurs.altres as llicencia_altres,
         dimax_v_recurs.biblioteca as llicencia_biblioteca,
         dimax_v_recurs.wait as wait_recurs,
-        lk.DESC_IDIOMA AS idioma_recurs,  -- dimax_v_recurs.idioma_recurs, -- estandarizado francesc
+        coalesce(lk.DESC_IDIOMA, 'No Disponible') AS idioma_recurs,  -- dimax_v_recurs.idioma_recurs, -- estandarizado francesc
         dimax_v_recurs.format as format_recurs,
         dimax_v_recurs.data_inici as data_inici_recurs,
         dimax_v_recurs.data_caducitat as data_caducitat_recurs,
@@ -232,4 +232,3 @@ call db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax_loads();
 
 
 
- select * from  db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dimax ;

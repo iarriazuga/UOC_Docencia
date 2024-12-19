@@ -40,7 +40,7 @@ BEGIN
     with profesores_assignaturas as ( 
         select 
             cod_asignatura 
-            , any_academico
+            , any_academico -- formato semestre
             , max(idp) as idp  -- seleccionamos al max profesor : no granularidad 1:1 victor
         from DB_UOC_PROD.STG_DADESRA.GAT_PERSONAS_ASIGNATURAS
         group by  1,2 
