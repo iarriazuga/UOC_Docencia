@@ -4,53 +4,51 @@
 -- -- RECURSOS_APRENDIZATJE
 -- -- #################################################################################################
 -- -- #################################################################################################
-
--- drop table DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE (
-    ID_CODI_RECURS  INT AUTOINCREMENT PRIMARY KEY,
-    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16),
-    CODI_RECURS NUMBER(38,0),
-    TITOL_RECURS VARCHAR(4000),
-    ORIGEN_RECURS VARCHAR(256),
-    TIPUS_RECURS VARCHAR(256),
-    ORIGEN_BASE_DADES VARCHAR(9),
-    LLICENCIA_LPC VARCHAR(4),
-    LLICENCIA_LGC VARCHAR(4),
-    LLICENCIA_ALTRES VARCHAR(4),
-    LLICENCIA_BIBLIOTECA VARCHAR(4),
-    BAIXA VARCHAR(4),
-    DESCRIPCIO_IDIOMA_RECURS VARCHAR(2295),
-    FORMAT_RECURS VARCHAR(255),
-    DATA_INICI_RECURS TIMESTAMP_NTZ(9),
-    DATA_CADUCITAT_RECURS TIMESTAMP_NTZ(9),
-    CERCABLE_RECURS VARCHAR(4),
-    INDICADOR_PUBLIC_RECURS VARCHAR(4),
-    PUBLICAT_A_RECURS VARCHAR(4000),
-    ISBN_ISSN_RECURS VARCHAR(256),
-    PAGINA_INICI_RECURS NUMBER(20,0),
-    PAGINA_FINAL_RECURS NUMBER(20,0),
-    BASE_DADES_RECURS VARCHAR(4000),
-    ELLIBRE_RECURS VARCHAR(4000),
-    URL_CAT_RECURS VARCHAR(4000),
-    URL_CAS_RECURS VARCHAR(4000),
-    URL_ANG_RECURS VARCHAR(4000),
-    TIPUS_GESTIO_RECURS VARCHAR(5),
-    DESPESA_VARIABLE_RECURS VARCHAR(4),
-    PRODUCTE_CREACIO_ID NUMBER(18,5),
-    DESCRIPCIO_TRAMESA_RECURS VARCHAR(255),
-    NUM_CONTRACTE VARCHAR(50),
-    OBSERVACIONS VARCHAR(2000),
-    MODUL_ORIGEN_ID VARCHAR(255),
-    VERSIO_CREACIO_ID NUMBER(12,0),
-    OBRA_ID VARCHAR(12),
-    CODI_MIGRACIO VARCHAR(255),
-    URL_RECURS_PROPI VARCHAR(500),
-
-    data_creacio TIMESTAMP_NTZ(9), 
-    
-    UPDATE_DATE TIMESTAMP_NTZ(9),
-    CREATION_DATE TIMESTAMP_NTZ(9)
+    ID_CODI_RECURS INT AUTOINCREMENT PRIMARY KEY, -- identificador automàtic del recurs
+    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16) COMMENT 'clau única del recurs',
+    CODI_RECURS NUMBER(38,0) COMMENT 'codi identificador del recurs',
+    TITOL_RECURS VARCHAR(4000) COMMENT 'títol del recurs',
+    ORIGEN_RECURS VARCHAR(256) COMMENT 'origen del recurs',
+    TIPUS_RECURS VARCHAR(256) COMMENT 'tipus de recurs',
+    ORIGEN_BASE_DADES VARCHAR(9) COMMENT 'indicador de l orígen a la base de dades',
+    LLICENCIA_LPC VARCHAR(4) COMMENT 'tipus de llicència LPC del recurs',
+    LLICENCIA_LGC VARCHAR(4) COMMENT 'tipus de llicència LGC del recurs',
+    LLICENCIA_ALTRES VARCHAR(4) COMMENT 'altres tipus de llicències',
+    LLICENCIA_BIBLIOTECA VARCHAR(4) COMMENT 'indicador si és una llicència de biblioteca',
+    BAIXA VARCHAR(4) COMMENT 'indicador si el recurs està donat de baixa',
+    DESCRIPCIO_IDIOMA_RECURS VARCHAR(2295) COMMENT 'descripció en diferents idiomes',
+    FORMAT_RECURS VARCHAR(255) COMMENT 'format del recurs',
+    DATA_INICI_RECURS TIMESTAMP_NTZ(9) COMMENT 'data d inici del recurs',
+    DATA_CADUCITAT_RECURS TIMESTAMP_NTZ(9) COMMENT 'data de caducitat del recurs',
+    CERCABLE_RECURS VARCHAR(4) COMMENT 'indicador si el recurs és cercable',
+    INDICADOR_PUBLIC_RECURS VARCHAR(4) COMMENT 'indicador si el recurs és públic',
+    PUBLICAT_A_RECURS VARCHAR(4000) COMMENT 'ubicació on es publica el recurs',
+    ISBN_ISSN_RECURS VARCHAR(256) COMMENT 'ISBN o ISSN del recurs',
+    PAGINA_INICI_RECURS NUMBER(20,0) COMMENT 'pàgina d inici del recurs',
+    PAGINA_FINAL_RECURS NUMBER(20,0) COMMENT 'pàgina final del recurs',
+    BASE_DADES_RECURS VARCHAR(4000) COMMENT 'base de dades associada al recurs',
+    ELLIBRE_RECURS VARCHAR(4000) COMMENT 'detalls de l ebook del recurs',
+    URL_CAT_RECURS VARCHAR(4000) COMMENT 'URL en català del recurs',
+    URL_CAS_RECURS VARCHAR(4000) COMMENT 'URL en castellà del recurs',
+    URL_ANG_RECURS VARCHAR(4000) COMMENT 'URL en anglès del recurs',
+    TIPUS_GESTIO_RECURS VARCHAR(5) COMMENT 'tipus de gestió del recurs',
+    DESPESA_VARIABLE_RECURS VARCHAR(4) COMMENT 'indicador de despesa variable',
+    PRODUCTE_CREACIO_ID NUMBER(18,5) COMMENT 'identificador del producte de creació',
+    DESCRIPCIO_TRAMESA_RECURS VARCHAR(255) COMMENT 'descripció de la tramesa associada',
+    NUM_CONTRACTE VARCHAR(50) COMMENT 'número del contracte associat',
+    OBSERVACIONS VARCHAR(2000) COMMENT 'observacions del recurs',
+    MODUL_ORIGEN_ID VARCHAR(255) COMMENT 'mòdul d orígen',
+    VERSIO_CREACIO_ID NUMBER(12,0) COMMENT 'identificador de versió de creació',
+    OBRA_ID VARCHAR(12) COMMENT 'identificador de l obra',
+    CODI_MIGRACIO VARCHAR(255) COMMENT 'codi associat a la migració',
+    URL_RECURS_PROPI VARCHAR(500) COMMENT 'URL pròpia del recurs',
+    data_creacio TIMESTAMP_NTZ(9) COMMENT 'data de creació',
+    UPDATE_DATE TIMESTAMP_NTZ(9) COMMENT 'data d actualització',
+    CREATION_DATE TIMESTAMP_NTZ(9) COMMENT 'data de creació original'
 );
+
+
 
 CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE_LOADS() 
 RETURNS VARCHAR(16777216) 
@@ -102,6 +100,7 @@ BEGIN
             'ND' AS OBRA_ID,
             'ND' AS CODI_MIGRACIO,
             'ND' AS URL_RECURS_PROPI,
+            '1970-01-01' AS data_creacio,
             CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS creation_date,
             CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS update_date
             
@@ -114,27 +113,89 @@ BEGIN
     WHEN NOT MATCHED THEN INSERT (
         DIM_RECURSOS_APRENENTATGE_KEY
         , CODI_RECURS
-        , TITOL_RECURS, ORIGEN_RECURS, TIPUS_RECURS, ORIGEN_BASE_DADES,
-        LLICENCIA_LPC, LLICENCIA_LGC, LLICENCIA_ALTRES, LLICENCIA_BIBLIOTECA, BAIXA, DESCRIPCIO_IDIOMA_RECURS,
-        FORMAT_RECURS, DATA_INICI_RECURS, DATA_CADUCITAT_RECURS, CERCABLE_RECURS, INDICADOR_PUBLIC_RECURS,
-        PUBLICAT_A_RECURS, ISBN_ISSN_RECURS, PAGINA_INICI_RECURS, PAGINA_FINAL_RECURS, BASE_DADES_RECURS,
-        ELLIBRE_RECURS, URL_CAT_RECURS, URL_CAS_RECURS, URL_ANG_RECURS, TIPUS_GESTIO_RECURS,
-        DESPESA_VARIABLE_RECURS,  PRODUCTE_CREACIO_ID, DESCRIPCIO_TRAMESA_RECURS,
-        NUM_CONTRACTE, OBSERVACIONS, MODUL_ORIGEN_ID, VERSIO_CREACIO_ID, OBRA_ID, CODI_MIGRACIO,
-        URL_RECURS_PROPI, creation_date, update_date
+        , TITOL_RECURS
+        , ORIGEN_RECURS
+        , TIPUS_RECURS
+        , ORIGEN_BASE_DADES
+        , LLICENCIA_LPC
+        , LLICENCIA_LGC
+        , LLICENCIA_ALTRES
+        , LLICENCIA_BIBLIOTECA
+        , BAIXA
+        , DESCRIPCIO_IDIOMA_RECURS
+        , FORMAT_RECURS
+        , DATA_INICI_RECURS
+        , DATA_CADUCITAT_RECURS
+        , CERCABLE_RECURS
+        , INDICADOR_PUBLIC_RECURS
+        , PUBLICAT_A_RECURS
+        , ISBN_ISSN_RECURS
+        , PAGINA_INICI_RECURS
+        , PAGINA_FINAL_RECURS
+        , BASE_DADES_RECURS
+        , ELLIBRE_RECURS
+        , URL_CAT_RECURS
+        , URL_CAS_RECURS
+        , URL_ANG_RECURS
+        , TIPUS_GESTIO_RECURS
+        , DESPESA_VARIABLE_RECURS
+        , PRODUCTE_CREACIO_ID
+        , DESCRIPCIO_TRAMESA_RECURS
+        , NUM_CONTRACTE
+        , OBSERVACIONS
+        , MODUL_ORIGEN_ID
+        , VERSIO_CREACIO_ID
+        , OBRA_ID
+        , CODI_MIGRACIO
+        , URL_RECURS_PROPI
+
+        , data_creacio
+        , creation_date
+        , update_date
     ) VALUES (
-        'ND', 0, 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
+        'ND'
+        , 0
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
         , 'No Disponible'
         , 'No Disponible'
         , NULL
         , NULL
-        , 'ND',
-        'ND', 'ND', 'ND', 0, 0, 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND',   0, 'ND', 'ND',
-        'ND', 'ND', 0, 'ND', 'ND', 'ND'
-        , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
-        , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ)
-    );
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 0
+        , 0
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 0
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , 0
+        , 'ND'
+        , 'ND'
+        , 'ND'
+        , '1970-01-01' 
+        , '1970-01-01' 
+        , '1970-01-01' 
  
+    );
+
 
     -- Merge con registros de dim_coco_productes_moduls y dimax
     MERGE INTO DB_UOC_PROD.DDP_DOCENCIA.DIM_RECURSOS_APRENENTATGE as TARGET
@@ -182,9 +243,8 @@ BEGIN
                 OBRA_ID,
                 CODI_MIGRACIO,
                 URL_IDIOMA_RECURS AS URL_RECURS_PROPI,
-                NULL AS UPDATE_DATE,
                 DATA_TANCAMENT_REAL AS data_creacio 
-                -- CREATION_DATE
+
 
             FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS
         ),
@@ -240,14 +300,26 @@ BEGIN
                 '' AS OBRA_ID,
                 '' AS CODI_MIGRACIO,
                 '' AS URL_RECURS_PROPI,
-                CREATION_DATE as data_creacio,
-                UPDATE_DATE
+
+                data_creacio,
+
 
             FROM DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_DIMAX dimax
         )
-        SELECT * FROM dim_coco_productes_moduls
+        SELECT 
+            *
+            , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) as CREATION_DATE
+            , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) as UPDATE_DATE 
+        FROM dim_coco_productes_moduls
+        
         UNION ALL
-        SELECT * FROM dimax
+
+        SELECT  
+            *
+            , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) as CREATION_DATE
+            , CONVERT_TIMEZONE('America/Los_Angeles', 'Europe/Madrid', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) as UPDATE_DATE 
+        FROM dimax
+        
     ) SOURCE
     ON TARGET.DIM_RECURSOS_APRENENTATGE_KEY = SOURCE.DIM_RECURSOS_APRENENTATGE_KEY
        AND TARGET.CODI_RECURS = SOURCE.CODI_RECURS
@@ -289,6 +361,7 @@ BEGIN
         ,  TARGET.OBRA_ID = SOURCE.OBRA_ID
         ,  TARGET.CODI_MIGRACIO = SOURCE.CODI_MIGRACIO
         ,  TARGET.URL_RECURS_PROPI = SOURCE.URL_RECURS_PROPI
+        ,  TARGET.data_creacio = SOURCE.data_creacio
         ,  TARGET.UPDATE_DATE = CURRENT_TIMESTAMP()
 
     WHEN NOT MATCHED THEN INSERT (
@@ -329,6 +402,8 @@ BEGIN
         , OBRA_ID
         , CODI_MIGRACIO
         , URL_RECURS_PROPI
+
+        , data_creacio
         , UPDATE_DATE
         , CREATION_DATE 
     ) VALUES (
@@ -365,9 +440,12 @@ BEGIN
         , SOURCE.OBRA_ID
         , SOURCE.CODI_MIGRACIO
         , SOURCE.URL_RECURS_PROPI
+
+        , SOURCE.data_creacio
         , CURRENT_TIMESTAMP()
         , SOURCE.CREATION_DATE
     );
+
 
 
 

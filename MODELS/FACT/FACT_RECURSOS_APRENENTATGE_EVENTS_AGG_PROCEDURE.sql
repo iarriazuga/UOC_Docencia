@@ -8,27 +8,23 @@ CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVEN
     ID_ASSIGNATURA NUMBER(38, 0) COMMENT 'Identificador de la assignatura.',
     ID_SEMESTRE NUMBER(38, 0) COMMENT 'Identificador del semestre.',
     ID_CODI_RECURS NUMBER(38, 0) COMMENT 'Identificador del recurs.',
-
-    ID_PERSONA NUMBER(38, 0) COMMENT 'Identificador del persona.',
+    ID_PERSONA NUMBER(38, 0) COMMENT 'Identificador de la persona.',
 
     DIM_PERSONA_KEY NUMBER(10,0) COMMENT 'Clau DIM_PERSONA_KEY.',
     DIM_ASSIGNATURA_KEY VARCHAR(6) COMMENT 'Clau assignatura.',
     DIM_SEMESTRE_KEY NUMBER(38, 0) COMMENT 'Clau semestre.',
-    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16) COMMENT 'Clau recursos d\'aprenentatge.',
+    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16) COMMENT 'Clau recursos d aprenentatge.',
 
-    ORIGEN_DADES_ACADEMIQUES VARCHAR(5) COMMENT 'Font de las dades académiques.', 
-    assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigencia de la assignatura en el semestre analitzat.', 
+    ORIGEN_DADES_ACADEMIQUES VARCHAR(5) COMMENT 'Font de les dades acadèmiques.', 
+    assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigència de la assignatura en el semestre analitzat.', 
 
-    usos_unics_recurs NUMBER(38, 0),
-    usos_recurs_estudiants NUMBER(38, 0),
-    usos_recurs_totals NUMBER(38, 0),
+    usos_unics_recurs NUMBER(38, 0) COMMENT 'Nombre d usos únics del recurs.',
+    usos_recurs_estudiants NUMBER(38, 0) COMMENT 'Nombre d usos del recurs pels estudiants.',
+    usos_recurs_totals NUMBER(38, 0) COMMENT 'Nombre total d usos del recurs.',
 
-
-    CREATION_DATE TIMESTAMP_NTZ(9)  ,
-    UPDATE_DATE TIMESTAMP_NTZ(9)  
-)
-;
- 
+    CREATION_DATE TIMESTAMP_NTZ(9) COMMENT 'Data de creació del registre.',
+    UPDATE_DATE TIMESTAMP_NTZ(9) COMMENT 'Data d actualització del registre.'
+);
 
 CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_AGG_LOADS()
 RETURNS VARCHAR(16777216)

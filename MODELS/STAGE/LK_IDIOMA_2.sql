@@ -1,11 +1,11 @@
 -- Crear la tabla con todas las columnas y una restricción UNIQUE
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.LK_IDIOMA_2 (
  
-    ID_IDIOMA INT PRIMARY KEY,
-    COD_IDIOMA INT NOT NULL,
-    DESC_IDIOMA VARCHAR(50) NOT NULL,
-    DESC_IDIOMA_ACRONIM VARCHAR(10) NOT NULL,
-    DESC_IDIOMA_ACRONIM_2_LETRAS VARCHAR(2) -- Declarada como columna regular
+    ID_IDIOMA INT PRIMARY KEY COMMENT 'Identificador únic de l idioma.',
+    COD_IDIOMA INT NOT NULL COMMENT 'Codi associat a l idioma.',
+    DESC_IDIOMA VARCHAR(50) NOT NULL COMMENT 'Descripció completa de l idioma.',
+    DESC_IDIOMA_ACRONIM VARCHAR(10) NOT NULL COMMENT 'Acrònim de l idioma.',
+    DESC_IDIOMA_ACRONIM_2_LETRAS VARCHAR(2) COMMENT 'Acrònim de dues lletres de l idioma.'
 );
 
 -- Insertar los datos iniciales

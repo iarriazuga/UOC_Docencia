@@ -4,30 +4,31 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS (
-    CODI_RECURS NUMBER(38, 0),
-    TITOL_RECURS VARCHAR(255),
-    ORIGEN_RECURS VARCHAR(5),
-    ORIGEN_BASE_DADES VARCHAR(9),
-    VERSIO_CREACIO_ID NUMBER(12, 0),
-    PRODUCTE_CREACIO_ID NUMBER(18, 5),
-    PRODUCTE_ORIGEN_ID VARCHAR(255),
-    URL_IDIOMA_RECURS VARCHAR(500),
-    URL VARCHAR(500),
-    DESCRIPCIO_TRAMESA_RECURS VARCHAR(255),
-    DESCRIPCIO_SUPORT_RECURS VARCHAR(255),
-    DESCRIPCIO_IDIOMA_RECURS VARCHAR(2295),
-    DESCRIPCIO VARCHAR(255),
-    IND_MATERIAL_PROPI VARCHAR(1),
-    CODI_MIGRACIO VARCHAR(255),
-    BAIXA VARCHAR(1),
-    PARAULA_CLAU VARCHAR(100),
-    CODI_RECURS_ORIGEN VARCHAR(50),
-    NUM_CONTRACTE VARCHAR(50),
-    DATA_TANCAMENT_REAL TIMESTAMP_NTZ(9),
-    OBSERVACIONS VARCHAR(2000),
-    MODUL_ORIGEN_ID VARCHAR(255),
-    OBRA_ID VARCHAR(12)
+    CODI_RECURS NUMBER(38, 0) COMMENT 'Codi del recurs.',
+    TITOL_RECURS VARCHAR(255) COMMENT 'Títol del recurs.',
+    ORIGEN_RECURS VARCHAR(5) COMMENT 'Origen del recurs.',
+    ORIGEN_BASE_DADES VARCHAR(9) COMMENT 'Base de dades d origen del recurs.',
+    VERSIO_CREACIO_ID NUMBER(12, 0) COMMENT 'Identificador de la versió de creació del recurs.',
+    PRODUCTE_CREACIO_ID NUMBER(18, 5) COMMENT 'Identificador del producte associat a la creació.',
+    PRODUCTE_ORIGEN_ID VARCHAR(255) COMMENT 'Identificador del producte d origen.',
+    URL_IDIOMA_RECURS VARCHAR(500) COMMENT 'URL específica per idioma del recurs.',
+    URL VARCHAR(500) COMMENT 'URL del recurs.',
+    DESCRIPCIO_TRAMESA_RECURS VARCHAR(255) COMMENT 'Descripció de la tramesa associada al recurs.',
+    DESCRIPCIO_SUPORT_RECURS VARCHAR(255) COMMENT 'Descripció del suport del recurs.',
+    DESCRIPCIO_IDIOMA_RECURS VARCHAR(2295) COMMENT 'Descripció en diferents idiomes del recurs.',
+    DESCRIPCIO VARCHAR(255) COMMENT 'Descripció general del recurs.',
+    IND_MATERIAL_PROPI VARCHAR(1) COMMENT 'Indicador si el recurs és material propi.',
+    CODI_MIGRACIO VARCHAR(255) COMMENT 'Codi associat a la migració del recurs.',
+    BAIXA VARCHAR(1) COMMENT 'Indicador si el recurs està donat de baixa.',
+    PARAULA_CLAU VARCHAR(100) COMMENT 'Paraules clau associades al recurs.',
+    CODI_RECURS_ORIGEN VARCHAR(50) COMMENT 'Codi d origen del recurs.',
+    NUM_CONTRACTE VARCHAR(50) COMMENT 'Número de contracte associat al recurs.',
+    DATA_TANCAMENT_REAL TIMESTAMP_NTZ(9) COMMENT 'Data de tancament real del recurs.',
+    OBSERVACIONS VARCHAR(2000) COMMENT 'Observacions relacionades amb el recurs.',
+    MODUL_ORIGEN_ID VARCHAR(255) COMMENT 'Identificador del mòdul d origen.',
+    OBRA_ID VARCHAR(12) COMMENT 'Identificador de l obra associada.'
 );
+
 
 
 
@@ -165,3 +166,5 @@ END;
 -- Procedure Execution
 CALL DB_UOC_PROD.DDP_DOCENCIA.STAGE_RECURSOS_APRENENTATGE_COCO_PRODUCT_MODULS_LOADS();
 
+
+ 

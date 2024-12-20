@@ -4,35 +4,36 @@
 -- -- STAGE_LIVE_EVENTS_FLATENED_RA
 -- -- #################################################################################################
 -- -- #################################################################################################
+ 
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA (
  
-    DIM_ASSIGNATURA_KEY VARCHAR(6),  
-    DIM_SEMESTRE_KEY NUMBER(38, 0), 
-    -- DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16),  -- not valid : francesc -->  incluir 
-    CODI_RECURS INT, 
-    Origen_events VARCHAR(6),
-    -- SOURCE2 VARCHAR(6),  -- removed
-    EVENT_TIME DATETIME, 
-    EVENT_DATE DATE, 
-    ACCIO VARCHAR(16777216),
-    NOM_ACTOR VARCHAR(16777216),
-    ACTOR_TIPUS VARCHAR(16777216),
-    usuari_dAcces VARCHAR(16777216),
-    id_idp_usuari_events VARCHAR(16777216),
-    titol_assignatura VARCHAR(16777216),
-    id_curs_canvas VARCHAR(16777216),
-    id_sistema_curs VARCHAR(16777216),
-    ROL VARCHAR(16777216),
-    estat_membre VARCHAR(16777216),
-    titol_recurs VARCHAR(16777216),
-    enllac VARCHAR(16777216),
-    OBJECT_MEDIATYPE VARCHAR(16777216),
-    tipus_recurs VARCHAR(16777216),
-    format_recurs VARCHAR(16777216),
-    enllac_url VARCHAR(16777216),
-    creation_date timestamp_ntz(9) not null    comment 'Data de creacio del registre de la informacio.',
-	update_date timestamp_ntz(9) not null      comment 'Data de carrega de la informacio.'
+    DIM_ASSIGNATURA_KEY VARCHAR(6) COMMENT 'Clau assignatura.',
+    DIM_SEMESTRE_KEY NUMBER(38, 0) COMMENT 'Clau semestre.',
+    -- DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16) COMMENT 'Clau recursos d aprenentatge.', -- Inclòs segons indicació
+    CODI_RECURS INT COMMENT 'Codi del recurs acadèmic.',
+    Origen_events VARCHAR(6) COMMENT 'Origen dels esdeveniments.',
+    EVENT_TIME DATETIME COMMENT 'Hora de l esdeveniment.',
+    EVENT_DATE DATE COMMENT 'Data de l esdeveniment.',
+    ACCIO VARCHAR(16777216) COMMENT 'Acció realitzada durant l esdeveniment.',
+    NOM_ACTOR VARCHAR(16777216) COMMENT 'Nom de l actor involucrat.',
+    ACTOR_TIPUS VARCHAR(16777216) COMMENT 'Tipus d actor involucrat.',
+    usuari_dAcces VARCHAR(16777216) COMMENT 'Usuari d accés.',
+    id_idp_usuari_events VARCHAR(16777216) COMMENT 'Identificador de l usuari en els esdeveniments.',
+    titol_assignatura VARCHAR(16777216) COMMENT 'Títol de la assignatura associada.',
+    id_curs_canvas VARCHAR(16777216) COMMENT 'Identificador del curs a Canvas.',
+    id_sistema_curs VARCHAR(16777216) COMMENT 'Identificador del sistema de curs.',
+    ROL VARCHAR(16777216) COMMENT 'Rol de l usuari.',
+    estat_membre VARCHAR(16777216) COMMENT 'Estat del membre.',
+    titol_recurs VARCHAR(16777216) COMMENT 'Títol del recurs associat.',
+    enllac VARCHAR(16777216) COMMENT 'Enllaç al recurs.',
+    OBJECT_MEDIATYPE VARCHAR(16777216) COMMENT 'Tipus de mitjà de l objecte.',
+    tipus_recurs VARCHAR(16777216) COMMENT 'Tipus de recurs.',
+    format_recurs VARCHAR(16777216) COMMENT 'Format del recurs.',
+    enllac_url VARCHAR(16777216) COMMENT 'URL de l enllaç associat.',
+    creation_date TIMESTAMP_NTZ(9) NOT NULL COMMENT 'Data de creació del registre de la informació.',
+    update_date TIMESTAMP_NTZ(9) NOT NULL COMMENT 'Data de càrrega de la informació.'
 );
+
 
 
 CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.STAGE_LIVE_EVENTS_FLATENED_RA_LOADS(input_date DATE)

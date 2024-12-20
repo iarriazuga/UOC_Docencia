@@ -4,12 +4,12 @@
 -- -- #################################################################################################
 -- -- #################################################################################################
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO (
-    DIM_ASSIGNATURA_KEY VARCHAR(6),
-    DIM_SEMESTRE_KEY NUMBER(38, 0),
-    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16),
-    CODI_RECURS NUMBER(38,0),
-    CREATION_DATE TIMESTAMP_NTZ(9),
-    UPDATE_DATE TIMESTAMP_NTZ(9)
+    DIM_ASSIGNATURA_KEY VARCHAR(6) COMMENT 'Clau assignatura.',
+    DIM_SEMESTRE_KEY NUMBER(38, 0) COMMENT 'Clau semestre.',
+    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16) COMMENT 'Clau recursos d aprenentatge.',
+    CODI_RECURS NUMBER(38,0) COMMENT 'Codi del recurs acadèmic.',
+    CREATION_DATE TIMESTAMP_NTZ(9) COMMENT 'Data de creació del registre.',
+    UPDATE_DATE TIMESTAMP_NTZ(9) COMMENT 'Data d actualització del registre.'
 );
 
 CREATE OR REPLACE PROCEDURE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_COCO_LOADS() 

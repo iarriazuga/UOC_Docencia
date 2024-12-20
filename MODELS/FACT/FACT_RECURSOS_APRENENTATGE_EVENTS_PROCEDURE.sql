@@ -6,45 +6,45 @@
 
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS (
     
-    ID_ASSIGNATURA NUMBER(16,0),
-    ID_SEMESTRE NUMBER(16,0),
-    ID_CODI_RECURS NUMBER(38,0),
-    ID_PERSONA NUMBER(16,0),
+    ID_ASSIGNATURA NUMBER(16,0) COMMENT 'Identificador de la assignatura.',
+    ID_SEMESTRE NUMBER(16,0) COMMENT 'Identificador del semestre.',
+    ID_CODI_RECURS NUMBER(38,0) COMMENT 'Identificador del recurs.',
+    ID_PERSONA NUMBER(16,0) COMMENT 'Identificador de la persona.',
     
-    DIM_PERSONA_KEY NUMBER(10,0),
-    DIM_ASSIGNATURA_KEY VARCHAR(6),
-    DIM_SEMESTRE_KEY NUMBER(38,0),
-    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16),
+    DIM_PERSONA_KEY NUMBER(10,0) COMMENT 'Clau DIM_PERSONA_KEY.',
+    DIM_ASSIGNATURA_KEY VARCHAR(6) COMMENT 'Clau assignatura.',
+    DIM_SEMESTRE_KEY NUMBER(38,0) COMMENT 'Clau semestre.',
+    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16) COMMENT 'Clau recursos d aprenentatge.',
 
-    ORIGEN_DADES_ACADEMIQUES VARCHAR(5),
-    CODI_RECURS NUMBER(38,0),
-    EVENT_CODI_RECURS NUMBER(38,0),
-    EVENT_TIME VARCHAR(16777216),
-    EVENT_DATE VARCHAR(16777216),
-    ACCIO VARCHAR(16777216),
-    NOM_ACTOR VARCHAR(16777216),
-    ACTOR_TIPUS VARCHAR(16777216),
-    USUARI_DACCES VARCHAR(16777216),
-    id_idp_usuari_events VARCHAR(16777216),
-    TITOL_ASSIGNATURA VARCHAR(16777216),
-    ID_CURS_CANVAS VARCHAR(16777216),
-    ID_SISTEMA_CURS VARCHAR(16777216),
-    ROL VARCHAR(16777216),
-    ESTAT_MEMBRE VARCHAR(16777216),
-    TITOL_RECURS VARCHAR(16777216),
-    ENLLAC VARCHAR(16777216),
-    OBJECT_MEDIATYPE VARCHAR(16777216),
-    TIPUS_RECURS VARCHAR(16777216),
-    FORMAT_RECURS VARCHAR(16777216),
-    ORIGEN_EVENTS VARCHAR(6),
-    ENLLAC_URL VARCHAR(16777216),
+    ORIGEN_DADES_ACADEMIQUES VARCHAR(5) COMMENT 'Font de les dades acadèmiques.',
+    CODI_RECURS NUMBER(38,0) COMMENT 'Codi del recurs associat.',
+    EVENT_CODI_RECURS NUMBER(38,0) COMMENT 'Codi de l esdeveniment associat al recurs.',
+    EVENT_TIME VARCHAR(16777216) COMMENT 'Hora de l esdeveniment.',
+    EVENT_DATE VARCHAR(16777216) COMMENT 'Data de l esdeveniment.',
+    ACCIO VARCHAR(16777216) COMMENT 'Acció realitzada durant l esdeveniment.',
+    NOM_ACTOR VARCHAR(16777216) COMMENT 'Nom de l actor involucrat.',
+    ACTOR_TIPUS VARCHAR(16777216) COMMENT 'Tipus d actor involucrat.',
+    USUARI_DACCES VARCHAR(16777216) COMMENT 'Usuari d accés.',
+    id_idp_usuari_events VARCHAR(16777216) COMMENT 'Identificador de l usuari en els esdeveniments.',
+    TITOL_ASSIGNATURA VARCHAR(16777216) COMMENT 'Títol de la assignatura associada.',
+    ID_CURS_CANVAS VARCHAR(16777216) COMMENT 'Identificador del curs a Canvas.',
+    ID_SISTEMA_CURS VARCHAR(16777216) COMMENT 'Identificador del sistema de curs.',
+    ROL VARCHAR(16777216) COMMENT 'Rol de l usuari.',
+    ESTAT_MEMBRE VARCHAR(16777216) COMMENT 'Estat del membre.',
+    TITOL_RECURS VARCHAR(16777216) COMMENT 'Títol del recurs associat.',
+    ENLLAC VARCHAR(16777216) COMMENT 'Enllaç al recurs.',
+    OBJECT_MEDIATYPE VARCHAR(16777216) COMMENT 'Tipus de mitjà de l objecte.',
+    TIPUS_RECURS VARCHAR(16777216) COMMENT 'Tipus de recurs.',
+    FORMAT_RECURS VARCHAR(16777216) COMMENT 'Format del recurs.',
+    ORIGEN_EVENTS VARCHAR(6) COMMENT 'Origen dels esdeveniments.',
+    ENLLAC_URL VARCHAR(16777216) COMMENT 'URL de l enllaç associat.',
 
-    usos_recurs_estudiants NUMBER(38, 0),
-    usos_recurs_totals NUMBER(38, 0),
-    assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigencia de la assignatura en el semestre analitzat.',
+    usos_recurs_estudiants NUMBER(38, 0) COMMENT 'Nombre d usos del recurs pels estudiants.',
+    usos_recurs_totals NUMBER(38, 0) COMMENT 'Nombre total d usos del recurs.',
+    assignatura_vigent_semester VARCHAR(10) COMMENT 'Vigència de la assignatura en el semestre analitzat.',
     
-    CREATION_DATE TIMESTAMP_NTZ(9)   COMMENT 'Data de creació del registre de la informació.',
-    UPDATE_DATE TIMESTAMP_NTZ(9)  COMMENT 'Data de càrrega de la informació.'
+    CREATION_DATE TIMESTAMP_NTZ(9) COMMENT 'Data de creació del registre de la informació.',
+    UPDATE_DATE TIMESTAMP_NTZ(9) COMMENT 'Data de càrrega de la informació.'
 );
 
 
@@ -290,6 +290,4 @@ END;
 -- Procedure Execution
 CALL DB_UOC_PROD.DDP_DOCENCIA.FACT_RECURSOS_APRENENTATGE_EVENTS_LOADS();
 
-
-
---  select * from DB_UOC_PROD.DD_OD.DIM_SEMESTRE  limit 100;
+ 

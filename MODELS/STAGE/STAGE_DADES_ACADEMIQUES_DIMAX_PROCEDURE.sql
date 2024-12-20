@@ -3,15 +3,13 @@
 -- -- STAGE_DADES_ACADEMIQUES_DIMAX
 -- -- #################################################################################################
 -- -- #################################################################################################
-
 CREATE OR REPLACE TABLE DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX (
-    -- ID_DIM_D_DDP_DOCENCIA_STAGE_DADES_ACADEMIQUES_COCO NUMBER(20,0),
-    DIM_ASSIGNATURA_KEY VARCHAR(6),
-    DIM_SEMESTRE_KEY NUMBER(38, 0),
-    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16),
-    CODI_RECURS NUMBER(38, 0),
-    CREATION_DATE TIMESTAMP_NTZ(9),
-    UPDATE_DATE TIMESTAMP_NTZ(9)
+    DIM_ASSIGNATURA_KEY VARCHAR(6) COMMENT 'Clau assignatura.',
+    DIM_SEMESTRE_KEY NUMBER(38, 0) COMMENT 'Clau semestre.',
+    DIM_RECURSOS_APRENENTATGE_KEY VARCHAR(16) COMMENT 'Clau recursos d aprenentatge.',
+    CODI_RECURS NUMBER(38, 0) COMMENT 'Codi del recurs acadèmic.',
+    CREATION_DATE TIMESTAMP_NTZ(9) COMMENT 'Data de creació del registre.',
+    UPDATE_DATE TIMESTAMP_NTZ(9) COMMENT 'Data d actualització del registre.'
 );
 
 
@@ -109,8 +107,7 @@ END;
 CALL DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX_LOADS();
 
 
-select * from DB_UOC_PROD.DDP_DOCENCIA.STAGE_DADES_ACADEMIQUES_DIMAX;  -- STAGE_DADES_ACADEMIQUES_DIMAX 3,390,907
-
+ 
  
 
  

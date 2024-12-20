@@ -33,7 +33,7 @@ create or replace table db_uoc_prod.DDP_DOCENCIA.stage_recursos_aprenentatge_dim
     url_ang_recurs varchar(4000)               comment 'URL (adreça web) del recurs en angles.',
     tipus_gestio_recurs varchar(16)            comment 'Indica el tipus de gestio que es fa del recurs i la seva forma llicenciament.',
     despesa_variable_recurs varchar(4)         comment 'Mostra si el recurs en concret es forma part dels recursos pagats amb despesa variable (S) o no (N).',
-    creation_date timestamp_ntz(9) not null    comment 'Data de creacio del registre de la informacio.',
+    data_creacio timestamp_ntz(9) not null    comment 'Data de creacio del registre de la informacio.',
 	update_date timestamp_ntz(9) not null      comment 'Data de carrega de la informacio.')
 ;
 
@@ -169,7 +169,7 @@ insert
     url_ang_recurs,
     tipus_gestio_recurs,
     despesa_variable_recurs,
-    creation_date,
+    data_creacio,
     update_date
 )
 values
